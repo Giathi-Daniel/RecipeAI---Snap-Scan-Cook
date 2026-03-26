@@ -253,9 +253,10 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ---
 
-## Roadmap
+<!--## Roadmap
 
 See [ROADMAP.md](./ROADMAP.md) for the full 2-week day-by-day build plan.
+
 
 ### High-level milestones:
 - [x] Project setup & auth
@@ -267,7 +268,7 @@ See [ROADMAP.md](./ROADMAP.md) for the full 2-week day-by-day build plan.
 - [ ] Recipe localization
 - [ ] Dashboard & saved recipes
 - [ ] Full deployment
-
+-->
 ---
 
 ## Contributing
