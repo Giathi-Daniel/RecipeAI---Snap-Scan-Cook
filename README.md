@@ -11,20 +11,20 @@
 
 ---
 
-## 📌 What is RecipeAI?
+## What is RecipeAI?
 
 RecipeAI is a full-stack AI-powered recipe assistant that lets users:
 
-- 📸 **Upload a food photo** — AI identifies the dish and fetches a structured recipe
-- 📋 **Paste any recipe text** — even messy, emoji-heavy WhatsApp-style formats — and AI parses and structures it automatically
-- 🔄 **Scale servings** — ingredient quantities adjust in real time
-- 🌍 **Localize recipes** — adapt dishes to local/regional ingredients (e.g. a Kenyan twist on a European dish)
-- 🥦 **Substitute ingredients** — "I don't have thyme, what can I use?"
-- 📊 **Get nutritional info** — calories, macros, and dietary flags per serving
+- **Upload a food photo** — AI identifies the dish and fetches a structured recipe
+- **Paste any recipe text** — even messy, emoji-heavy WhatsApp-style formats — and AI parses and structures it automatically
+- **Scale servings** — ingredient quantities adjust in real time
+- **Localize recipes** — adapt dishes to local/regional ingredients (e.g. a Kenyan twist on a European dish)
+- **Substitute ingredients** — "I don't have thyme, what can I use?"
+- **Get nutritional info** — calories, macros, and dietary flags per serving
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -39,7 +39,7 @@ RecipeAI is a full-stack AI-powered recipe assistant that lets users:
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 recipeai/
@@ -83,7 +83,7 @@ recipeai/
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -168,7 +168,7 @@ supabase db push
 
 ---
 
-## 🗃️ Database Schema (Supabase)
+## Database Schema (Supabase)
 
 ```sql
 -- Users handled by Supabase Auth
@@ -196,7 +196,7 @@ create table saved_recipes (
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -210,7 +210,7 @@ create table saved_recipes (
 
 ---
 
-## 🤖 AI Features In Detail
+## AI Features In Detail
 
 ### Recipe Parser (Gemini)
 Sends raw text (including emojis, informal formatting) to Gemini with a structured prompt. Returns clean JSON with `title`, `ingredients[]`, `steps[]`, `servings`, and `tags`.
@@ -226,7 +226,7 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Frontend → Vercel
 
@@ -247,13 +247,13 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 > _Coming soon — will be added after Week 1 of development_
 
 ---
 
-## 🛣️ Roadmap
+## Roadmap
 
 See [ROADMAP.md](./ROADMAP.md) for the full 2-week day-by-day build plan.
 
@@ -270,21 +270,21 @@ See [ROADMAP.md](./ROADMAP.md) for the full 2-week day-by-day build plan.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first.
 
 ---
 
-## 📄 License
+## License
 
 [MIT](./LICENSE)
 
 ---
 
-## 👤 Author
+## Author
 
-Built by **[Your Name]** — a Software Engineer passionate about building AI-powered tools for everyday life.
+Built by **Daniel Giathi** — a Software Engineer passionate about building AI-powered tools for everyday life.
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat-square&logo=linkedin)](https://linkedin.com/in/your-profile)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat-square&logo=github)](https://github.com/your-username)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat-square&logo=linkedin)](https://linkedin.com/in/daniel-giathi)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat-square&logo=github)](https://github.com/Giathi-Daniel)
