@@ -5,11 +5,11 @@
 
 ---
 
-## 📅 Week 1 — Foundation & Core AI Features
+## Week 1 — Foundation & Core AI Features
 
 ---
 
-### ✅ Day 1 — Project Setup & Repo Structure
+### Day 1 — Project Setup & Repo Structure
 **Goal:** Everything scaffolded. Zero ambiguity on Day 2.
 
 - [x] Create GitHub repo, add `.gitignore`, `README.md`, `LICENSE`
@@ -18,15 +18,15 @@
 - [x] Create `supabase/migrations/` folder and write initial SQL schema
 - [x] Set up `.env.example` with all required keys listed
 - [x] Verify the frontend and backend startup paths are healthy (`npm run build` passed; FastAPI app imports and routes load cleanly; direct port binding is blocked in the sandbox)
-- [ ] Push initial commit to GitHub
+- [x] Push initial commit to GitHub
 
 **Deliverable:** Clean repo, both servers running locally, no errors.
 
-**Status:** Day 1 scaffold is complete in the local workspace. The only remaining optional step is pushing the initial commit to GitHub.
+**Status:** Day 1 is complete. The scaffold is committed and pushed on `project-setup`.
 
 ---
 
-### ✅ Day 2 — Supabase Auth (Sign Up / Login)
+### Day 2 — Supabase Auth (Sign Up / Login)
 **Goal:** Users can create accounts and log in.
 
 - [ ] Create Supabase project, copy credentials to `.env`
@@ -42,7 +42,7 @@
 
 ---
 
-### ✅ Day 3 — Database Schema & Supabase Tables
+### Day 3 — Database Schema & Supabase Tables
 **Goal:** All tables created. Backend can read/write data.
 
 - [ ] Run migration SQL in Supabase dashboard: `recipes`, `saved_recipes` tables
@@ -57,7 +57,7 @@
 
 ---
 
-### ✅ Day 4 — Recipe Text Parser (Core AI Feature)
+### Day 4 — Recipe Text Parser (Core AI Feature)
 **Goal:** Paste any recipe text → get back clean structured JSON.
 
 - [ ] Get Gemini API key from [Google AI Studio](https://aistudio.google.com) (free)
@@ -73,7 +73,7 @@
 
 ---
 
-### ✅ Day 5 — Upload & Parse UI (Frontend)
+### Day 5 — Upload & Parse UI (Frontend)
 **Goal:** Users can paste recipe text in the UI and see a parsed result.
 
 - [ ] Build `/app/upload/page.tsx` with a textarea for pasting recipes
@@ -88,7 +88,7 @@
 
 ---
 
-### ✅ Day 6 — Image Recognition Flow
+### Day 6 — Image Recognition Flow
 **Goal:** Upload a food photo → AI identifies the dish → generates a recipe.
 
 - [ ] Enable Google Cloud Vision API in Google Cloud Console
@@ -106,7 +106,7 @@
 
 ---
 
-### ✅ Day 7 — Review, Test & Fix Week 1 Bugs
+### Day 7 — Review, Test & Fix Week 1 Bugs
 **Goal:** Everything from Days 1–6 is solid before building more features.
 
 - [ ] Manual test the full user flow: sign up → login → paste recipe → save → upload image → save
@@ -121,11 +121,11 @@
 
 ---
 
-## 📅 Week 2 — Advanced Features, Polish & Deployment
+## Week 2 — Advanced Features, Polish & Deployment
 
 ---
 
-### ✅ Day 8 — Serving Scaler
+### Day 8 — Serving Scaler
 **Goal:** Users can adjust servings and all quantities scale in real time.
 
 - [ ] In FastAPI: add serving scaling logic to `recipes.py` — multiply all ingredient quantities by `(new_servings / original_servings)`
@@ -138,7 +138,7 @@
 
 ---
 
-### ✅ Day 9 — Nutritional Analysis
+### Day 9 — Nutritional Analysis
 **Goal:** Each recipe shows calories, macros, and dietary flags.
 
 - [ ] Use Gemini to estimate nutrition per serving (prompt: "Estimate calories, protein, carbs, fat for this recipe per serving. Return JSON only.")
@@ -152,7 +152,7 @@
 
 ---
 
-### ✅ Day 10 — Ingredient Substitution & Localization
+### Day 10 — Ingredient Substitution & Localization
 **Goal:** Two AI-powered helper features that make the app stand out.
 
 **Substitution:**
@@ -170,7 +170,7 @@
 
 ---
 
-### ✅ Day 11 — User Dashboard (Saved Recipes)
+### Day 11 — User Dashboard (Saved Recipes)
 **Goal:** Users have a personal space to browse all their saved recipes.
 
 - [ ] Build `/app/dashboard/page.tsx` — grid of saved recipe cards
@@ -184,7 +184,7 @@
 
 ---
 
-### ✅ Day 12 — Single Recipe Page & Sharing
+### Day 12 — Single Recipe Page & Sharing
 **Goal:** Each recipe has its own polished page and can be shared.
 
 - [ ] Build `/app/recipe/[id]/page.tsx`
@@ -198,7 +198,7 @@
 
 ---
 
-### ✅ Day 13 — Full Deployment
+### Day 13 — Full Deployment
 **Goal:** App is live on the internet. Both frontend and backend deployed.
 
 **Backend → Render:**
@@ -223,7 +223,7 @@
 
 ---
 
-### ✅ Day 14 — Polish, README & Portfolio Prep
+### Day 14 — Polish, README & Portfolio Prep
 **Goal:** App looks portfolio-ready. You can demo it confidently in interviews.
 
 - [ ] Add a proper landing page (`/app/page.tsx`) with hero, features section, and CTA
@@ -239,7 +239,7 @@
 
 ---
 
-## 📊 Summary Table
+## Summary Table
 
 | Day | Focus | Key Output |
 |---|---|---|
@@ -258,17 +258,17 @@
 | 13 | Full deployment | App live on the web |
 | 14 | Polish & portfolio prep | Interview-ready project |
 
----
+<!-- --- -->
 
-## 💡 Tips for Staying on Track
+<!-- ## Tips for Staying on Track
 
 - **Timebox each day to 3–5 hours.** Don't gold-plate — ship and move on.
 - **Commit every day.** Green squares on GitHub matter to hiring managers.
 - **When stuck on AI prompts:** iterate in Google AI Studio's playground before hardcoding.
 - **When stuck on bugs:** spend max 30 min, then move to the next task and return.
 - **Use Postman or the FastAPI `/docs` UI** to test every endpoint before wiring frontend.
-- **Write short commit messages that say what you built**, e.g. `feat: add recipe text parser endpoint`
+- **Write short commit messages that say what you built**, e.g. `feat: add recipe text parser endpoint` -->
 
----
+<!-- --- -->
 
-*Built with ❤️ in 14 days.*
+<!-- *Built with ❤️ in 14 days.* -->
