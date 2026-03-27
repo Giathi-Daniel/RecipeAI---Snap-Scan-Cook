@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-canvas text-ink font-body antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(217, 98, 38, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(95, 124, 66, 0.18), transparent 25%);
+}
+
+a {
+  @apply transition-colors;
+}
+
+.recipe-shell {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(6px);
+}
