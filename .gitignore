@@ -20,6 +20,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+ROADMAP.md
+
 # OS / editor
 .DS_Store
 .idea/
