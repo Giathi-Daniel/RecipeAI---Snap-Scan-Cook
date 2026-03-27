@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { RecipeCard } from "@/components/recipe-card";
 
 const highlights = [
@@ -6,6 +7,15 @@ const highlights = [
   "Paste messy recipe text and transform it into clean structure.",
   "Save, scale, and personalize recipes for real-world cooking.",
 ];
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Discover RecipeAI, an AI-powered cooking assistant for turning photos and messy recipe text into structured, interactive meals.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default function HomePage() {
   return (
