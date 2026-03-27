@@ -18,11 +18,11 @@
 - [x] Create `supabase/migrations/` folder and write initial SQL schema
 - [x] Set up `.env.example` with all required keys listed
 - [x] Verify the frontend and backend startup paths are healthy (`npm run build` passed; FastAPI app imports and routes load cleanly; direct port binding is blocked in the sandbox)
-- [ ] Push initial commit to GitHub
+- [x] Push initial commit to GitHub
 
 **Deliverable:** Clean repo, both servers running locally, no errors.
 
-**Status:** Day 1 scaffold is complete in the local workspace. The only remaining optional step is pushing the initial commit to GitHub.
+**Status:** Day 1 is complete. The scaffold is committed and pushed on `project-setup`.
 
 ---
 
