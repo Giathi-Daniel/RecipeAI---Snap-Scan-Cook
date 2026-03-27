@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { href: "/upload", label: "Upload" },
@@ -10,7 +11,8 @@ const links = [
 export function Header() {
   return (
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-      <Link href="/" className="font-display text-2xl font-semibold tracking-tight">
+      <Link href="/" className="flex items-center gap-2 font-display text-2xl font-semibold tracking-tight">
+        <Image src="/android-chrome-192x192.png" alt="RecipeAI logo" width={32} height={32} />
         RecipeAI
       </Link>
       <nav className="flex items-center gap-4 text-sm font-medium text-ink/70">
