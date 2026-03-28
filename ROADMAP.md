@@ -29,16 +29,18 @@
 ### Day 2 — Supabase Auth (Sign Up / Login)
 **Goal:** Users can create accounts and log in.
 
-- [ ] Create Supabase project, copy credentials to `.env`
-- [ ] Install `@supabase/supabase-js` and `@supabase/ssr` in frontend
-- [ ] Build `/app/(auth)/login/page.tsx` — email/password login form
-- [ ] Build `/app/(auth)/signup/page.tsx` — sign up form
-- [ ] Set up Supabase middleware for session management (`middleware.ts`)
-- [ ] Protect `/dashboard` route — redirect to `/login` if unauthenticated
-- [ ] Test: sign up → verify email → log in → reach dashboard
-- [ ] In FastAPI: add JWT verification middleware using Supabase secret
+- [x] Create Supabase project, copy credentials to `.env`
+- [x] Install `@supabase/supabase-js` and `@supabase/ssr` in frontend
+- [x] Build `/app/(auth)/login/page.tsx` — email/password login form
+- [x] Build `/app/(auth)/signup/page.tsx` — sign up form
+- [x] Set up Supabase middleware for session management (`middleware.ts`)
+- [x] Protect `/dashboard` route — redirect to `/login` if unauthenticated
+- [x] Test: sign up → verify email → log in → reach dashboard
+- [x] In FastAPI: add JWT verification middleware using Supabase secret
 
 **Deliverable:** Working auth flow end-to-end.
+
+**Status:** Day 2 is complete. Supabase auth is wired end-to-end across Next.js and FastAPI.
 
 ---
 

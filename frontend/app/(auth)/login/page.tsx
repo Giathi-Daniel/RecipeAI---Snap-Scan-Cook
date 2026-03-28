@@ -1,29 +1,31 @@
-export default function LoginPage() {
+import { redirect } from "next/navigation";
+import { AuthForm } from "@/components/auth-form";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+
+export const dynamic = "force-dynamic";
+
+export default async function LoginPage() {
+  const supabase = await createServerSupabaseClient();
+
+  if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      redirect("/dashboard");
+    }
+  }
+
   return (
     <section className="mx-auto max-w-xl px-6 py-12">
       <div className="recipe-shell rounded-[2rem] border border-white/60 p-8 shadow-card">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accentDark">
-          Auth scaffold
-        </p>
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accentDark">Welcome back</p>
         <h1 className="mt-4 font-display text-4xl text-ink">Log in to RecipeAI</h1>
-        <form className="mt-8 space-y-4">
-          <input
-            type="email"
-            placeholder="Email address"
-            className="w-full rounded-2xl border border-sand bg-white px-4 py-3 outline-none"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full rounded-2xl border border-sand bg-white px-4 py-3 outline-none"
-          />
-          <button
-            type="submit"
-            className="w-full rounded-2xl bg-accent px-4 py-3 font-semibold text-white"
-          >
-            Continue
-          </button>
-        </form>
+        <p className="mt-4 text-sm leading-6 text-ink/70">
+          Sign in with your email and password to get back to saved recipes, uploads, and your dashboard.
+        </p>
+        <AuthForm mode="login" />
       </div>
     </section>
   );
