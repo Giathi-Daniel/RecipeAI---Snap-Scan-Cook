@@ -1,4 +1,9 @@
+import { redirect } from "next/navigation";
 import { RecipeCard } from "@/components/recipe-card";
+import { LogoutButton } from "@/components/logout-button";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+
+export const dynamic = "force-dynamic";
 
 const savedRecipes = [
   {
@@ -13,7 +18,21 @@ const savedRecipes = [
   },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createServerSupabaseClient();
+
+  if (!supabase) {
+    redirect("/login");
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-12">
       <div className="mb-8 flex items-end justify-between gap-4">
@@ -22,9 +41,15 @@ export default function DashboardPage() {
             Personal space
           </p>
           <h1 className="mt-3 font-display text-4xl text-ink">Your recipe dashboard</h1>
+          <p className="mt-3 text-sm text-ink/70">
+            Signed in as <span className="font-semibold text-ink">{user.email}</span>
+          </p>
         </div>
-        <div className="rounded-full border border-sand bg-white/70 px-4 py-2 text-sm text-ink/70">
-          Search and filters land on Day 11
+        <div className="flex items-center gap-3">
+          <div className="rounded-full border border-sand bg-white/70 px-4 py-2 text-sm text-ink/70">
+            Search and filters land on Day 11
+          </div>
+          <LogoutButton />
         </div>
       </div>
       <div className="grid gap-5 md:grid-cols-2">
