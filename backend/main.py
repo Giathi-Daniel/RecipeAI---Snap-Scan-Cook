@@ -23,6 +23,7 @@ app.add_middleware(
 @app.middleware("http")
 async def supabase_auth_middleware(request: Request, call_next):
     request.state.user = None
+    request.state.access_token = None
 
     authorization = request.headers.get("Authorization")
 
@@ -37,6 +38,7 @@ async def supabase_auth_middleware(request: Request, call_next):
 
         try:
             request.state.user = decode_supabase_jwt(token)
+            request.state.access_token = token
         except Exception as exc:
             if hasattr(exc, "status_code") and hasattr(exc, "detail"):
                 return JSONResponse(
