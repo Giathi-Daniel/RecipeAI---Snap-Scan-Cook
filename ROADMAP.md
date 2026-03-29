@@ -47,15 +47,17 @@
 ### Day 3 — Database Schema & Supabase Tables
 **Goal:** All tables created. Backend can read/write data.
 
-- [ ] Run migration SQL in Supabase dashboard: `recipes`, `saved_recipes` tables
-- [ ] Enable Row Level Security (RLS) on both tables
-- [ ] Write RLS policies: users can only read/write their own recipes
-- [ ] In FastAPI: create `Recipe` Pydantic model matching DB schema
-- [ ] Write a test FastAPI route `POST /api/recipes/save` that inserts a dummy recipe
-- [ ] Test: call endpoint → verify row appears in Supabase dashboard
-- [ ] Commit all migration files to `supabase/migrations/`
+- [x] Run migration SQL in Supabase dashboard: `recipes`, `saved_recipes` tables
+- [x] Enable Row Level Security (RLS) on both tables
+- [x] Write RLS policies: users can only read/write their own recipes
+- [x] In FastAPI: create `Recipe` Pydantic model matching DB schema
+- [x] Write a test FastAPI route `POST /api/recipes/save` that inserts a dummy recipe
+- [x] Test: call endpoint → verify row appears in Supabase dashboard
+- [x] Commit all migration files to `supabase/migrations/`
 
 **Deliverable:** DB live, RLS working, backend can write to Supabase.
+
+**Status:** Day 3 is complete. DB is connected, implemented RLS and ensured we can read from the database.
 
 ---
 
