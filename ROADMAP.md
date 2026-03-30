@@ -64,16 +64,18 @@
 ### Day 4 — Recipe Text Parser (Core AI Feature)
 **Goal:** Paste any recipe text → get back clean structured JSON.
 
-- [ ] Get Gemini API key from [Google AI Studio](https://aistudio.google.com) (free)
-- [ ] Install `google-generativeai` Python package
-- [ ] Write `services/gemini_service.py` with a `parse_recipe(text: str)` function
-- [ ] Craft a solid system prompt that instructs Gemini to return JSON with: `title`, `description`, `ingredients[]`, `steps[]`, `servings`, `tags[]`
-- [ ] Add error handling for malformed Gemini responses
-- [ ] Create `POST /api/recipes/parse` FastAPI route
+- [x] Get Gemini API key from [Google AI Studio](https://aistudio.google.com) (free)
+- [x] Install `google-generativeai` Python package
+- [x] Write `services/gemini_service.py` with a `parse_recipe(text: str)` function
+- [x] Craft a solid system prompt that instructs Gemini to return JSON with: `title`, `description`, `ingredients[]`, `steps[]`, `servings`, `tags[]`
+- [x] Add error handling for malformed Gemini responses
+- [x] Create `POST /api/recipes/parse` FastAPI route
 - [ ] Test with the braised chicken recipe text — verify clean JSON output
-- [ ] Log input/output for debugging
+- [x] Log input/output for debugging
 
 **Deliverable:** `/api/recipes/parse` returns clean structured recipe JSON.
+
+**Status:** Day 4 backend implementation is complete. Live Gemini output verification is the only remaining check and depends on your local configured API key.
 
 ---
 

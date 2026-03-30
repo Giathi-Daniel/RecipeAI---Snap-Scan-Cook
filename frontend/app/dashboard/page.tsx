@@ -46,7 +46,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="rounded-full border border-sand bg-white/70 px-4 py-2 text-sm text-ink/70">
+          <div className="border-l border-sand pl-4 text-sm text-ink/70">
             Search and filters land on Day 11
           </div>
           <LogoutButton />

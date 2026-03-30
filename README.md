@@ -249,7 +249,7 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ## Screenshots
 
-> _Coming soon — will be added after Week 1 of development_
+![Day-4-preview](./frontend/public/day_4_preview.png)
 
 ---
 
