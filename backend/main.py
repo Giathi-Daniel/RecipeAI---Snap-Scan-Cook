@@ -1,9 +1,17 @@
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
 
 from routers import ai, auth, recipes, vision
 from services.auth_service import decode_supabase_jwt
+
+BASE_DIR = Path(__file__).resolve().parent
+
+load_dotenv(BASE_DIR / ".env", override=False)
+load_dotenv(BASE_DIR / ".env.local", override=True)
 
 app = FastAPI(
     title="RecipeAI API",

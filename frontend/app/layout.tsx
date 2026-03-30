@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/header";
+import { getSiteUrl, getSiteUrlObject } from "@/lib/site-url";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: getSiteUrlObject(),
   applicationName: "RecipeAI",
   title: {
     default: "RecipeAI | Snap, Scan & Cook",
@@ -80,9 +81,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen">
         <Header />
-        <main>{children}</main>
+        <main className="min-h-[calc(100vh-89px)]">{children}</main>
       </body>
     </html>
   );
