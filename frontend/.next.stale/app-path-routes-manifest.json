@@ -1,0 +1,12 @@
+{
+  "/page": "/",
+  "/dashboard/page": "/dashboard",
+  "/recipe/[id]/page": "/recipe/[id]",
+  "/upload/page": "/upload",
+  "/_not-found/page": "/_not-found",
+  "/manifest.webmanifest/route": "/manifest.webmanifest",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/(auth)/signup/page": "/signup",
+  "/(auth)/login/page": "/login"
+}
