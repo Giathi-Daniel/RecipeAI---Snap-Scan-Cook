@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -29,6 +29,15 @@ class StructuredRecipeData(BaseModel):
     tags: list[str] = Field(default_factory=list)
 
 
+class ParsedRecipe(BaseModel):
+    title: str
+    description: Optional[str] = None
+    ingredients: list[Ingredient]
+    steps: list[Step]
+    servings: int = 4
+    tags: list[str] = Field(default_factory=list)
+
+
 class Recipe(BaseModel):
     id: Optional[UUID] = None
     user_id: Optional[UUID] = None
@@ -52,3 +61,12 @@ class SavedRecipe(BaseModel):
 class SaveRecipeResponse(BaseModel):
     recipe: Recipe
     saved_recipe: SavedRecipe
+
+
+class ParseRecipeRequest(BaseModel):
+    text: str = Field(..., min_length=1, description="Raw recipe text to parse.")
+
+
+class ParseRecipeResponse(BaseModel):
+    recipe: ParsedRecipe
+    raw_response: dict[str, Any]

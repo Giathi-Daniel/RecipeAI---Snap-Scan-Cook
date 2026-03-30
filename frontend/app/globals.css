@@ -6,11 +6,17 @@
   color-scheme: light;
 }
 
+html,
+body {
+  min-height: 100%;
+}
+
 body {
   @apply bg-canvas text-ink font-body antialiased;
   background-image:
     radial-gradient(circle at top left, rgba(217, 98, 38, 0.18), transparent 30%),
     radial-gradient(circle at bottom right, rgba(95, 124, 66, 0.18), transparent 25%);
+  background-attachment: fixed;
 }
 
 a {

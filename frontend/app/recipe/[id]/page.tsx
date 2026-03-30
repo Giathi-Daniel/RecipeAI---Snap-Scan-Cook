@@ -37,7 +37,7 @@ export default function RecipeDetailPage() {
           </div>
           <div>
             <h2 className="font-display text-3xl text-ink">Nutrition Snapshot</h2>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 px-5">
               <NutritionBadge label="Calories" value="420 kcal" />
               <NutritionBadge label="Protein" value="34 g" />
               <NutritionBadge label="Carbs" value="12 g" />

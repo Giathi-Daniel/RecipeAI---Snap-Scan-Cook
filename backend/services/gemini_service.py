@@ -1,6 +1,147 @@
+import json
+import logging
+import os
+from typing import Any
+
+import google.generativeai as genai
+from fastapi import HTTPException, status
+from pydantic import ValidationError
+
+from models.recipe import ParseRecipeResponse, ParsedRecipe
+
+logger = logging.getLogger(__name__)
+
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+SYSTEM_PROMPT = """
+You are a recipe parsing engine.
+Convert raw recipe text into clean JSON only.
+
+Return an object with exactly these keys:
+- title: string
+- description: string or null
+- ingredients: array of objects with keys quantity, unit, item
+- steps: array of objects with keys order, instruction
+- servings: integer
+- tags: array of strings
+
+Rules:
+- Infer a concise title if the source text does not provide one.
+- Keep descriptions short and factual.
+- Preserve ingredient meaning while normalizing formatting.
+- quantity must always be a string, even for fractions like "1/2".
+- unit must be null when absent.
+- item should contain the ingredient name and any clarifying prep note.
+- steps must be ordered starting at 1.
+- servings must be a positive integer. Default to 4 if unknown.
+- tags should be short lowercase labels when obvious, otherwise [].
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
+
 def parser_status():
     return {
         "provider": "Gemini",
-        "ready": False,
-        "message": "Recipe parsing is scheduled for Day 4.",
+        "ready": bool(os.getenv("GEMINI_API_KEY")),
+        "model": MODEL_NAME,
+        "message": "Recipe parsing is available when GEMINI_API_KEY is configured.",
     }
+
+
+def parse_recipe(text: str) -> ParseRecipeResponse:
+    cleaned_text = text.strip()
+    if not cleaned_text:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Recipe text is required.",
+        )
+
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GEMINI_API_KEY is not configured on the backend.",
+        )
+
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        model_name=MODEL_NAME,
+        system_instruction=SYSTEM_PROMPT,
+    )
+
+    logger.info("Parsing recipe text with Gemini. chars=%s", len(cleaned_text))
+
+    try:
+        response = model.generate_content(
+            cleaned_text,
+            generation_config={
+                "temperature": 0.2,
+                "response_mime_type": "application/json",
+            },
+        )
+    except Exception as exc:
+        logger.exception(
+            "Gemini request failed while parsing recipe text. model=%s",
+            MODEL_NAME,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Gemini failed to parse the recipe text with model '{MODEL_NAME}'.",
+        ) from exc
+
+    raw_text = _extract_response_text(response)
+    logger.info("Gemini parse response preview=%s", raw_text[:500])
+
+    try:
+        payload = _load_recipe_json(raw_text)
+        recipe = ParsedRecipe.model_validate(payload)
+    except (json.JSONDecodeError, ValidationError, ValueError) as exc:
+        logger.exception("Gemini returned malformed recipe JSON.")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Gemini returned malformed recipe JSON.",
+        ) from exc
+
+    normalized_payload = recipe.model_dump()
+    return ParseRecipeResponse(recipe=recipe, raw_response=normalized_payload)
+
+
+def _extract_response_text(response: Any) -> str:
+    text = getattr(response, "text", None)
+    if text:
+        return text.strip()
+
+    parts: list[str] = []
+    for candidate in getattr(response, "candidates", []) or []:
+        content = getattr(candidate, "content", None)
+        for part in getattr(content, "parts", []) or []:
+            part_text = getattr(part, "text", None)
+            if part_text:
+                parts.append(part_text)
+
+    if not parts:
+        raise ValueError("Gemini response did not contain any text parts.")
+
+    return "\n".join(parts).strip()
+
+
+def _load_recipe_json(raw_text: str) -> dict[str, Any]:
+    candidate = raw_text.strip()
+
+    if candidate.startswith("```"):
+        lines = candidate.splitlines()
+        if lines:
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        candidate = "\n".join(lines).strip()
+
+    start = candidate.find("{")
+    end = candidate.rfind("}")
+    if start == -1 or end == -1 or end < start:
+        raise ValueError("Could not locate a JSON object in the Gemini response.")
+
+    parsed = json.loads(candidate[start : end + 1])
+    if not isinstance(parsed, dict):
+        raise ValueError("Gemini response JSON root must be an object.")
+
+    return parsed

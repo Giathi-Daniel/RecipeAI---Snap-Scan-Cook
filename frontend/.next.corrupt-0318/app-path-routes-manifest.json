@@ -1,0 +1,6 @@
+{
+  "/page": "/",
+  "/dashboard/page": "/dashboard",
+  "/recipe/[id]/page": "/recipe/[id]",
+  "/upload/page": "/upload"
+}

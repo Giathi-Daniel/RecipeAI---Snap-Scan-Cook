@@ -5,12 +5,15 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from models.recipe import (
     Ingredient,
     Nutrition,
+    ParseRecipeRequest,
+    ParseRecipeResponse,
     Recipe,
     SaveRecipeResponse,
     Step,
     StructuredRecipeData,
 )
 from services.auth_service import get_current_user
+from services.gemini_service import parse_recipe
 from services.supabase_service import insert_recipe, insert_saved_recipe
 
 router = APIRouter()
@@ -39,6 +42,11 @@ demo_recipe = Recipe(
 @router.get("/demo", response_model=Recipe)
 def get_demo_recipe():
     return demo_recipe
+
+
+@router.post("/parse", response_model=ParseRecipeResponse)
+def parse_recipe_text(payload: ParseRecipeRequest):
+    return parse_recipe(payload.text)
 
 
 @router.post("/save", response_model=SaveRecipeResponse)

@@ -1,0 +1,1133 @@
+[
+  {
+    "name": "generate-buildid",
+    "duration": 911,
+    "timestamp": 68689258976,
+    "id": 4,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829824699,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "load-custom-routes",
+    "duration": 3136,
+    "timestamp": 68689260641,
+    "id": 5,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829824701,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-dist-dir",
+    "duration": 107986,
+    "timestamp": 68689568264,
+    "id": 6,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825008,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-pages-mapping",
+    "duration": 659,
+    "timestamp": 68689754019,
+    "id": 7,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825194,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "collect-app-files",
+    "duration": 7023,
+    "timestamp": 68689754765,
+    "id": 8,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825195,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-app-mapping",
+    "duration": 6706,
+    "timestamp": 68689761842,
+    "id": 9,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825202,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-app-layouts",
+    "duration": 325,
+    "timestamp": 68689768629,
+    "id": 10,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825209,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "collect-default-files",
+    "duration": 1616,
+    "timestamp": 68689772402,
+    "id": 12,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825213,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "generate-route-types",
+    "duration": 40873,
+    "timestamp": 68689770270,
+    "id": 11,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825210,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "public-dir-conflict-check",
+    "duration": 1840,
+    "timestamp": 68689811342,
+    "id": 13,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "generate-routes-manifest",
+    "duration": 6533,
+    "timestamp": 68689813759,
+    "id": 14,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829825254,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-entrypoints",
+    "duration": 74716,
+    "timestamp": 68692192863,
+    "id": 18,
+    "parentId": 16,
+    "tags": {},
+    "startTime": 1774829827633,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "generate-webpack-config",
+    "duration": 237319,
+    "timestamp": 68692268114,
+    "id": 19,
+    "parentId": 17,
+    "tags": {},
+    "startTime": 1774829827708,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "next-trace-entrypoint-plugin",
+    "duration": 5934,
+    "timestamp": 68692789119,
+    "id": 21,
+    "parentId": 20,
+    "tags": {},
+    "startTime": 1774829828229,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 727260,
+    "timestamp": 68692810280,
+    "id": 27,
+    "parentId": 22,
+    "tags": {
+      "request": "next/dist/pages/_app"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 812369,
+    "timestamp": 68692810330,
+    "id": 29,
+    "parentId": 22,
+    "tags": {
+      "request": "next/dist/pages/_document"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 919588,
+    "timestamp": 68692810308,
+    "id": 28,
+    "parentId": 22,
+    "tags": {
+      "request": "next-route-loader?kind=PAGES&page=%2F_error&preferredRegion=&absolutePagePath=next%2Fdist%2Fpages%2F_error&absoluteAppPath=next%2Fdist%2Fpages%2F_app&absoluteDocumentPath=next%2Fdist%2Fpages%2F_document&middlewareConfigBase64=e30%3D!"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1201803,
+    "timestamp": 68692810104,
+    "id": 24,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Fmanifest.webmanifest%2Froute&name=app%2Fmanifest.webmanifest%2Froute&pagePath=private-next-app-dir%2Fmanifest.ts&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fmanifest&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1351504,
+    "timestamp": 68692810198,
+    "id": 25,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Frobots.txt%2Froute&name=app%2Frobots.txt%2Froute&pagePath=private-next-app-dir%2Frobots.ts&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Frobots&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1351520,
+    "timestamp": 68692810242,
+    "id": 26,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Fsitemap.xml%2Froute&name=app%2Fsitemap.xml%2Froute&pagePath=private-next-app-dir%2Fsitemap.ts&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fsitemap&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "build-module-tsx",
+    "duration": 86101,
+    "timestamp": 68694191879,
+    "id": 36,
+    "parentId": 20,
+    "tags": {
+      "name": "/home/us3r/Desktop/RecipeAI---Snap-Scan-Cook/frontend/app/upload/page.tsx",
+      "layer": "rsc"
+    },
+    "startTime": 1774829829632,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1597368,
+    "timestamp": 68692808894,
+    "id": 23,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2F_not-found%2Fpage&name=app%2F_not-found%2Fpage&pagePath=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fbuiltin%2Fglobal-not-found.js&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fnode_modules%2Fnext%2Fdist%2Fclient%2Fcomponents%2Fbuiltin%2Fglobal-not-found&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828249,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595978,
+    "timestamp": 68692810351,
+    "id": 30,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Frecipe%2F%5Bid%5D%2Fpage&name=app%2Frecipe%2F%5Bid%5D%2Fpage&pagePath=private-next-app-dir%2Frecipe%2F%5Bid%5D%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Frecipe%2F%5Bid%5D%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828250,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595965,
+    "timestamp": 68692810375,
+    "id": 31,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Fupload%2Fpage&name=app%2Fupload%2Fpage&pagePath=private-next-app-dir%2Fupload%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fupload%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595661,
+    "timestamp": 68692810750,
+    "id": 32,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2F(auth)%2Flogin%2Fpage&name=app%2F(auth)%2Flogin%2Fpage&pagePath=private-next-app-dir%2F(auth)%2Flogin%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2F(auth)%2Flogin%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595586,
+    "timestamp": 68692810838,
+    "id": 33,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2F(auth)%2Fsignup%2Fpage&name=app%2F(auth)%2Fsignup%2Fpage&pagePath=private-next-app-dir%2F(auth)%2Fsignup%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2F(auth)%2Fsignup%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595823,
+    "timestamp": 68692810858,
+    "id": 34,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Fpage&name=app%2Fpage&pagePath=private-next-app-dir%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 1595844,
+    "timestamp": 68692810865,
+    "id": 35,
+    "parentId": 22,
+    "tags": {
+      "request": "next-app-loader?page=%2Fdashboard%2Fpage&name=app%2Fdashboard%2Fpage&pagePath=private-next-app-dir%2Fdashboard%2Fpage.tsx&appDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend%2Fapp&appPaths=%2Fdashboard%2Fpage&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D&isGlobalNotFoundEnabled=!"
+    },
+    "startTime": 1774829828251,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "build-module-tsx",
+    "duration": 91534,
+    "timestamp": 68694686248,
+    "id": 89,
+    "parentId": 20,
+    "tags": {
+      "name": "/home/us3r/Desktop/RecipeAI---Snap-Scan-Cook/frontend/app/upload/page.tsx",
+      "layer": "ssr"
+    },
+    "startTime": 1774829830126,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "build-module-ts",
+    "duration": 10449,
+    "timestamp": 68695084048,
+    "id": 90,
+    "parentId": 89,
+    "tags": {
+      "name": "/home/us3r/Desktop/RecipeAI---Snap-Scan-Cook/frontend/utils/cn.ts",
+      "layer": "ssr"
+    },
+    "startTime": 1774829830524,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "build-module-mjs",
+    "duration": 16872,
+    "timestamp": 68695106469,
+    "id": 91,
+    "parentId": 90,
+    "tags": {
+      "name": "/home/us3r/Desktop/RecipeAI---Snap-Scan-Cook/frontend/node_modules/clsx/dist/clsx.mjs",
+      "layer": "ssr"
+    },
+    "startTime": 1774829830547,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "build-module-mjs",
+    "duration": 159122,
+    "timestamp": 68695107578,
+    "id": 92,
+    "parentId": 90,
+    "tags": {
+      "name": "/home/us3r/Desktop/RecipeAI---Snap-Scan-Cook/frontend/node_modules/tailwind-merge/dist/bundle-mjs.mjs",
+      "layer": "ssr"
+    },
+    "startTime": 1774829830548,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "make",
+    "duration": 2475972,
+    "timestamp": 68692808105,
+    "id": 22,
+    "parentId": 20,
+    "tags": {},
+    "startTime": 1774829828248,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "get-entries",
+    "duration": 2587,
+    "timestamp": 68695288667,
+    "id": 94,
+    "parentId": 93,
+    "tags": {},
+    "startTime": 1774829830729,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "node-file-trace-plugin",
+    "duration": 403529,
+    "timestamp": 68695310263,
+    "id": 95,
+    "parentId": 93,
+    "tags": {
+      "traceEntryCount": "22"
+    },
+    "startTime": 1774829830750,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "collect-traced-files",
+    "duration": 4667,
+    "timestamp": 68695713815,
+    "id": 96,
+    "parentId": 93,
+    "tags": {},
+    "startTime": 1774829831154,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "finish-modules",
+    "duration": 430677,
+    "timestamp": 68695287826,
+    "id": 93,
+    "parentId": 21,
+    "tags": {},
+    "startTime": 1774829830728,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "chunk-graph",
+    "duration": 74922,
+    "timestamp": 68695853542,
+    "id": 98,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831294,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-modules",
+    "duration": 127,
+    "timestamp": 68695928974,
+    "id": 100,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831369,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-chunks",
+    "duration": 85137,
+    "timestamp": 68695929421,
+    "id": 101,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831370,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-tree",
+    "duration": 437,
+    "timestamp": 68696014875,
+    "id": 102,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831455,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-chunk-modules",
+    "duration": 52841,
+    "timestamp": 68696015677,
+    "id": 103,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831456,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize",
+    "duration": 140133,
+    "timestamp": 68695928744,
+    "id": 99,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831369,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "module-hash",
+    "duration": 95092,
+    "timestamp": 68696212536,
+    "id": 104,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831653,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "code-generation",
+    "duration": 294099,
+    "timestamp": 68696307874,
+    "id": 105,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829831748,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "hash",
+    "duration": 44281,
+    "timestamp": 68696630433,
+    "id": 106,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829832071,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "code-generation-jobs",
+    "duration": 2518,
+    "timestamp": 68696674697,
+    "id": 107,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829832115,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "module-assets",
+    "duration": 2029,
+    "timestamp": 68696676476,
+    "id": 108,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829832117,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-chunk-assets",
+    "duration": 18996,
+    "timestamp": 68696678579,
+    "id": 109,
+    "parentId": 97,
+    "tags": {},
+    "startTime": 1774829832119,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53786,
+    "timestamp": 68696745980,
+    "id": 111,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/_not-found/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832186,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53217,
+    "timestamp": 68696746567,
+    "id": 112,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/manifest.webmanifest/route.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53157,
+    "timestamp": 68696746632,
+    "id": 113,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/robots.txt/route.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53129,
+    "timestamp": 68696746664,
+    "id": 114,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/sitemap.xml/route.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53107,
+    "timestamp": 68696746689,
+    "id": 115,
+    "parentId": 110,
+    "tags": {
+      "name": "../pages/_app.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53092,
+    "timestamp": 68696746719,
+    "id": 116,
+    "parentId": 110,
+    "tags": {
+      "name": "../pages/_error.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53073,
+    "timestamp": 68696746745,
+    "id": 117,
+    "parentId": 110,
+    "tags": {
+      "name": "../pages/_document.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 53050,
+    "timestamp": 68696746771,
+    "id": 118,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/recipe/[id]/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 689,
+    "timestamp": 68696799138,
+    "id": 120,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/(auth)/login/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832239,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 319,
+    "timestamp": 68696799512,
+    "id": 121,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/(auth)/signup/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 246,
+    "timestamp": 68696799587,
+    "id": 122,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 208,
+    "timestamp": 68696799630,
+    "id": 123,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/dashboard/page.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 189,
+    "timestamp": 68696799651,
+    "id": 124,
+    "parentId": 110,
+    "tags": {
+      "name": "../webpack-runtime.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 175,
+    "timestamp": 68696799669,
+    "id": 125,
+    "parentId": 110,
+    "tags": {
+      "name": "124.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 160,
+    "timestamp": 68696799687,
+    "id": 126,
+    "parentId": 110,
+    "tags": {
+      "name": "729.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 140,
+    "timestamp": 68696799710,
+    "id": 127,
+    "parentId": 110,
+    "tags": {
+      "name": "579.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 125,
+    "timestamp": 68696799728,
+    "id": 128,
+    "parentId": 110,
+    "tags": {
+      "name": "611.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 109,
+    "timestamp": 68696799748,
+    "id": 129,
+    "parentId": 110,
+    "tags": {
+      "name": "498.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829832240,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 138852,
+    "timestamp": 68696746796,
+    "id": 119,
+    "parentId": 110,
+    "tags": {
+      "name": "../app/upload/page.js",
+      "cache": "MISS"
+    },
+    "startTime": 1774829832187,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-webpack-plugin-optimize",
+    "duration": 170063,
+    "timestamp": 68696715612,
+    "id": 110,
+    "parentId": 20,
+    "tags": {
+      "compilationName": "server",
+      "mangle": "[object Object]"
+    },
+    "startTime": 1774829832156,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "css-minimizer-plugin",
+    "duration": 454,
+    "timestamp": 68696886076,
+    "id": 130,
+    "parentId": 20,
+    "tags": {},
+    "startTime": 1774829832326,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-trace-assets",
+    "duration": 11460,
+    "timestamp": 68696887127,
+    "id": 131,
+    "parentId": 21,
+    "tags": {},
+    "startTime": 1774829832327,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "seal",
+    "duration": 1151630,
+    "timestamp": 68695786862,
+    "id": 97,
+    "parentId": 20,
+    "tags": {},
+    "startTime": 1774829831227,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "webpack-compilation",
+    "duration": 4204465,
+    "timestamp": 68692784847,
+    "id": 20,
+    "parentId": 17,
+    "tags": {
+      "name": "server"
+    },
+    "startTime": 1774829828225,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "emit",
+    "duration": 54210,
+    "timestamp": 68696990987,
+    "id": 132,
+    "parentId": 17,
+    "tags": {},
+    "startTime": 1774829832431,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "webpack-close",
+    "duration": 784664,
+    "timestamp": 68697048713,
+    "id": 133,
+    "parentId": 17,
+    "tags": {
+      "name": "server"
+    },
+    "startTime": 1774829832489,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "webpack-generate-error-stats",
+    "duration": 42563,
+    "timestamp": 68697834005,
+    "id": 134,
+    "parentId": 133,
+    "tags": {},
+    "startTime": 1774829833274,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "run-webpack-compiler",
+    "duration": 5684578,
+    "timestamp": 68692192840,
+    "id": 17,
+    "parentId": 16,
+    "tags": {},
+    "startTime": 1774829827633,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "format-webpack-messages",
+    "duration": 269,
+    "timestamp": 68697877436,
+    "id": 135,
+    "parentId": 16,
+    "tags": {},
+    "startTime": 1774829833318,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "worker-main-server",
+    "duration": 5686591,
+    "timestamp": 68692191573,
+    "id": 16,
+    "parentId": 1,
+    "tags": {},
+    "startTime": 1774829827632,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-entrypoints",
+    "duration": 78892,
+    "timestamp": 68700379496,
+    "id": 138,
+    "parentId": 136,
+    "tags": {},
+    "startTime": 1774829835820,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "generate-webpack-config",
+    "duration": 257495,
+    "timestamp": 68700458750,
+    "id": 139,
+    "parentId": 137,
+    "tags": {},
+    "startTime": 1774829835899,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "add-entry",
+    "duration": 462601,
+    "timestamp": 68701027518,
+    "id": 142,
+    "parentId": 141,
+    "tags": {
+      "request": "next-middleware-loader?absolutePagePath=private-next-root-dir%2Fmiddleware.ts&page=%2Fmiddleware&rootDir=%2Fhome%2Fus3r%2FDesktop%2FRecipeAI---Snap-Scan-Cook%2Ffrontend&matchers=W3sicmVnZXhwIjoiXig%2FOlxcLyhfbmV4dFxcL2RhdGFcXC9bXi9dezEsfSkpPyg%2FOlxcLygoPyFfbmV4dFxcL3N0YXRpY3xfbmV4dFxcL2ltYWdlfGZhdmljb24uaWNvfC4qXFwuKD86c3ZnfHBuZ3xqcGd8anBlZ3xnaWZ8d2VicCkkKS4qKSkoXFwuanNvbik%2FW1xcLyNcXD9dPyQiLCJvcmlnaW5hbFNvdXJjZSI6Ii8oKD8hX25leHQvc3RhdGljfF9uZXh0L2ltYWdlfGZhdmljb24uaWNvfC4qXFwuKD86c3ZnfHBuZ3xqcGd8anBlZ3xnaWZ8d2VicCkkKS4qKSJ9XQ%3D%3D&preferredRegion=&middlewareConfig=eyJtYXRjaGVycyI6W3sicmVnZXhwIjoiXig%2FOlxcLyhfbmV4dFxcL2RhdGFcXC9bXi9dezEsfSkpPyg%2FOlxcLygoPyFfbmV4dFxcL3N0YXRpY3xfbmV4dFxcL2ltYWdlfGZhdmljb24uaWNvfC4qXFwuKD86c3ZnfHBuZ3xqcGd8anBlZ3xnaWZ8d2VicCkkKS4qKSkoXFwuanNvbik%2FW1xcLyNcXD9dPyQiLCJvcmlnaW5hbFNvdXJjZSI6Ii8oKD8hX25leHQvc3RhdGljfF9uZXh0L2ltYWdlfGZhdmljb24uaWNvfC4qXFwuKD86c3ZnfHBuZ3xqcGd8anBlZ3xnaWZ8d2VicCkkKS4qKSJ9XX0%3D!"
+    },
+    "startTime": 1774829836468,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "make",
+    "duration": 467012,
+    "timestamp": 68701026288,
+    "id": 141,
+    "parentId": 140,
+    "tags": {},
+    "startTime": 1774829836466,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "chunk-graph",
+    "duration": 12943,
+    "timestamp": 68701584116,
+    "id": 144,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837024,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-modules",
+    "duration": 80,
+    "timestamp": 68701597441,
+    "id": 146,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837038,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-chunks",
+    "duration": 8167,
+    "timestamp": 68701597721,
+    "id": 147,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837038,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-tree",
+    "duration": 251,
+    "timestamp": 68701606095,
+    "id": 148,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837046,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize-chunk-modules",
+    "duration": 39194,
+    "timestamp": 68701606569,
+    "id": 149,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837047,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "optimize",
+    "duration": 48958,
+    "timestamp": 68701597276,
+    "id": 145,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837037,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "module-hash",
+    "duration": 26479,
+    "timestamp": 68701664484,
+    "id": 150,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837105,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "code-generation",
+    "duration": 6199,
+    "timestamp": 68701691278,
+    "id": 151,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837131,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "hash",
+    "duration": 20393,
+    "timestamp": 68701710942,
+    "id": 152,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837151,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "code-generation-jobs",
+    "duration": 890,
+    "timestamp": 68701731315,
+    "id": 153,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837171,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "module-assets",
+    "duration": 1083,
+    "timestamp": 68701731988,
+    "id": 154,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837172,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "create-chunk-assets",
+    "duration": 4371,
+    "timestamp": 68701733153,
+    "id": 155,
+    "parentId": 143,
+    "tags": {},
+    "startTime": 1774829837173,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 442,
+    "timestamp": 68701797894,
+    "id": 157,
+    "parentId": 156,
+    "tags": {
+      "name": "middleware.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829837238,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 88,
+    "timestamp": 68701798260,
+    "id": 158,
+    "parentId": 156,
+    "tags": {
+      "name": "edge-runtime-webpack.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829837238,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-js",
+    "duration": 47,
+    "timestamp": 68701798304,
+    "id": 159,
+    "parentId": 156,
+    "tags": {
+      "name": "interception-route-rewrite-manifest.js",
+      "cache": "HIT"
+    },
+    "startTime": 1774829837238,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "minify-webpack-plugin-optimize",
+    "duration": 9642,
+    "timestamp": 68701788722,
+    "id": 156,
+    "parentId": 140,
+    "tags": {
+      "compilationName": "edge-server",
+      "mangle": "[object Object]"
+    },
+    "startTime": 1774829837229,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "css-minimizer-plugin",
+    "duration": 601,
+    "timestamp": 68701798642,
+    "id": 160,
+    "parentId": 140,
+    "tags": {},
+    "startTime": 1774829837239,
+    "traceId": "b50a93daadc780d4"
+  },
+  {
+    "name": "seal",
+    "duration": 289483,
+    "timestamp": 68701557586,
+    "id": 143,
+    "parentId": 140,
+    "tags": {},
+    "startTime": 1774829836998,
+    "traceId": "b50a93daadc780d4"
+  }
+]
