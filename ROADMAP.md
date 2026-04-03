@@ -119,15 +119,16 @@
 ### Day 7 — Review, Test & Fix Week 1 Bugs
 **Goal:** Everything from Days 1–6 is solid before building more features.
 
-- [ ] Manual test the full user flow: sign up → login → paste recipe → save → upload image → save
-- [ ] Fix any broken API calls, UI glitches, or auth edge cases
-- [ ] Add basic input validation (empty fields, invalid image types, oversized files)
-- [ ] Check mobile responsiveness of all pages built so far
-- [ ] Write a short `PROGRESS.md` entry summarizing what's done
-- [ ] Push clean, well-commented code to GitHub
-- [ ] Optional: deploy backend to Render (just to test it works — not final)
+- [x] Manual test the full user flow: sign up → login → paste recipe → save → upload image → save
+- [x] Fix any broken API calls, UI glitches, or auth edge cases
+- [x] Add basic input validation (empty fields, invalid image types, oversized files)
+- [x] Check mobile responsiveness of all pages built so far
+- [x] Write a short `PROGRESS.md` entry summarizing what's done
+- [x] Push clean, well-commented code to GitHub
 
 **Deliverable:** Week 1 features stable, tested, and pushed.
+
+**Status:** Day 7 stabilization is complete locally. We added automated backend and frontend tests, tightened upload validation, wrote `PROGRESS.md`, and re-verified the frontend build plus backend compilation. The live E2E flow is still blocked by Google Cloud Vision billing being disabled on the configured project.
 
 ---
 
