@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RecipeCard } from "@/components/recipe-card";
-import { apiPost } from "@/lib/api";
+import { apiPost, apiPostFormData } from "@/lib/api";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 import { cn } from "@/utils/cn";
 
@@ -36,6 +36,13 @@ type SaveRecipeResponse = {
   };
 };
 
+type VisionIdentifyResponse = {
+  dish_name: string;
+  labels: string[];
+  recipe: ParsedRecipe;
+  raw_response: ParsedRecipe;
+};
+
 const starterPrompt = `Meatball Pizza Buns Recipe
 
 Ingredients
@@ -59,10 +66,28 @@ export default function UploadPage() {
   const router = useRouter();
   const [recipeText, setRecipeText] = useState("");
   const [isParsing, setIsParsing] = useState(false);
+  const [isIdentifying, setIsIdentifying] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [visionLabels, setVisionLabels] = useState<string[]>([]);
+  const [dishName, setDishName] = useState<string | null>(null);
+  const [recipeSourceText, setRecipeSourceText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [parsedRecipe, setParsedRecipe] = useState<ParsedRecipe | null>(null);
+
+  useEffect(() => {
+    if (!selectedImage) {
+      setImagePreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedImage);
+    setImagePreviewUrl(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [selectedImage]);
 
   async function handleParseRecipe() {
     const trimmedText = recipeText.trim();
@@ -82,6 +107,9 @@ export default function UploadPage() {
         text: trimmedText,
       });
       setParsedRecipe(response.recipe);
+      setRecipeSourceText(trimmedText);
+      setVisionLabels([]);
+      setDishName(null);
     } catch (err) {
       setParsedRecipe(null);
       setError(err instanceof Error ? err.message : "Recipe parsing failed.");
@@ -126,7 +154,7 @@ export default function UploadPage() {
         {
           title: parsedRecipe.title,
           description: parsedRecipe.description,
-          source_text: recipeText.trim(),
+          source_text: recipeSourceText,
           ingredients: parsedRecipe.ingredients,
           steps: parsedRecipe.steps,
           servings: parsedRecipe.servings,
@@ -147,6 +175,50 @@ export default function UploadPage() {
       setIsSaving(false);
     }
   }
+
+  async function handleIdentifyDish() {
+    if (!selectedImage) {
+      setError("Choose an image first so we can identify the dish.");
+      setSaveMessage(null);
+      return;
+    }
+
+    if (!selectedImage.type.startsWith("image/")) {
+      setError("Upload a valid image file.");
+      setSaveMessage(null);
+      return;
+    }
+
+    setIsIdentifying(true);
+    setError(null);
+    setSaveMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedImage);
+
+      const response = await apiPostFormData<VisionIdentifyResponse>(
+        "/api/vision/identify",
+        formData,
+      );
+
+      setParsedRecipe(response.recipe);
+      setVisionLabels(response.labels);
+      setDishName(response.dish_name);
+      setRecipeSourceText(
+        `Generated from uploaded image.\nDish: ${response.dish_name}\nVision labels: ${response.labels.join(", ")}`,
+      );
+    } catch (err) {
+      setParsedRecipe(null);
+      setVisionLabels([]);
+      setDishName(null);
+      setError(err instanceof Error ? err.message : "Dish identification failed.");
+    } finally {
+      setIsIdentifying(false);
+    }
+  }
+
+  const isBusy = isParsing || isIdentifying || isSaving;
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
@@ -209,12 +281,11 @@ export default function UploadPage() {
               Input
             </p>
             <h1 className="mt-4 max-w-xl font-display text-4xl leading-tight text-ink">
-              Turn messy recipe text into clean, structured cooking data.
+              Turn recipe text or food photos into clean, structured cooking data.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-ink/75">
-              Paste notes from WhatsApp, TikTok captions, food blogs, or your own drafts. The
-              parser will normalize the title, ingredients, method, servings, and tags into a
-              shape the rest of the app can actually use.
+              Paste notes from WhatsApp, TikTok captions, food blogs, or your own drafts, or
+              upload a dish photo and let Vision plus Gemini turn it into a usable recipe.
             </p>
           </div>
 
@@ -227,13 +298,81 @@ export default function UploadPage() {
                 Ingredients and steps extracted
               </div>
               <div className="border-l-2 border-sand pl-4 text-sm text-ink/75">
-                Friendly for long pasted recipes
+                Photo-to-recipe generation
               </div>
             </div>
 
+            <section className="rounded-[1.5rem] border border-sand/80 bg-canvas/75 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
+                    Photo upload
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-ink/70">
+                    Upload a food photo to identify the dish and generate a structured recipe.
+                  </p>
+                </div>
+                {dishName ? (
+                  <div className="rounded-full border border-herb/20 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-herb">
+                    {dishName}
+                  </div>
+                ) : null}
+              </div>
+
+              <label
+                htmlFor="recipe-image"
+                className="mt-5 block text-sm font-semibold uppercase tracking-[0.2em] text-ink/55"
+              >
+                Dish photo
+              </label>
+              <input
+                id="recipe-image"
+                type="file"
+                accept="image/*"
+                onChange={(event) => setSelectedImage(event.target.files?.[0] ?? null)}
+                disabled={isBusy}
+                className="mt-3 block w-full rounded-[1rem] border border-sand bg-white px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+              />
+
+              {imagePreviewUrl ? (
+                <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-sand/80 bg-white">
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Selected dish preview"
+                    className="h-56 w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="mt-4 rounded-[1.5rem] border border-dashed border-sand bg-white/70 px-4 py-8 text-center text-sm text-ink/55">
+                  Your selected image preview appears here before submission.
+                </div>
+              )}
+
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleIdentifyDish}
+                  disabled={isBusy || !selectedImage}
+                  className="rounded-full bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <span className="flex items-center gap-2">
+                    {isIdentifying ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    ) : null}
+                    <span>{isIdentifying ? "Identifying dish..." : "Generate From Photo"}</span>
+                  </span>
+                </button>
+                {visionLabels.length ? (
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                    Labels: {visionLabels.join(" • ")}
+                  </span>
+                ) : null}
+              </div>
+            </section>
+
             <label
               htmlFor="recipe-text"
-              className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/55"
+              className="mt-6 block text-sm font-semibold uppercase tracking-[0.2em] text-ink/55"
             >
               Recipe source text
             </label>
@@ -249,7 +388,7 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={handleParseRecipe}
-                disabled={isParsing || isSaving}
+                disabled={isBusy}
                 className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accentDark disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="flex items-center gap-2">
@@ -262,7 +401,7 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={() => setRecipeText(starterPrompt)}
-                disabled={isParsing || isSaving}
+                disabled={isBusy}
                 className="rounded-full border border-ink/10 bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Load Example
@@ -270,12 +409,16 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={() => {
-                  setRecipeText("");
-                  setParsedRecipe(null);
-                  setError(null);
-                  setSaveMessage(null);
-                }}
-                disabled={isParsing || isSaving}
+                      setRecipeText("");
+                      setParsedRecipe(null);
+                      setSelectedImage(null);
+                      setVisionLabels([]);
+                      setDishName(null);
+                      setRecipeSourceText("");
+                      setError(null);
+                      setSaveMessage(null);
+                    }}
+                disabled={isBusy}
                 className="rounded-full border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/75 transition hover:border-ink/25 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Clear
@@ -313,6 +456,30 @@ export default function UploadPage() {
           <div className="p-5 sm:p-6 lg:max-h-[calc(100vh-13rem)] lg:overflow-y-auto">
             {parsedRecipe ? (
               <div className="grid gap-6">
+                {visionLabels.length ? (
+                  <section className="rounded-[1.5rem] border border-sand/80 bg-white/80 p-5">
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/55">
+                      Vision reading
+                    </p>
+                    <h3 className="mt-3 font-display text-2xl text-ink">
+                      {dishName ?? "Dish identified from photo"}
+                    </h3>
+                    <p className="mt-3 text-sm leading-6 text-ink/70">
+                      Google Cloud Vision extracted these cues before Gemini generated the recipe.
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {visionLabels.map((label) => (
+                        <span
+                          key={label}
+                          className="rounded-full border border-sand bg-canvas px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink/65"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+
                 <RecipeCard
                   title={parsedRecipe.title}
                   description={
@@ -328,7 +495,7 @@ export default function UploadPage() {
                       <button
                         type="button"
                         onClick={handleSaveRecipe}
-                        disabled={isSaving}
+                        disabled={isBusy}
                         className="rounded-full bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {isSaving ? "Saving recipe..." : "Save Recipe"}

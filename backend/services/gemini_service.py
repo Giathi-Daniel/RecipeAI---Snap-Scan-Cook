@@ -37,6 +37,31 @@ Rules:
 - Do not include markdown fences, prose, comments, or extra keys.
 """.strip()
 
+VISION_RECIPE_SYSTEM_PROMPT = """
+You are a recipe generation engine.
+Turn dish-identification clues into a realistic recipe as clean JSON only.
+
+Return an object with exactly these keys:
+- title: string
+- description: string or null
+- ingredients: array of objects with keys quantity, unit, item
+- steps: array of objects with keys order, instruction
+- servings: integer
+- tags: array of strings
+
+Rules:
+- Base the recipe on the most likely prepared dish suggested by the labels.
+- Prefer practical, home-cook-friendly ingredients and steps.
+- Keep descriptions short and factual.
+- quantity must always be a string, even for fractions like "1/2".
+- unit must be null when absent.
+- item should contain the ingredient name and any clarifying prep note.
+- steps must be ordered starting at 1.
+- servings must be a positive integer. Default to 4 if unknown.
+- tags should be short lowercase labels when obvious, otherwise [].
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
 
 def parser_status():
     return {
@@ -55,6 +80,55 @@ def parse_recipe(text: str) -> ParseRecipeResponse:
             detail="Recipe text is required.",
         )
 
+    return _generate_recipe_response(
+        prompt=cleaned_text,
+        system_prompt=SYSTEM_PROMPT,
+        log_context=f"Parsing recipe text with Gemini. chars={len(cleaned_text)}",
+        failure_detail=f"Gemini failed to parse the recipe text with model '{MODEL_NAME}'.",
+    )
+
+
+def generate_recipe_from_dish_labels(labels: list[str], dish_name: str) -> ParseRecipeResponse:
+    cleaned_labels = [label.strip() for label in labels if label.strip()]
+    cleaned_dish = dish_name.strip()
+
+    if not cleaned_labels:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="At least one image label is required to generate a recipe.",
+        )
+
+    if not cleaned_dish:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="A dish name is required to generate a recipe.",
+        )
+
+    prompt = (
+        f"Most likely dish: {cleaned_dish}\n"
+        f"Vision labels: {', '.join(cleaned_labels)}\n\n"
+        f"Generate a realistic recipe for {cleaned_dish} based on these clues."
+    )
+
+    return _generate_recipe_response(
+        prompt=prompt,
+        system_prompt=VISION_RECIPE_SYSTEM_PROMPT,
+        log_context=(
+            "Generating recipe from image labels with Gemini. "
+            f"dish={cleaned_dish} labels={cleaned_labels}"
+        ),
+        failure_detail=(
+            f"Gemini failed to generate a recipe from image labels with model '{MODEL_NAME}'."
+        ),
+    )
+
+
+def _generate_recipe_response(
+    prompt: str,
+    system_prompt: str,
+    log_context: str,
+    failure_detail: str,
+) -> ParseRecipeResponse:
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise HTTPException(
@@ -65,14 +139,14 @@ def parse_recipe(text: str) -> ParseRecipeResponse:
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(
         model_name=MODEL_NAME,
-        system_instruction=SYSTEM_PROMPT,
+        system_instruction=system_prompt,
     )
 
-    logger.info("Parsing recipe text with Gemini. chars=%s", len(cleaned_text))
+    logger.info(log_context)
 
     try:
         response = model.generate_content(
-            cleaned_text,
+            prompt,
             generation_config={
                 "temperature": 0.2,
                 "response_mime_type": "application/json",
@@ -85,7 +159,7 @@ def parse_recipe(text: str) -> ParseRecipeResponse:
         )
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Gemini failed to parse the recipe text with model '{MODEL_NAME}'.",
+            detail=failure_detail,
         ) from exc
 
     raw_text = _extract_response_text(response)
