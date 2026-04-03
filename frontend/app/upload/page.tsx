@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { RecipeCard } from "@/components/recipe-card";
 import { apiPost, apiPostFormData } from "@/lib/api";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
+import { validateImageUpload, validateRecipeText } from "@/lib/upload-validation";
 import { cn } from "@/utils/cn";
 
 type ParsedRecipe = {
@@ -91,9 +92,10 @@ export default function UploadPage() {
 
   async function handleParseRecipe() {
     const trimmedText = recipeText.trim();
+    const validationMessage = validateRecipeText(trimmedText);
 
-    if (!trimmedText) {
-      setError("Paste a recipe first so we have something to parse.");
+    if (validationMessage) {
+      setError(validationMessage);
       setSaveMessage(null);
       return;
     }
@@ -177,15 +179,16 @@ export default function UploadPage() {
   }
 
   async function handleIdentifyDish() {
-    if (!selectedImage) {
-      setError("Choose an image first so we can identify the dish.");
+    const validationMessage = validateImageUpload(selectedImage);
+
+    if (validationMessage) {
+      setError(validationMessage);
       setSaveMessage(null);
       return;
     }
 
-    if (!selectedImage.type.startsWith("image/")) {
-      setError("Upload a valid image file.");
-      setSaveMessage(null);
+    const imageFile = selectedImage;
+    if (!imageFile) {
       return;
     }
 
@@ -195,7 +198,7 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      formData.append("file", selectedImage);
+      formData.append("file", imageFile);
 
       const response = await apiPostFormData<VisionIdentifyResponse>(
         "/api/vision/identify",
