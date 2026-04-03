@@ -82,15 +82,17 @@
 ### Day 5 — Upload & Parse UI (Frontend)
 **Goal:** Users can paste recipe text in the UI and see a parsed result.
 
-- [ ] Build `/app/upload/page.tsx` with a textarea for pasting recipes
-- [ ] Add a "Parse Recipe" button that calls the FastAPI endpoint
-- [ ] Show a loading spinner while AI processes
-- [ ] Display the parsed result in a clean `RecipeCard` component
-- [ ] Show: title, description, ingredient list, step-by-step instructions
-- [ ] Add a "Save Recipe" button (stores to Supabase via API)
-- [ ] Handle error states (empty input, API failure)
+- [x] Build `/app/upload/page.tsx` with a textarea for pasting recipes
+- [x] Add a "Parse Recipe" button that calls the FastAPI endpoint
+- [x] Show a loading spinner while AI processes
+- [x] Display the parsed result in a clean `RecipeCard` component
+- [x] Show: title, description, ingredient list, step-by-step instructions
+- [x] Add a "Save Recipe" button (stores to Supabase via API)
+- [x] Handle error states (empty input, API failure)
 
 **Deliverable:** Full paste → parse → display → save flow working in browser.
+
+**Status:** Day 5 is complete. The upload workspace now supports parse, structured preview, authenticated save, loading feedback, and browser-side error handling.
 
 ---
 
