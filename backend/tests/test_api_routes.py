@@ -4,8 +4,14 @@ from unittest.mock import patch
 
 from fastapi.exceptions import HTTPException
 
-from models.recipe import ParseRecipeRequest, ParseRecipeResponse, ParsedRecipe
-from routers.recipes import parse_recipe_text
+from models.recipe import (
+    Ingredient,
+    ParseRecipeRequest,
+    ParseRecipeResponse,
+    ParsedRecipe,
+    ScaleRecipeRequest,
+)
+from routers.recipes import parse_recipe_text, scale_recipe
 from routers.vision import identify_dish_from_image
 
 
@@ -37,6 +43,24 @@ class ApiRouteTests(unittest.TestCase):
         response = parse_recipe_text(ParseRecipeRequest(text="Chapati recipe"))
 
         self.assertEqual(response.recipe.title, "Chapati")
+
+    def test_scale_recipe_route_returns_scaled_ingredients(self):
+        response = scale_recipe(
+            ScaleRecipeRequest(
+                ingredients=[
+                    Ingredient(quantity="2", unit="tbsp", item="olive oil"),
+                    Ingredient(quantity="1/2", unit="cup", item="stock"),
+                    Ingredient(quantity="a pinch", unit=None, item="salt"),
+                ],
+                original_servings=4,
+                target_servings=8,
+            )
+        )
+
+        self.assertEqual(
+            [ingredient.quantity for ingredient in response.ingredients],
+            ["4", "1", "a pinch"],
+        )
 
     @patch("routers.vision.generate_recipe_from_dish_labels")
     @patch("routers.vision.identify_dish")

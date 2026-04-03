@@ -139,13 +139,15 @@
 ### Day 8 — Serving Scaler
 **Goal:** Users can adjust servings and all quantities scale in real time.
 
-- [ ] In FastAPI: add serving scaling logic to `recipes.py` — multiply all ingredient quantities by `(new_servings / original_servings)`
-- [ ] Handle mixed units (e.g. "2 tbsp", "1/2 cup", "3 medium carrots")
-- [ ] Create `ServingScaler` React component with +/− buttons
-- [ ] Wire up to recipe state in frontend — update quantities live (no page reload)
-- [ ] Test with fractions and non-numeric quantities (e.g. "a pinch of salt")
+- [x] In FastAPI: add serving scaling logic to `recipes.py` — multiply all ingredient quantities by `(new_servings / original_servings)`
+- [x] Handle mixed units (e.g. "2 tbsp", "1/2 cup", "3 medium carrots")
+- [x] Create `ServingScaler` React component with +/− buttons
+- [x] Wire up to recipe state in frontend — update quantities live (no page reload)
+- [x] Test with fractions and non-numeric quantities (e.g. "a pinch of salt")
 
 **Deliverable:** Serving scaler works live in the recipe view.
+
+**Status:** Day 8 is complete. The recipe page now uses a live FastAPI scaling endpoint, updates ingredient quantities in place with the serving controls, and preserves descriptive quantities while scaling whole numbers and fractions.
 
 ---
 
