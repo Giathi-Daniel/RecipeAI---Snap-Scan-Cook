@@ -87,3 +87,15 @@ class VisionIdentifyResponse(BaseModel):
     labels: list[str] = Field(default_factory=list)
     recipe: ParsedRecipe
     raw_response: dict[str, Any]
+
+
+class ScaleRecipeRequest(BaseModel):
+    ingredients: list[Ingredient] = Field(default_factory=list)
+    original_servings: int = Field(..., ge=1)
+    target_servings: int = Field(..., ge=1)
+
+
+class ScaleRecipeResponse(BaseModel):
+    ingredients: list[Ingredient] = Field(default_factory=list)
+    original_servings: int
+    target_servings: int

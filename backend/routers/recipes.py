@@ -8,6 +8,8 @@ from models.recipe import (
     ParseRecipeRequest,
     ParseRecipeResponse,
     Recipe,
+    ScaleRecipeRequest,
+    ScaleRecipeResponse,
     SaveRecipeRequest,
     SaveRecipeResponse,
     Step,
@@ -15,6 +17,7 @@ from models.recipe import (
 )
 from services.auth_service import get_current_user
 from services.gemini_service import parse_recipe
+from services.scaling_service import scale_ingredients
 from services.supabase_service import insert_recipe, insert_saved_recipe
 
 router = APIRouter()
@@ -98,3 +101,12 @@ async def save_recipe(
     )
 
     return SaveRecipeResponse(recipe=recipe, saved_recipe=saved_recipe)
+
+
+@router.post("/scale", response_model=ScaleRecipeResponse)
+def scale_recipe(payload: ScaleRecipeRequest):
+    return scale_ingredients(
+        ingredients=payload.ingredients,
+        original_servings=payload.original_servings,
+        target_servings=payload.target_servings,
+    )
