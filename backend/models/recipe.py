@@ -70,3 +70,13 @@ class ParseRecipeRequest(BaseModel):
 class ParseRecipeResponse(BaseModel):
     recipe: ParsedRecipe
     raw_response: dict[str, Any]
+
+
+class SaveRecipeRequest(BaseModel):
+    title: str = Field(..., min_length=1)
+    description: Optional[str] = None
+    source_text: str = Field(..., min_length=1)
+    ingredients: list[Ingredient] = Field(default_factory=list)
+    steps: list[Step] = Field(default_factory=list)
+    servings: int = Field(default=4, ge=1)
+    tags: list[str] = Field(default_factory=list)

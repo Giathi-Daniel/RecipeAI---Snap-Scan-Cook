@@ -3,6 +3,10 @@ const BACKEND_URL =
   process.env.BACKEND_URL ??
   "http://localhost:8000";
 
+type ApiRequestOptions = {
+  headers?: HeadersInit;
+};
+
 export async function apiGet<T>(path: string): Promise<T> {
   const response = await fetch(`${BACKEND_URL}${path}`, {
     headers: {
@@ -18,11 +22,16 @@ export async function apiGet<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+export async function apiPost<T>(
+  path: string,
+  body: unknown,
+  options: ApiRequestOptions = {},
+): Promise<T> {
   const response = await fetch(`${BACKEND_URL}${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...options.headers,
     },
     body: JSON.stringify(body),
   });
