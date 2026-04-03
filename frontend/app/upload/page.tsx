@@ -1,8 +1,12 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { RecipeCard } from "@/components/recipe-card";
 import { apiPost } from "@/lib/api";
+import { createBrowserSupabaseClient } from "@/lib/supabase";
 import { cn } from "@/utils/cn";
 
 type ParsedRecipe = {
@@ -26,6 +30,12 @@ type ParseRecipeResponse = {
   raw_response: ParsedRecipe;
 };
 
+type SaveRecipeResponse = {
+  recipe: {
+    id: string;
+  };
+};
+
 const starterPrompt = `Meatball Pizza Buns Recipe
 
 Ingredients
@@ -46,9 +56,12 @@ const workspaceNotes = [
 ] as const;
 
 export default function UploadPage() {
+  const router = useRouter();
   const [recipeText, setRecipeText] = useState("");
   const [isParsing, setIsParsing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [parsedRecipe, setParsedRecipe] = useState<ParsedRecipe | null>(null);
 
   async function handleParseRecipe() {
@@ -56,11 +69,13 @@ export default function UploadPage() {
 
     if (!trimmedText) {
       setError("Paste a recipe first so we have something to parse.");
+      setSaveMessage(null);
       return;
     }
 
     setIsParsing(true);
     setError(null);
+    setSaveMessage(null);
 
     try {
       const response = await apiPost<ParseRecipeResponse>("/api/recipes/parse", {
@@ -72,6 +87,64 @@ export default function UploadPage() {
       setError(err instanceof Error ? err.message : "Recipe parsing failed.");
     } finally {
       setIsParsing(false);
+    }
+  }
+
+  async function handleSaveRecipe() {
+    if (!parsedRecipe) {
+      setError("Parse a recipe before saving it.");
+      setSaveMessage(null);
+      return;
+    }
+
+    const supabase = createBrowserSupabaseClient();
+
+    if (!supabase) {
+      setError("Supabase is not configured in the frontend environment.");
+      setSaveMessage(null);
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+    setSaveMessage(null);
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const accessToken = session?.access_token;
+
+      if (!accessToken) {
+        router.push("/login");
+        throw new Error("Sign in to save recipes to your dashboard.");
+      }
+
+      await apiPost<SaveRecipeResponse>(
+        "/api/recipes/save",
+        {
+          title: parsedRecipe.title,
+          description: parsedRecipe.description,
+          source_text: recipeText.trim(),
+          ingredients: parsedRecipe.ingredients,
+          steps: parsedRecipe.steps,
+          servings: parsedRecipe.servings,
+          tags: parsedRecipe.tags,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      setSaveMessage("Recipe saved to your dashboard.");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Saving this recipe failed.");
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -176,15 +249,20 @@ export default function UploadPage() {
               <button
                 type="button"
                 onClick={handleParseRecipe}
-                disabled={isParsing}
+                disabled={isParsing || isSaving}
                 className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accentDark disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isParsing ? "Parsing recipe..." : "Parse Recipe"}
+                <span className="flex items-center gap-2">
+                  {isParsing ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  ) : null}
+                  <span>{isParsing ? "Parsing recipe..." : "Parse Recipe"}</span>
+                </span>
               </button>
               <button
                 type="button"
                 onClick={() => setRecipeText(starterPrompt)}
-                disabled={isParsing}
+                disabled={isParsing || isSaving}
                 className="rounded-full border border-ink/10 bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Load Example
@@ -195,8 +273,9 @@ export default function UploadPage() {
                   setRecipeText("");
                   setParsedRecipe(null);
                   setError(null);
+                  setSaveMessage(null);
                 }}
-                disabled={isParsing}
+                disabled={isParsing || isSaving}
                 className="rounded-full border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/75 transition hover:border-ink/25 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Clear
@@ -206,6 +285,12 @@ export default function UploadPage() {
             {error ? (
               <div className="mt-4 rounded-[1.25rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {error}
+              </div>
+            ) : null}
+
+            {saveMessage ? (
+              <div className="mt-4 rounded-[1.25rem] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {saveMessage}
               </div>
             ) : null}
           </div>
@@ -228,49 +313,35 @@ export default function UploadPage() {
           <div className="p-5 sm:p-6 lg:max-h-[calc(100vh-13rem)] lg:overflow-y-auto">
             {parsedRecipe ? (
               <div className="grid gap-6">
-                <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink/45">
-                  <span>Servings {parsedRecipe.servings}</span>
-                  {parsedRecipe.tags.map((tag) => (
-                    <div key={tag} className="flex items-center gap-3">
-                      <span className="h-px w-6 bg-sand" />
-                      <span>{tag}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <section className="rounded-[1.5rem] border border-sand/80 bg-canvas/70 p-5">
-                  <h3 className="font-display text-xl text-ink">Ingredients</h3>
-                  <ul className="mt-4 space-y-3 text-sm leading-6 text-ink/80">
-                    {parsedRecipe.ingredients.map((ingredient, index) => (
-                      <li
-                        key={`${ingredient.item}-${index}`}
-                        className="flex gap-4 border-b border-sand/60 pb-3 last:border-b-0 last:pb-0"
+                <RecipeCard
+                  title={parsedRecipe.title}
+                  description={
+                    parsedRecipe.description ??
+                    "Parsed successfully. Review the structured ingredients and steps, then save it when it looks right."
+                  }
+                  servings={parsedRecipe.servings}
+                  tags={parsedRecipe.tags}
+                  ingredients={parsedRecipe.ingredients}
+                  steps={parsedRecipe.steps}
+                  footer={
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={handleSaveRecipe}
+                        disabled={isSaving}
+                        className="rounded-full bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        <span className="w-6 shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-ink/35">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span>
-                          <span className="font-semibold text-ink">{ingredient.quantity}</span>
-                          {ingredient.unit ? ` ${ingredient.unit}` : ""} {ingredient.item}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section className="rounded-[1.5rem] border border-sand/80 bg-white p-5">
-                  <h3 className="font-display text-xl text-ink">Method</h3>
-                  <ol className="mt-4 space-y-4">
-                    {parsedRecipe.steps.map((step) => (
-                      <li key={step.order} className="flex gap-4">
-                        <div className="w-7 shrink-0 pt-1 text-xs font-semibold uppercase tracking-[0.18em] text-ink/35">
-                          {String(step.order).padStart(2, "0")}
-                        </div>
-                        <p className="pt-1 text-sm leading-6 text-ink/80">{step.instruction}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
+                        {isSaving ? "Saving recipe..." : "Save Recipe"}
+                      </button>
+                      <Link
+                        href="/dashboard"
+                        className="rounded-full border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/80 transition hover:border-accent hover:text-accent"
+                      >
+                        View Dashboard
+                      </Link>
+                    </div>
+                  }
+                />
 
                 <section className="rounded-[1.5rem] border border-dashed border-sand bg-white/60 p-5">
                   <h3 className="font-display text-xl text-ink">Raw quality check</h3>
