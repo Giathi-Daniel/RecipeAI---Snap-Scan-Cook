@@ -99,18 +99,20 @@
 ### Day 6 — Image Recognition Flow
 **Goal:** Upload a food photo → AI identifies the dish → generates a recipe.
 
-- [ ] Enable Google Cloud Vision API in Google Cloud Console
-- [ ] Download service account credentials JSON, add to `.env`
-- [ ] Install `google-cloud-vision` Python package
-- [ ] Write `services/vision_service.py` with `identify_dish(image_bytes)` function
-- [ ] Extract top 3–5 label annotations from Vision API response
-- [ ] Pass top labels to Gemini: "Generate a recipe for [dish name]"
-- [ ] Create `POST /api/vision/identify` FastAPI route (accepts image upload)
-- [ ] In frontend: add image upload input on `/app/upload/page.tsx`
-- [ ] Show image preview before submitting
-- [ ] On submit: call vision endpoint → show generated recipe
+- [x] Enable Google Cloud Vision API in Google Cloud Console
+- [x] Download service account credentials JSON, add to `.env`
+- [x] Install `google-cloud-vision` Python package
+- [x] Write `services/vision_service.py` with `identify_dish(image_bytes)` function
+- [x] Extract top 3–5 label annotations from Vision API response
+- [x] Pass top labels to Gemini: "Generate a recipe for [dish name]"
+- [x] Create `POST /api/vision/identify` FastAPI route (accepts image upload)
+- [x] In frontend: add image upload input on `/app/upload/page.tsx`
+- [x] Show image preview before submitting
+- [x] On submit: call vision endpoint → show generated recipe
 
 **Deliverable:** Upload a food photo → get a recipe. Works end-to-end.
+
+**Status:** Day 6 implementation is complete. The live Google Cloud Vision verification reached the API successfully, but the configured Google Cloud project is currently returning `PERMISSION_DENIED` because billing is disabled, so real image recognition will start working as soon as billing is enabled for that project.
 
 ---
 

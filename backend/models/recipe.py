@@ -80,3 +80,10 @@ class SaveRecipeRequest(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     servings: int = Field(default=4, ge=1)
     tags: list[str] = Field(default_factory=list)
+
+
+class VisionIdentifyResponse(BaseModel):
+    dish_name: str
+    labels: list[str] = Field(default_factory=list)
+    recipe: ParsedRecipe
+    raw_response: dict[str, Any]
