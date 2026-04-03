@@ -8,6 +8,7 @@ from models.recipe import (
     ParseRecipeRequest,
     ParseRecipeResponse,
     Recipe,
+    SaveRecipeRequest,
     SaveRecipeResponse,
     Step,
     StructuredRecipeData,
@@ -50,8 +51,9 @@ def parse_recipe_text(payload: ParseRecipeRequest):
 
 
 @router.post("/save", response_model=SaveRecipeResponse)
-async def save_dummy_recipe(
+async def save_recipe(
     request: Request,
+    payload: SaveRecipeRequest,
     current_user: dict = Depends(get_current_user),
 ):
     access_token = getattr(request.state, "access_token", None)
@@ -72,28 +74,17 @@ async def save_dummy_recipe(
     recipe = await insert_recipe(
         {
             "user_id": user_id,
-            "title": "Day 3 Dummy Recipe",
-            "description": "Temporary insert used to verify FastAPI can write into Supabase.",
+            "title": payload.title,
+            "description": payload.description,
             "image_url": None,
-            "source_text": "Day 3 Supabase connectivity test.",
+            "source_text": payload.source_text,
             "structured_data": {
-                "ingredients": [
-                    {"quantity": "2", "unit": "cups", "item": "cassava flour"},
-                    {"quantity": "1", "unit": "cup", "item": "coconut milk"},
-                ],
-                "steps": [
-                    {"order": 1, "instruction": "Whisk the flour and coconut milk together."},
-                    {"order": 2, "instruction": "Simmer gently until thick and serve warm."},
-                ],
-                "tags": ["dummy", "day-3", "supabase-test"],
+                "ingredients": [ingredient.model_dump() for ingredient in payload.ingredients],
+                "steps": [step.model_dump() for step in payload.steps],
+                "tags": payload.tags,
             },
-            "nutrition": {
-                "calories": 320,
-                "protein_g": 6,
-                "carbs_g": 54,
-                "fat_g": 9,
-            },
-            "servings": 2,
+            "nutrition": None,
+            "servings": payload.servings,
         },
         access_token=access_token,
     )
