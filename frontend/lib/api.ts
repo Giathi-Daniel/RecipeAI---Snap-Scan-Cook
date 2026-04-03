@@ -53,3 +53,34 @@ export async function apiPost<T>(
 
   return response.json() as Promise<T>;
 }
+
+export async function apiPostFormData<T>(
+  path: string,
+  body: FormData,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
+    method: "POST",
+    headers: {
+      ...options.headers,
+    },
+    body,
+  });
+
+  if (!response.ok) {
+    let detail = `API request failed: ${response.status}`;
+
+    try {
+      const errorBody = (await response.json()) as { detail?: string };
+      if (errorBody.detail) {
+        detail = errorBody.detail;
+      }
+    } catch {
+      // Keep the fallback error message when the response body is not JSON.
+    }
+
+    throw new Error(detail);
+  }
+
+  return response.json() as Promise<T>;
+}
