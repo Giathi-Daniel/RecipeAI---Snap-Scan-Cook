@@ -30,6 +30,7 @@ ROADMAP.md
 # Build artifacts
 dist/
 build/
+.test-dist/
 
 #JSON Credentials
 recipe-ai-text-parser-626cd20db194.json
