@@ -50,6 +50,11 @@ def get_demo_recipe():
     return demo_recipe
 
 
+@router.get("/demo-recipe", response_model=Recipe)
+def get_demo_recipe_alias():
+    return demo_recipe
+
+
 @router.post("/parse", response_model=ParseRecipeResponse)
 def parse_recipe_text(payload: ParseRecipeRequest):
     return parse_recipe(payload.text)
