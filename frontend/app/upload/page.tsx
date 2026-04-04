@@ -151,7 +151,7 @@ export default function UploadPage() {
         throw new Error("Sign in to save recipes to your dashboard.");
       }
 
-      await apiPost<SaveRecipeResponse>(
+      const response = await apiPost<SaveRecipeResponse>(
         "/api/recipes/save",
         {
           title: parsedRecipe.title,
@@ -169,8 +169,8 @@ export default function UploadPage() {
         },
       );
 
-      setSaveMessage("Recipe saved to your dashboard.");
-      router.refresh();
+      setSaveMessage("Recipe saved. Opening the full recipe view.");
+      router.push(`/recipe/${response.recipe.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Saving this recipe failed.");
     } finally {

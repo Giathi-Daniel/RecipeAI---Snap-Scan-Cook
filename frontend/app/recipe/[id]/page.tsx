@@ -1,22 +1,88 @@
+import { redirect } from "next/navigation";
+
 import { RecipeDetailClient } from "@/components/recipe-detail-client";
+import { getBackendUrl } from "@/lib/api";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 
-const ingredients = [
-  { quantity: "1", unit: "whole", item: "chicken, cut into pieces" },
-  { quantity: "2", unit: null, item: "onions, sliced" },
-  { quantity: "3", unit: null, item: "tomatoes, chopped" },
-  { quantity: "1", unit: "cup", item: "coconut milk" },
-  { quantity: "2", unit: "tsp", item: "smoked paprika" },
-  { quantity: "1/2", unit: "cup", item: "stock" },
-  { quantity: "a pinch", unit: null, item: "salt" },
-];
+type RecipePageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
 
-export default function RecipeDetailPage() {
+type RecipeResponse = {
+  recipe: {
+    title: string;
+    description: string | null;
+    servings: number;
+    nutrition: {
+      calories: number;
+      protein_g: number;
+      carbs_g: number;
+      fat_g: number;
+      dietary_flags: string[];
+    } | null;
+    structured_data: {
+      ingredients: Array<{
+        quantity: string;
+        unit: string | null;
+        item: string;
+      }>;
+      steps: Array<{
+        order: number;
+        instruction: string;
+      }>;
+      tags: string[];
+    };
+  };
+};
+
+export const dynamic = "force-dynamic";
+
+export default async function RecipeDetailPage({ params }: RecipePageProps) {
+  const { id } = await params;
+  const supabase = await createServerSupabaseClient();
+
+  if (!supabase) {
+    redirect("/login");
+  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.access_token) {
+    redirect("/login");
+  }
+
+  const response = await fetch(`${getBackendUrl()}/api/recipes/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      redirect("/login");
+    }
+
+    throw new Error(`Failed to load recipe ${id}.`);
+  }
+
+  const payload = (await response.json()) as RecipeResponse;
+  const recipe = payload.recipe;
+
   return (
     <RecipeDetailClient
-      title="Braised Coconut Chicken"
-      description="A warm, weeknight-friendly braise with enough structure to prove live serving scaling across whole numbers, fractions, and descriptive quantities."
-      ingredients={ingredients}
-      servings={4}
+      title={recipe.title}
+      description={recipe.description ?? "No description provided yet."}
+      ingredients={recipe.structured_data.ingredients}
+      steps={recipe.structured_data.steps}
+      tags={recipe.structured_data.tags}
+      servings={recipe.servings}
+      nutrition={recipe.nutrition}
     />
   );
 }
