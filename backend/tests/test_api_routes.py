@@ -6,12 +6,17 @@ from fastapi.exceptions import HTTPException
 
 from models.recipe import (
     Ingredient,
+    Nutrition,
     ParseRecipeRequest,
     ParseRecipeResponse,
     ParsedRecipe,
+    Recipe,
+    SavedRecipe,
+    SaveRecipeRequest,
     ScaleRecipeRequest,
+    StructuredRecipeData,
 )
-from routers.recipes import parse_recipe_text, scale_recipe
+from routers.recipes import get_recipe_by_id, parse_recipe_text, save_recipe, scale_recipe
 from routers.vision import identify_dish_from_image
 
 
@@ -61,6 +66,108 @@ class ApiRouteTests(unittest.TestCase):
             [ingredient.quantity for ingredient in response.ingredients],
             ["4", "1", "a pinch"],
         )
+
+    @patch("routers.recipes.insert_saved_recipe")
+    @patch("routers.recipes.insert_recipe")
+    @patch("routers.recipes.estimate_nutrition")
+    def test_save_recipe_route_persists_estimated_nutrition(
+        self,
+        mock_estimate_nutrition,
+        mock_insert_recipe,
+        mock_insert_saved_recipe,
+    ):
+        mock_estimate_nutrition.return_value = Nutrition(
+            calories=420,
+            protein_g=32,
+            carbs_g=18,
+            fat_g=21,
+            dietary_flags=["High-Protein", "Gluten-Free"],
+        )
+        mock_insert_recipe.return_value = Recipe(
+            id="00000000-0000-0000-0000-000000000001",
+            user_id="00000000-0000-0000-0000-000000000002",
+            title="Chicken Stew",
+            description="Comforting stew",
+            source_text="Chicken stew",
+            structured_data=StructuredRecipeData(
+                ingredients=[],
+                steps=[],
+                tags=["stew"],
+            ),
+            nutrition=mock_estimate_nutrition.return_value,
+            servings=4,
+        )
+        mock_insert_saved_recipe.return_value = SavedRecipe(
+            id="00000000-0000-0000-0000-000000000003",
+            user_id="00000000-0000-0000-0000-000000000002",
+            recipe_id="00000000-0000-0000-0000-000000000001",
+        )
+
+        class MockState:
+            access_token = "token"
+
+        class MockRequest:
+            state = MockState()
+
+        response = asyncio.run(
+            save_recipe(
+                request=MockRequest(),
+                payload=SaveRecipeRequest(
+                    title="Chicken Stew",
+                    description="Comforting stew",
+                    source_text="Chicken stew",
+                    ingredients=[],
+                    steps=[],
+                    servings=4,
+                    tags=["stew"],
+                ),
+                current_user={"sub": "00000000-0000-0000-0000-000000000002"},
+            )
+        )
+
+        insert_payload = mock_insert_recipe.await_args.args[0]
+        self.assertEqual(insert_payload["nutrition"]["calories"], 420)
+        self.assertEqual(response.recipe.nutrition.dietary_flags, ["High-Protein", "Gluten-Free"])
+
+    @patch("routers.recipes.get_recipe")
+    def test_get_recipe_by_id_returns_recipe_payload(self, mock_get_recipe):
+        mock_get_recipe.return_value = Recipe(
+            id="00000000-0000-0000-0000-000000000001",
+            user_id="00000000-0000-0000-0000-000000000002",
+            title="Pilau",
+            description="Spiced rice",
+            source_text="Pilau",
+            structured_data=StructuredRecipeData(
+                ingredients=[],
+                steps=[],
+                tags=["rice"],
+            ),
+            nutrition=Nutrition(
+                calories=390,
+                protein_g=11,
+                carbs_g=52,
+                fat_g=14,
+                dietary_flags=["Dairy-Free", "Vegetarian"],
+            ),
+            servings=4,
+        )
+
+        class MockState:
+            access_token = "token"
+
+        class MockRequest:
+            state = MockState()
+
+        response = asyncio.run(
+            get_recipe_by_id(
+                recipe_id="00000000-0000-0000-0000-000000000001",
+                request=MockRequest(),
+                current_user={"sub": "00000000-0000-0000-0000-000000000002"},
+            )
+        )
+
+        self.assertEqual(response.recipe.title, "Pilau")
+        self.assertIn("Vegetarian", response.recipe.nutrition.dietary_flags)
 
     @patch("routers.vision.generate_recipe_from_dish_labels")
     @patch("routers.vision.identify_dish")

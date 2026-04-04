@@ -15,3 +15,8 @@
 - Added frontend unit tests for upload validation rules and shared file-size/type guards.
 - Tightened upload validation for empty text, invalid file types, and oversized image uploads.
 - Re-verified the frontend production build and backend Python compilation after the Day 7 changes.
+
+## Week 2 Snapshot
+
+- Day 8 completed live serving scaling from the single recipe view through the FastAPI scaling endpoint.
+- Day 9 completed nutrition estimation and presentation: Gemini now estimates per-serving calories and macros during save, Supabase persists the nutrition payload, and the recipe detail page renders live nutrition badges plus dietary flags.

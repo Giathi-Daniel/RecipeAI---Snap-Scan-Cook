@@ -7,7 +7,7 @@ import google.generativeai as genai
 from fastapi import HTTPException, status
 from pydantic import ValidationError
 
-from models.recipe import ParseRecipeResponse, ParsedRecipe
+from models.recipe import Nutrition, ParseRecipeResponse, ParsedRecipe
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +59,26 @@ Rules:
 - steps must be ordered starting at 1.
 - servings must be a positive integer. Default to 4 if unknown.
 - tags should be short lowercase labels when obvious, otherwise [].
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
+NUTRITION_SYSTEM_PROMPT = """
+You are a recipe nutrition estimation engine.
+Estimate nutrition per serving and dietary flags from the provided recipe.
+
+Return an object with exactly these keys:
+- calories: integer
+- protein_g: integer
+- carbs_g: integer
+- fat_g: integer
+- dietary_flags: array of strings
+
+Rules:
+- Estimate values per serving, not for the full recipe.
+- Return whole-number grams for protein, carbs, and fat.
+- Use short dietary flags chosen only when they clearly apply.
+- Allowed dietary flags: Gluten-Free, Dairy-Free, High-Protein, Vegetarian, Vegan, Nut-Free
+- Omit uncertain flags instead of guessing.
 - Do not include markdown fences, prose, comments, or extra keys.
 """.strip()
 
@@ -123,12 +143,66 @@ def generate_recipe_from_dish_labels(labels: list[str], dish_name: str) -> Parse
     )
 
 
+def estimate_nutrition(recipe: ParsedRecipe) -> Nutrition:
+    prompt = _build_nutrition_prompt(recipe)
+
+    payload = _generate_json_payload(
+        prompt=prompt,
+        system_prompt=NUTRITION_SYSTEM_PROMPT,
+        log_context=(
+            "Estimating recipe nutrition with Gemini. "
+            f"title={recipe.title!r} servings={recipe.servings}"
+        ),
+        failure_detail=(
+            f"Gemini failed to estimate recipe nutrition with model '{MODEL_NAME}'."
+        ),
+        malformed_detail="Gemini returned malformed nutrition JSON.",
+    )
+
+    try:
+        return Nutrition.model_validate(payload)
+    except ValidationError as exc:
+        logger.exception("Gemini returned invalid nutrition payload.")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Gemini returned malformed nutrition JSON.",
+        ) from exc
+
+
 def _generate_recipe_response(
     prompt: str,
     system_prompt: str,
     log_context: str,
     failure_detail: str,
 ) -> ParseRecipeResponse:
+    payload = _generate_json_payload(
+        prompt=prompt,
+        system_prompt=system_prompt,
+        log_context=log_context,
+        failure_detail=failure_detail,
+        malformed_detail="Gemini returned malformed recipe JSON.",
+    )
+
+    try:
+        recipe = ParsedRecipe.model_validate(payload)
+    except ValidationError as exc:
+        logger.exception("Gemini returned invalid recipe payload.")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Gemini returned malformed recipe JSON.",
+        ) from exc
+
+    normalized_payload = recipe.model_dump()
+    return ParseRecipeResponse(recipe=recipe, raw_response=normalized_payload)
+
+
+def _generate_json_payload(
+    prompt: str,
+    system_prompt: str,
+    log_context: str,
+    failure_detail: str,
+    malformed_detail: str,
+) -> dict[str, Any]:
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise HTTPException(
@@ -166,17 +240,37 @@ def _generate_recipe_response(
     logger.info("Gemini parse response preview=%s", raw_text[:500])
 
     try:
-        payload = _load_recipe_json(raw_text)
-        recipe = ParsedRecipe.model_validate(payload)
-    except (json.JSONDecodeError, ValidationError, ValueError) as exc:
-        logger.exception("Gemini returned malformed recipe JSON.")
+        return _load_recipe_json(raw_text)
+    except (json.JSONDecodeError, ValueError) as exc:
+        logger.exception("Gemini returned malformed JSON.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Gemini returned malformed recipe JSON.",
+            detail=malformed_detail,
         ) from exc
 
-    normalized_payload = recipe.model_dump()
-    return ParseRecipeResponse(recipe=recipe, raw_response=normalized_payload)
+
+def _build_nutrition_prompt(recipe: ParsedRecipe) -> str:
+    ingredients_lines = [
+        f"- {ingredient.quantity}{f' {ingredient.unit}' if ingredient.unit else ''} {ingredient.item}"
+        for ingredient in recipe.ingredients
+    ]
+    steps_lines = [f"{step.order}. {step.instruction}" for step in recipe.steps]
+
+    description = recipe.description or "No description provided."
+
+    return "\n".join(
+        [
+            f"Recipe title: {recipe.title}",
+            f"Description: {description}",
+            f"Servings: {recipe.servings}",
+            "Ingredients:",
+            *ingredients_lines,
+            "Steps:",
+            *steps_lines,
+            "",
+            "Estimate calories, protein, carbs, fat, and dietary flags per serving. Return JSON only.",
+        ]
+    )
 
 
 def _extract_response_text(response: Any) -> str:

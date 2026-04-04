@@ -21,6 +21,7 @@ class Nutrition(BaseModel):
     protein_g: int
     carbs_g: int
     fat_g: int
+    dietary_flags: list[str] = Field(default_factory=list)
 
 
 class StructuredRecipeData(BaseModel):
@@ -80,6 +81,10 @@ class SaveRecipeRequest(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     servings: int = Field(default=4, ge=1)
     tags: list[str] = Field(default_factory=list)
+
+
+class RecipeLookupResponse(BaseModel):
+    recipe: Recipe
 
 
 class VisionIdentifyResponse(BaseModel):
