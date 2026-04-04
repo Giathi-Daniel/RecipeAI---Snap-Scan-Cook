@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 const sharedLinks = [
   { href: "/upload", label: "Upload" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/recipe/demo-recipe", label: "Recipe View" },
+  { href: "/recipe/demo", label: "Recipe View" },
 ];
 
 export async function Header() {

@@ -16,7 +16,14 @@ from models.recipe import (
     ScaleRecipeRequest,
     StructuredRecipeData,
 )
-from routers.recipes import get_recipe_by_id, parse_recipe_text, save_recipe, scale_recipe
+from routers.recipes import (
+    get_demo_recipe,
+    get_demo_recipe_alias,
+    get_recipe_by_id,
+    parse_recipe_text,
+    save_recipe,
+    scale_recipe,
+)
 from routers.vision import identify_dish_from_image
 
 
@@ -31,6 +38,9 @@ class FakeUploadFile:
 
 
 class ApiRouteTests(unittest.TestCase):
+    def test_demo_recipe_alias_matches_primary_demo_recipe(self):
+        self.assertEqual(get_demo_recipe_alias().title, get_demo_recipe().title)
+
     @patch("routers.recipes.parse_recipe")
     def test_parse_recipe_route_returns_structured_recipe(self, mock_parse_recipe):
         mock_parse_recipe.return_value = ParseRecipeResponse(
