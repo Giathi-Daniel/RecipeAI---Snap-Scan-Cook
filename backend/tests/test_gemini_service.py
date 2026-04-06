@@ -1,7 +1,12 @@
 import unittest
 
 from models.recipe import Ingredient, ParsedRecipe, Step
-from services.gemini_service import _build_nutrition_prompt, _load_recipe_json
+from services.gemini_service import (
+    _build_localization_prompt,
+    _build_nutrition_prompt,
+    _build_substitution_prompt,
+    _load_recipe_json,
+)
 
 
 class GeminiJsonParsingTests(unittest.TestCase):
@@ -44,3 +49,31 @@ class GeminiJsonParsingTests(unittest.TestCase):
         self.assertIn("Servings: 4", prompt)
         self.assertIn("- 2 cups rice", prompt)
         self.assertIn("Estimate calories, protein, carbs, fat, and dietary flags per serving.", prompt)
+
+    def test_build_substitution_prompt_includes_recipe_context(self):
+        prompt = _build_substitution_prompt(
+            ingredient=Ingredient(quantity="1", unit="cup", item="coconut milk"),
+            recipe_title="Braised Chicken",
+            recipe_description="A savory braise.",
+            tags=["comfort-food", "stew"],
+        )
+
+        self.assertIn("Recipe title: Braised Chicken", prompt)
+        self.assertIn("Ingredient to replace: 1 cup coconut milk", prompt)
+        self.assertIn("Tags: comfort-food, stew", prompt)
+
+    def test_build_localization_prompt_includes_target_region(self):
+        recipe = ParsedRecipe(
+            title="Beans and Rice",
+            description="Classic comfort food.",
+            ingredients=[Ingredient(quantity="2", unit="cups", item="rice")],
+            steps=[Step(order=1, instruction="Cook and serve warm.")],
+            servings=4,
+            tags=["vegetarian"],
+        )
+
+        prompt = _build_localization_prompt(recipe=recipe, region="Kenya")
+
+        self.assertIn("Target region: Kenya", prompt)
+        self.assertIn("Recipe title: Beans and Rice", prompt)
+        self.assertIn("- 2 cups rice", prompt)
