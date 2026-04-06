@@ -104,3 +104,31 @@ class ScaleRecipeResponse(BaseModel):
     ingredients: list[Ingredient] = Field(default_factory=list)
     original_servings: int
     target_servings: int
+
+
+class SubstituteIngredientRequest(BaseModel):
+    ingredient: Ingredient
+    recipe_title: str = Field(..., min_length=1)
+    recipe_description: Optional[str] = None
+    tags: list[str] = Field(default_factory=list)
+
+
+class IngredientSubstitutionOption(BaseModel):
+    name: str
+    reason: str
+    notes: Optional[str] = None
+
+
+class SubstituteIngredientResponse(BaseModel):
+    ingredient: Ingredient
+    substitutions: list[IngredientSubstitutionOption] = Field(default_factory=list)
+
+
+class LocalizeRecipeRequest(BaseModel):
+    region: str = Field(..., min_length=1)
+    recipe: ParsedRecipe
+
+
+class LocalizedRecipeResponse(BaseModel):
+    region: str
+    recipe: ParsedRecipe
