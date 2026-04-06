@@ -1,9 +1,8 @@
 import logging
 import os
+from typing import Any
 
 from fastapi import HTTPException, status
-from google.api_core import exceptions as google_exceptions
-from google.cloud import vision
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +40,8 @@ def identify_dish(image_bytes: bytes) -> tuple[str, list[str]]:
             detail="GOOGLE_APPLICATION_CREDENTIALS is not configured on the backend.",
         )
 
+    vision = _load_vision_module()
+
     try:
         client = vision.ImageAnnotatorClient()
         response = client.label_detection(image=vision.Image(content=image_bytes))
@@ -70,7 +71,7 @@ def identify_dish(image_bytes: bytes) -> tuple[str, list[str]]:
     return dish_name, labels
 
 
-def _extract_top_labels(label_annotations: list[vision.EntityAnnotation]) -> list[str]:
+def _extract_top_labels(label_annotations: list[Any]) -> list[str]:
     unique_labels: list[str] = []
     seen: set[str] = set()
 
@@ -99,6 +100,8 @@ def _select_dish_name(labels: list[str]) -> str:
 
 
 def _extract_google_error_message(exc: Exception) -> str:
+    google_exceptions = _load_google_exceptions_module()
+
     if isinstance(exc, google_exceptions.PermissionDenied):
         return str(exc)
 
@@ -106,3 +109,27 @@ def _extract_google_error_message(exc: Exception) -> str:
         return str(exc)
 
     return "Google Cloud Vision failed to identify the uploaded image."
+
+
+def _load_vision_module():
+    try:
+        from google.cloud import vision
+    except ModuleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="google-cloud-vision is not installed on the backend.",
+        ) from exc
+
+    return vision
+
+
+def _load_google_exceptions_module():
+    try:
+        from google.api_core import exceptions as google_exceptions
+    except ModuleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="google-api-core is not installed on the backend.",
+        ) from exc
+
+    return google_exceptions

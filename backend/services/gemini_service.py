@@ -3,11 +3,18 @@ import logging
 import os
 from typing import Any
 
-import google.generativeai as genai
 from fastapi import HTTPException, status
 from pydantic import ValidationError
 
-from models.recipe import Nutrition, ParseRecipeResponse, ParsedRecipe
+from models.recipe import (
+    Ingredient,
+    IngredientSubstitutionOption,
+    LocalizedRecipeResponse,
+    Nutrition,
+    ParseRecipeResponse,
+    ParsedRecipe,
+    SubstituteIngredientResponse,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +86,46 @@ Rules:
 - Use short dietary flags chosen only when they clearly apply.
 - Allowed dietary flags: Gluten-Free, Dairy-Free, High-Protein, Vegetarian, Vegan, Nut-Free
 - Omit uncertain flags instead of guessing.
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
+SUBSTITUTION_SYSTEM_PROMPT = """
+You are a recipe ingredient substitution engine.
+Suggest practical substitutions for one ingredient within a specific dish.
+
+Return an object with exactly these keys:
+- substitutions: array of objects with keys name, reason, notes
+
+Rules:
+- Return 2 or 3 substitution options.
+- Keep each option realistic for home cooks and relevant to the dish context.
+- name should be concise.
+- reason should explain why the swap works in this recipe.
+- notes should mention ratio, flavor changes, or cooking cautions when useful, otherwise null.
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
+LOCALIZATION_SYSTEM_PROMPT = """
+You are a recipe localization engine.
+Adapt a recipe for a specific region while preserving the spirit of the dish.
+
+Return an object with exactly these keys:
+- title: string
+- description: string or null
+- ingredients: array of objects with keys quantity, unit, item
+- steps: array of objects with keys order, instruction
+- servings: integer
+- tags: array of strings
+
+Rules:
+- Keep the dish recognizable while adapting ingredients, seasonings, and terminology for the target region.
+- Prefer ingredients and cooking references that feel familiar and accessible in that region.
+- quantity must always be a string, even for fractions like "1/2".
+- unit must be null when absent.
+- item should contain the ingredient name and any clarifying prep note.
+- steps must stay ordered starting at 1.
+- servings must remain a positive integer and usually match the source recipe unless adaptation requires otherwise.
+- tags should stay short lowercase labels.
 - Do not include markdown fences, prose, comments, or extra keys.
 """.strip()
 
@@ -169,6 +216,88 @@ def estimate_nutrition(recipe: ParsedRecipe) -> Nutrition:
         ) from exc
 
 
+def suggest_substitutions(
+    ingredient: Ingredient,
+    recipe_title: str,
+    recipe_description: str | None = None,
+    tags: list[str] | None = None,
+) -> SubstituteIngredientResponse:
+    cleaned_title = recipe_title.strip()
+    if not cleaned_title:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Recipe title is required to suggest substitutions.",
+        )
+
+    prompt = _build_substitution_prompt(
+        ingredient=ingredient,
+        recipe_title=cleaned_title,
+        recipe_description=recipe_description,
+        tags=tags or [],
+    )
+
+    payload = _generate_json_payload(
+        prompt=prompt,
+        system_prompt=SUBSTITUTION_SYSTEM_PROMPT,
+        log_context=(
+            "Suggesting ingredient substitutions with Gemini. "
+            f"recipe_title={cleaned_title!r} ingredient={ingredient.item!r}"
+        ),
+        failure_detail=(
+            f"Gemini failed to suggest substitutions with model '{MODEL_NAME}'."
+        ),
+        malformed_detail="Gemini returned malformed substitution JSON.",
+    )
+
+    raw_substitutions = payload.get("substitutions", [])
+    if not isinstance(raw_substitutions, list):
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Gemini returned malformed substitution JSON.",
+        )
+
+    try:
+        substitutions = [
+            IngredientSubstitutionOption.model_validate(option)
+            for option in raw_substitutions
+        ]
+    except ValidationError as exc:
+        logger.exception("Gemini returned invalid substitution payload.")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Gemini returned malformed substitution JSON.",
+        ) from exc
+
+    return SubstituteIngredientResponse(
+        ingredient=ingredient,
+        substitutions=substitutions[:3],
+    )
+
+
+def localize_recipe(recipe: ParsedRecipe, region: str) -> LocalizedRecipeResponse:
+    cleaned_region = region.strip()
+    if not cleaned_region:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="A target region is required to localize the recipe.",
+        )
+
+    prompt = _build_localization_prompt(recipe=recipe, region=cleaned_region)
+    localized = _generate_recipe_response(
+        prompt=prompt,
+        system_prompt=LOCALIZATION_SYSTEM_PROMPT,
+        log_context=(
+            "Localizing recipe with Gemini. "
+            f"title={recipe.title!r} region={cleaned_region!r}"
+        ),
+        failure_detail=(
+            f"Gemini failed to localize the recipe with model '{MODEL_NAME}'."
+        ),
+    )
+
+    return LocalizedRecipeResponse(region=cleaned_region, recipe=localized.recipe)
+
+
 def _generate_recipe_response(
     prompt: str,
     system_prompt: str,
@@ -210,6 +339,7 @@ def _generate_json_payload(
             detail="GEMINI_API_KEY is not configured on the backend.",
         )
 
+    genai = _load_genai_module()
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel(
         model_name=MODEL_NAME,
@@ -273,6 +403,51 @@ def _build_nutrition_prompt(recipe: ParsedRecipe) -> str:
     )
 
 
+def _build_substitution_prompt(
+    ingredient: Ingredient,
+    recipe_title: str,
+    recipe_description: str | None,
+    tags: list[str],
+) -> str:
+    return "\n".join(
+        [
+            f"Recipe title: {recipe_title}",
+            f"Recipe description: {recipe_description or 'No description provided.'}",
+            f"Tags: {', '.join(tags) if tags else 'none'}",
+            (
+                "Ingredient to replace: "
+                f"{ingredient.quantity}{f' {ingredient.unit}' if ingredient.unit else ''} {ingredient.item}"
+            ),
+            "",
+            "Suggest 2 to 3 practical substitutions. Return JSON only.",
+        ]
+    )
+
+
+def _build_localization_prompt(recipe: ParsedRecipe, region: str) -> str:
+    ingredients_lines = [
+        f"- {ingredient.quantity}{f' {ingredient.unit}' if ingredient.unit else ''} {ingredient.item}"
+        for ingredient in recipe.ingredients
+    ]
+    steps_lines = [f"{step.order}. {step.instruction}" for step in recipe.steps]
+
+    return "\n".join(
+        [
+            f"Target region: {region}",
+            f"Recipe title: {recipe.title}",
+            f"Description: {recipe.description or 'No description provided.'}",
+            f"Servings: {recipe.servings}",
+            f"Tags: {', '.join(recipe.tags) if recipe.tags else 'none'}",
+            "Ingredients:",
+            *ingredients_lines,
+            "Steps:",
+            *steps_lines,
+            "",
+            "Adapt this recipe for the target region. Return JSON only.",
+        ]
+    )
+
+
 def _extract_response_text(response: Any) -> str:
     text = getattr(response, "text", None)
     if text:
@@ -313,3 +488,15 @@ def _load_recipe_json(raw_text: str) -> dict[str, Any]:
         raise ValueError("Gemini response JSON root must be an object.")
 
     return parsed
+
+
+def _load_genai_module():
+    try:
+        import google.generativeai as genai
+    except ModuleNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="google-generativeai is not installed on the backend.",
+        ) from exc
+
+    return genai

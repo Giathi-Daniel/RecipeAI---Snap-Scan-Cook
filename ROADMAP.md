@@ -171,17 +171,19 @@
 **Goal:** Two AI-powered helper features that make the app stand out.
 
 **Substitution:**
-- [ ] Add a "Substitute" button next to each ingredient in the recipe view
-- [ ] On click: call `POST /api/recipes/substitute` with the ingredient + dish context
-- [ ] Show 2–3 substitution options in a small modal/dropdown
+- [x] Add a "Substitute" button next to each ingredient in the recipe view
+- [x] On click: call `POST /api/recipes/substitute` with the ingredient + dish context
+- [x] Show 2–3 substitution options in a small modal/dropdown
 
 **Localization:**
-- [ ] Add a "Localize Recipe" button on the recipe page
-- [ ] Show a dropdown: Kenya · Nigeria · India · Mexico · UK · etc.
-- [ ] On select: call `POST /api/recipes/localize` → Gemini adapts the recipe
-- [ ] Display adapted version with a "Localized for [region]" badge
+- [x] Add a "Localize Recipe" button on the recipe page
+- [x] Show a dropdown: Kenya · Nigeria · India · Mexico · UK · etc.
+- [x] On select: call `POST /api/recipes/localize` → Gemini adapts the recipe
+- [x] Display adapted version with a "Localized for [region]" badge
 
 **Deliverable:** Both features working and visually polished.
+
+**Status:** Day 10 is complete. The recipe page now supports AI-powered ingredient substitutions with per-ingredient suggestions, full-recipe regional localization with a region picker and badge, and backend Gemini endpoints/tests for both helper flows.
 
 ---
 
