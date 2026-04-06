@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from models.recipe import (
     Ingredient,
+    LocalizeRecipeRequest,
+    LocalizedRecipeResponse,
     Nutrition,
     ParseRecipeRequest,
     ParseRecipeResponse,
@@ -16,9 +18,16 @@ from models.recipe import (
     SaveRecipeResponse,
     Step,
     StructuredRecipeData,
+    SubstituteIngredientRequest,
+    SubstituteIngredientResponse,
 )
 from services.auth_service import get_current_user
-from services.gemini_service import estimate_nutrition, parse_recipe
+from services.gemini_service import (
+    estimate_nutrition,
+    localize_recipe,
+    parse_recipe,
+    suggest_substitutions,
+)
 from services.scaling_service import scale_ingredients
 from services.supabase_service import get_recipe, insert_recipe, insert_saved_recipe
 
@@ -147,3 +156,18 @@ def scale_recipe(payload: ScaleRecipeRequest):
         original_servings=payload.original_servings,
         target_servings=payload.target_servings,
     )
+
+
+@router.post("/substitute", response_model=SubstituteIngredientResponse)
+def substitute_ingredient(payload: SubstituteIngredientRequest):
+    return suggest_substitutions(
+        ingredient=payload.ingredient,
+        recipe_title=payload.recipe_title,
+        recipe_description=payload.recipe_description,
+        tags=payload.tags,
+    )
+
+
+@router.post("/localize", response_model=LocalizedRecipeResponse)
+def localize_recipe_route(payload: LocalizeRecipeRequest):
+    return localize_recipe(recipe=payload.recipe, region=payload.region)

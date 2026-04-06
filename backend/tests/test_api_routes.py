@@ -6,6 +6,9 @@ from fastapi.exceptions import HTTPException
 
 from models.recipe import (
     Ingredient,
+    IngredientSubstitutionOption,
+    LocalizeRecipeRequest,
+    LocalizedRecipeResponse,
     Nutrition,
     ParseRecipeRequest,
     ParseRecipeResponse,
@@ -15,14 +18,18 @@ from models.recipe import (
     SaveRecipeRequest,
     ScaleRecipeRequest,
     StructuredRecipeData,
+    SubstituteIngredientRequest,
+    SubstituteIngredientResponse,
 )
 from routers.recipes import (
     get_demo_recipe,
     get_demo_recipe_alias,
     get_recipe_by_id,
+    localize_recipe_route,
     parse_recipe_text,
     save_recipe,
     scale_recipe,
+    substitute_ingredient,
 )
 from routers.vision import identify_dish_from_image
 
@@ -76,6 +83,62 @@ class ApiRouteTests(unittest.TestCase):
             [ingredient.quantity for ingredient in response.ingredients],
             ["4", "1", "a pinch"],
         )
+
+    @patch("routers.recipes.suggest_substitutions")
+    def test_substitute_ingredient_route_returns_options(self, mock_suggest_substitutions):
+        ingredient = Ingredient(quantity="1", unit="cup", item="coconut milk")
+        mock_suggest_substitutions.return_value = SubstituteIngredientResponse(
+            ingredient=ingredient,
+            substitutions=[
+                IngredientSubstitutionOption(
+                    name="Evaporated milk",
+                    reason="Keeps the creamy body for stews and braises.",
+                    notes="Use the same amount and add a splash of water if needed.",
+                )
+            ],
+        )
+
+        response = substitute_ingredient(
+            SubstituteIngredientRequest(
+                ingredient=ingredient,
+                recipe_title="Braised Coconut Chicken",
+                recipe_description="Comforting chicken braise",
+                tags=["stew"],
+            )
+        )
+
+        self.assertEqual(response.substitutions[0].name, "Evaporated milk")
+
+    @patch("routers.recipes.localize_recipe")
+    def test_localize_recipe_route_returns_region_adapted_recipe(self, mock_localize_recipe):
+        mock_localize_recipe.return_value = LocalizedRecipeResponse(
+            region="Kenya",
+            recipe=ParsedRecipe(
+                title="Kenyan-Style Coconut Beans",
+                description="Localized with familiar pantry staples.",
+                ingredients=[],
+                steps=[],
+                servings=4,
+                tags=["kenyan-style"],
+            ),
+        )
+
+        response = localize_recipe_route(
+            LocalizeRecipeRequest(
+                region="Kenya",
+                recipe=ParsedRecipe(
+                    title="Coconut Beans",
+                    description="Original",
+                    ingredients=[],
+                    steps=[],
+                    servings=4,
+                    tags=["beans"],
+                ),
+            )
+        )
+
+        self.assertEqual(response.region, "Kenya")
+        self.assertEqual(response.recipe.title, "Kenyan-Style Coconut Beans")
 
     @patch("routers.recipes.insert_saved_recipe")
     @patch("routers.recipes.insert_recipe")
