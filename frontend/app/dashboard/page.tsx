@@ -1,22 +1,55 @@
 import { redirect } from "next/navigation";
-import { RecipeCard } from "@/components/recipe-card";
-import { LogoutButton } from "@/components/logout-button";
+
+import { DashboardClient } from "@/components/dashboard-client";
+import type { DashboardRecipe } from "@/lib/dashboard";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 
-const savedRecipes = [
-  {
-    title: "Braised Coconut Chicken",
-    description: "Saved recipes will appear here with tags, servings, and quick actions.",
-    tags: ["saved", "high-protein"],
-  },
-  {
-    title: "Smoky Jollof Rice",
-    description: "Dashboard scaffolding is in place for Day 11 list, filter, and delete flows.",
-    tags: ["west-africa", "one-pot"],
-  },
-];
+type SavedRecipeRow = {
+  id: string;
+  created_at: string | null;
+  recipe_id: string;
+  recipe: Array<{
+    id: string;
+    title: string;
+    description: string | null;
+    image_url: string | null;
+    servings: number | null;
+    structured_data: {
+      ingredients?: Array<{
+        quantity: string;
+        unit: string | null;
+        item: string;
+      }>;
+      tags?: string[];
+    } | null;
+    nutrition: {
+      dietary_flags?: string[];
+    } | null;
+  }> | null;
+};
+
+function mapSavedRecipe(row: SavedRecipeRow): DashboardRecipe | null {
+  const recipe = row.recipe?.[0];
+
+  if (!recipe) {
+    return null;
+  }
+
+  return {
+    savedRecipeId: row.id,
+    recipeId: recipe.id,
+    title: recipe.title,
+    description: recipe.description ?? "No description saved for this recipe yet.",
+    imageUrl: recipe.image_url,
+    servings: recipe.servings,
+    tags: recipe.structured_data?.tags ?? [],
+    dietaryFlags: recipe.nutrition?.dietary_flags ?? [],
+    ingredients: recipe.structured_data?.ingredients ?? [],
+    savedAt: row.created_at,
+  };
+}
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -33,30 +66,20 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  return (
-    <section className="mx-auto max-w-6xl px-6 py-12">
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
-            Personal space
-          </p>
-          <h1 className="mt-3 font-display text-4xl text-ink">Your recipe dashboard</h1>
-          <p className="mt-3 text-sm text-ink/70">
-            Signed in as <span className="font-semibold text-ink">{user.email}</span>
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="border-l border-sand pl-4 text-sm text-ink/70">
-            Search and filters land on Day 11
-          </div>
-          <LogoutButton />
-        </div>
-      </div>
-      <div className="grid gap-5 md:grid-cols-2">
-        {savedRecipes.map((recipe) => (
-          <RecipeCard key={recipe.title} {...recipe} />
-        ))}
-      </div>
-    </section>
-  );
+  const { data, error } = await supabase
+    .from("saved_recipes")
+    .select(
+      "id, created_at, recipe_id, recipe:recipes(id, title, description, image_url, servings, structured_data, nutrition)",
+    )
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load saved recipes: ${error.message}`);
+  }
+
+  const recipes = ((data ?? []) as SavedRecipeRow[])
+    .map(mapSavedRecipe)
+    .filter((recipe): recipe is DashboardRecipe => recipe !== null);
+
+  return <DashboardClient userEmail={user.email ?? "Unknown user"} initialRecipes={recipes} />;
 }
