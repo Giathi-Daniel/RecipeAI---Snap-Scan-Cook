@@ -154,14 +154,16 @@
 ### Day 9 — Nutritional Analysis
 **Goal:** Each recipe shows calories, macros, and dietary flags.
 
-- [ ] Use Gemini to estimate nutrition per serving (prompt: "Estimate calories, protein, carbs, fat for this recipe per serving. Return JSON only.")
-- [ ] Add `nutrition` field to recipe Pydantic model and DB schema
-- [ ] Store nutrition data when recipe is saved
-- [ ] Build `NutritionBadge` component showing: Calories · Protein · Carbs · Fat
-- [ ] Add dietary tag badges: Gluten-Free, Dairy-Free, High-Protein, Vegetarian, etc.
-- [ ] Show nutrition section on single recipe page
+- [x] Use Gemini to estimate nutrition per serving (prompt: "Estimate calories, protein, carbs, fat for this recipe per serving. Return JSON only.")
+- [x] Add `nutrition` field to recipe Pydantic model and DB schema
+- [x] Store nutrition data when recipe is saved
+- [x] Build `NutritionBadge` component showing: Calories · Protein · Carbs · Fat
+- [x] Add dietary tag badges: Gluten-Free, Dairy-Free, High-Protein, Vegetarian, etc.
+- [x] Show nutrition section on single recipe page
 
 **Deliverable:** Recipe pages show estimated nutritional info and dietary tags.
+
+**Status:** Day 9 is complete. Recipes now get Gemini-estimated per-serving nutrition during save, persist that data to Supabase, and render live calories, macros, dietary flags, and recipe tags on the single recipe page.
 
 ---
 
