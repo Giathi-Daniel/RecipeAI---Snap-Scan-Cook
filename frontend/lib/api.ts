@@ -22,6 +22,10 @@ export async function apiGet<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+export function getBackendUrl() {
+  return BACKEND_URL;
+}
+
 export async function apiPost<T>(
   path: string,
   body: unknown,
