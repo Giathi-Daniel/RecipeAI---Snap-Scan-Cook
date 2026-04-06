@@ -17,7 +17,19 @@ type RecipeDetailClientProps = {
   title: string;
   description: string;
   ingredients: Ingredient[];
+  steps: Array<{
+    order: number;
+    instruction: string;
+  }>;
+  tags: string[];
   servings: number;
+  nutrition: {
+    calories: number;
+    protein_g: number;
+    carbs_g: number;
+    fat_g: number;
+    dietary_flags: string[];
+  } | null;
 };
 
 type ScaleRecipeResponse = {
@@ -30,7 +42,10 @@ export function RecipeDetailClient({
   title,
   description,
   ingredients,
+  steps,
+  tags,
   servings,
+  nutrition,
 }: RecipeDetailClientProps) {
   const [displayedIngredients, setDisplayedIngredients] = useState(ingredients);
   const [displayedServings, setDisplayedServings] = useState(servings);
@@ -99,15 +114,73 @@ export function RecipeDetailClient({
             <div className="mt-5">
               <IngredientList ingredients={displayedIngredients} />
             </div>
+
+            <div className="mt-8">
+              <h2 className="font-display text-3xl text-ink">Method</h2>
+              <ol className="mt-5 space-y-4 rounded-[1.5rem] border border-sand/80 bg-white/85 p-5">
+                {steps.map((step) => (
+                  <li key={`${step.order}-${step.instruction}`} className="flex gap-3">
+                    <span className="w-6 shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-ink/35">
+                      {String(step.order).padStart(2, "0")}
+                    </span>
+                    <p className="text-sm leading-6 text-ink/80">{step.instruction}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
           <div>
             <h2 className="font-display text-3xl text-ink">Nutrition Snapshot</h2>
-            <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 px-5">
-              <NutritionBadge label="Calories" value="420 kcal" />
-              <NutritionBadge label="Protein" value="34 g" />
-              <NutritionBadge label="Carbs" value="12 g" />
-              <NutritionBadge label="Fat" value="26 g" />
-            </div>
+            {nutrition ? (
+              <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 p-5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <NutritionBadge label="Calories" value={`${nutrition.calories} kcal`} />
+                  <NutritionBadge label="Protein" value={`${nutrition.protein_g} g`} />
+                  <NutritionBadge label="Carbs" value={`${nutrition.carbs_g} g`} />
+                  <NutritionBadge label="Fat" value={`${nutrition.fat_g} g`} />
+                </div>
+
+                {nutrition.dietary_flags.length ? (
+                  <div className="mt-6">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                      Dietary flags
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      {nutrition.dietary_flags.map((flag) => (
+                        <span
+                          key={flag}
+                          className="rounded-full border border-herb/20 bg-herb/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-herb"
+                        >
+                          {flag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {tags.length ? (
+                  <div className="mt-6">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                      Recipe tags
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-accent/20 bg-accent/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-accentDark"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 px-5 py-5 text-sm leading-6 text-ink/70">
+                Nutrition analysis is not available for this recipe yet.
+              </div>
+            )}
           </div>
         </div>
       </div>
