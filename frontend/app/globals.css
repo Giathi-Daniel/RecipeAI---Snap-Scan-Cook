@@ -11,6 +11,10 @@ body {
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply bg-canvas text-ink font-body antialiased;
   background-image:
@@ -26,4 +30,31 @@ a {
 .recipe-shell {
   background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.92));
   backdrop-filter: blur(6px);
+}
+
+@media print {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background: #fff;
+    background-image: none;
+  }
+
+  header,
+  nav,
+  button,
+  .print-hidden {
+    display: none !important;
+  }
+
+  main {
+    min-height: auto;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
