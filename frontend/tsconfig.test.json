@@ -9,6 +9,6 @@
     "types": ["node"],
     "isolatedModules": false
   },
-  "include": ["lib/upload-validation.ts", "lib/dashboard.ts", "lib/recipe-sharing.ts", "tests/**/*.ts"],
+  "include": ["lib/upload-validation.ts", "lib/dashboard.ts", "lib/recipe-sharing.ts", "lib/security.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", ".next"]
 }
