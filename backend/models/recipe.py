@@ -49,6 +49,7 @@ class Recipe(BaseModel):
     structured_data: StructuredRecipeData
     nutrition: Optional[Nutrition] = None
     servings: int = 4
+    is_public: bool = False
     created_at: Optional[datetime] = None
 
 
@@ -85,6 +86,11 @@ class SaveRecipeRequest(BaseModel):
 
 class RecipeLookupResponse(BaseModel):
     recipe: Recipe
+
+
+class ShareRecipeResponse(BaseModel):
+    recipe: Recipe
+    public_url: str
 
 
 class VisionIdentifyResponse(BaseModel):

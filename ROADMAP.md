@@ -206,14 +206,16 @@
 ### Day 12 — Single Recipe Page & Sharing
 **Goal:** Each recipe has its own polished page and can be shared.
 
-- [ ] Build `/app/recipe/[id]/page.tsx`
-- [ ] Show: hero image, title, description, nutrition badges, ingredients with scaler, step-by-step instructions, tags
-- [ ] Add "Copy Link" share button (generates a public URL for the recipe)
-- [ ] For public recipes: no auth required to view (update RLS policy)
-- [ ] Add print-friendly CSS for the recipe page
-- [ ] Smooth scroll between ingredients and steps sections
+- [x] Build `/app/recipe/[id]/page.tsx`
+- [x] Show: hero image, title, description, nutrition badges, ingredients with scaler, step-by-step instructions, tags
+- [x] Add "Copy Link" share button (generates a public URL for the recipe)
+- [x] For public recipes: no auth required to view (update RLS policy)
+- [x] Add print-friendly CSS for the recipe page
+- [x] Smooth scroll between ingredients and steps sections
 
 **Deliverable:** Every recipe has a clean, shareable, printable page.
+
+**Status:** Day 12 is complete. The single recipe page now supports public viewing for shared recipes, owner-triggered copy-link sharing, a hero presentation with jump links, print-friendly output, and polished in-page navigation alongside the existing scaler, nutrition, substitution, and localization features.
 
 ---
 
