@@ -1,6 +1,7 @@
 type RecipeCardProps = {
   title: string;
   description: string;
+  imageUrl?: string | null;
   tags?: string[];
   servings?: number | null;
   ingredients?: Array<{
@@ -18,6 +19,7 @@ type RecipeCardProps = {
 export function RecipeCard({
   title,
   description,
+  imageUrl,
   tags = [],
   servings,
   ingredients = [],
@@ -26,6 +28,26 @@ export function RecipeCard({
 }: RecipeCardProps) {
   return (
     <article className="recipe-shell rounded-[2rem] border border-white/60 p-6 shadow-card">
+      <div className="mb-5 overflow-hidden rounded-[1.5rem] border border-sand/70">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={title}
+            className="h-44 w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-44 items-end bg-[radial-gradient(circle_at_top_left,_rgba(255,214,153,0.95),_rgba(204,119,34,0.35)_48%,_rgba(34,85,51,0.82))] p-5">
+            <div className="rounded-[1.25rem] border border-white/30 bg-white/15 px-4 py-3 backdrop-blur">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
+                Saved recipe
+              </p>
+              <p className="mt-2 max-w-[12rem] font-display text-2xl leading-tight text-white">
+                {title}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
       {tags.length || servings ? (
         <div className="mb-5 flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink/45">
           {servings ? <span>Serves {servings}</span> : null}

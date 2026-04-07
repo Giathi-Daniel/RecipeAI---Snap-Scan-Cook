@@ -190,14 +190,16 @@
 ### Day 11 — User Dashboard (Saved Recipes)
 **Goal:** Users have a personal space to browse all their saved recipes.
 
-- [ ] Build `/app/dashboard/page.tsx` — grid of saved recipe cards
-- [ ] Each card shows: image/thumbnail, title, servings, dietary tags, date saved
-- [ ] Add a search/filter bar (by tag, ingredient, or title)
-- [ ] Add delete functionality (remove recipe from saved list)
-- [ ] Handle empty state: "You haven't saved any recipes yet — try uploading one!"
-- [ ] Make the dashboard the redirect target after login
+- [x] Build `/app/dashboard/page.tsx` — grid of saved recipe cards
+- [x] Each card shows: image/thumbnail, title, servings, dietary tags, date saved
+- [x] Add a search/filter bar (by tag, ingredient, or title)
+- [x] Add delete functionality (remove recipe from saved list)
+- [x] Handle empty state: "You haven't saved any recipes yet — try uploading one!"
+- [x] Make the dashboard the redirect target after login
 
 **Deliverable:** Dashboard is functional, clean, and useful.
+
+**Status:** Day 11 is complete. The dashboard now loads real saved recipes from Supabase, supports live search and tag-based filtering, shows thumbnail-style cards with saved dates and dietary metadata, lets users remove recipes from their saved list, and includes a polished empty state for brand-new accounts.
 
 ---
 
