@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { RecipeDetailClient } from "@/components/recipe-detail-client";
@@ -45,6 +46,18 @@ type RecipeLookupResponse = {
 };
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  return {
+    title: `Recipe ${id}`,
+    description: "View a structured RecipeAI recipe with ingredients, steps, nutrition, and sharing.",
+    alternates: {
+      canonical: `/recipe/${id}`,
+    },
+  };
+}
 
 export default async function RecipeDetailPage({ params }: RecipePageProps) {
   const { id } = await params;

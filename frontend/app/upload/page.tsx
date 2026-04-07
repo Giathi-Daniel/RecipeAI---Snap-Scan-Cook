@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { RecipeCard } from "@/components/recipe-card";
 import { apiPost, apiPostFormData } from "@/lib/api";
+import { sanitizeMultilineText } from "@/lib/security";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 import { validateImageUpload, validateRecipeText } from "@/lib/upload-validation";
 import { cn } from "@/utils/cn";
@@ -57,12 +58,6 @@ Method
 2. Shape the meatballs and cook until browned.
 3. Assemble the buns, top with sauce and cheese, then bake.`;
 
-const workspaceNotes = [
-  "Handles long pasted recipes without collapsing the layout.",
-  "Keeps input and parsed output readable side by side on desktop.",
-  "Stacks naturally on mobile with touch-friendly spacing.",
-] as const;
-
 export default function UploadPage() {
   const router = useRouter();
   const [recipeText, setRecipeText] = useState("");
@@ -91,7 +86,7 @@ export default function UploadPage() {
   }, [selectedImage]);
 
   async function handleParseRecipe() {
-    const trimmedText = recipeText.trim();
+    const trimmedText = sanitizeMultilineText(recipeText);
     const validationMessage = validateRecipeText(trimmedText);
 
     if (validationMessage) {
@@ -179,7 +174,11 @@ export default function UploadPage() {
   }
 
   async function handleIdentifyDish() {
-    const validationMessage = validateImageUpload(selectedImage);
+    const validationMessage = validateImageUpload(
+      selectedImage
+        ? { size: selectedImage.size, type: selectedImage.type, name: selectedImage.name }
+        : null,
+    );
 
     if (validationMessage) {
       setError(validationMessage);
@@ -225,64 +224,25 @@ export default function UploadPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-      <div className="mb-6 overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 shadow-card">
+      <div className="mb-6 overflow-hidden border border-sand bg-white">
         <div className="grid gap-0 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,0.7fr)]">
-          <div className="bg-[radial-gradient(circle_at_top_left,rgba(217,98,38,0.16),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.95),rgba(255,255,255,0.84))] px-5 py-7 sm:px-7 sm:py-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accentDark">
-              Professional parser workspace
-            </p>
+          <div className="px-5 py-7 sm:px-7 sm:py-8">
             <div className="mt-6 max-w-3xl">
               <h1 className="font-display text-3xl leading-tight text-ink sm:text-4xl lg:text-[3.2rem]">
-                Parse long recipes in a calmer, cleaner workspace.
+                Parse long recipes and food photos into structured cooking data.
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-ink/75 sm:text-base">
-                Built for real recipe text, not tiny demos. Paste something long, keep your place,
-                and compare the raw source with the structured result without the page turning into
-                a wall of scrolling.
+                Paste recipe text or upload a dish photo to generate structured ingredients, steps,
+                servings, and tags you can review before saving.
               </p>
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <div className="border-l-2 border-accent pl-4 text-sm font-semibold text-ink/75">
-                Long-form input ready
-              </div>
-              <div className="border-l-2 border-herb pl-4 text-sm font-semibold text-ink/75">
-                Split preview workspace
-              </div>
-              <div className="border-l-2 border-sand pl-4 text-sm font-semibold text-ink/75">
-                Mobile-first navigation
-              </div>
             </div>
           </div>
-
-          <aside className="border-t border-sand/70 bg-[linear-gradient(180deg,rgba(246,241,232,0.76),rgba(255,255,255,0.94))] px-5 py-6 sm:px-7 lg:border-l lg:border-t-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-ink/45">
-              Workspace notes
-            </p>
-            <div className="mt-5 grid gap-4">
-              {workspaceNotes.map((note, index) => (
-                <WorkspaceNote key={note} index={index + 1} note={note} />
-              ))}
-            </div>
-            <div className="mt-6 rounded-[1.5rem] border border-white/80 bg-white/80 px-4 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
-                Best on desktop
-              </p>
-              <p className="mt-2 text-sm leading-6 text-ink/70">
-                Use the sticky left editor and the independently scrolling preview on the right to
-                review large recipes faster.
-              </p>
-            </div>
-          </aside>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-start">
-        <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 shadow-card lg:sticky lg:top-28">
-          <div className="border-b border-sand/80 bg-[linear-gradient(135deg,rgba(217,98,38,0.12),rgba(95,124,66,0.08))] px-8 py-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accentDark">
-              Input
-            </p>
+        <div className="overflow-hidden border border-sand bg-white lg:sticky lg:top-28">
+          <div className="border-b border-sand px-8 py-8">
             <h1 className="mt-4 max-w-xl font-display text-4xl leading-tight text-ink">
               Turn recipe text or food photos into clean, structured cooking data.
             </h1>
@@ -293,19 +253,7 @@ export default function UploadPage() {
           </div>
 
           <div className="p-5 sm:p-8 lg:max-h-[calc(100vh-13rem)] lg:overflow-y-auto">
-            <div className="mb-5 flex flex-wrap gap-3">
-              <div className="border-l-2 border-accent pl-4 text-sm text-ink/75">
-                JSON schema enforced
-              </div>
-              <div className="border-l-2 border-herb pl-4 text-sm text-ink/75">
-                Ingredients and steps extracted
-              </div>
-              <div className="border-l-2 border-sand pl-4 text-sm text-ink/75">
-                Photo-to-recipe generation
-              </div>
-            </div>
-
-            <section className="rounded-[1.5rem] border border-sand/80 bg-canvas/75 p-5">
+            <section className="border border-sand bg-canvas p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
@@ -316,7 +264,7 @@ export default function UploadPage() {
                   </p>
                 </div>
                 {dishName ? (
-                  <div className="rounded-full border border-herb/20 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-herb">
+                  <div className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink">
                     {dishName}
                   </div>
                 ) : null}
@@ -334,11 +282,11 @@ export default function UploadPage() {
                 accept="image/*"
                 onChange={(event) => setSelectedImage(event.target.files?.[0] ?? null)}
                 disabled={isBusy}
-                className="mt-3 block w-full rounded-[1rem] border border-sand bg-white px-4 py-3 text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                className="mt-3 block w-full border border-sand bg-white px-4 py-3 text-sm text-ink file:mr-4 file:border file:border-ink file:bg-ink file:px-4 file:py-2 file:text-sm file:font-semibold file:text-canvas"
               />
 
               {imagePreviewUrl ? (
-                <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-sand/80 bg-white">
+                <div className="mt-4 overflow-hidden border border-sand bg-white">
                   <img
                     src={imagePreviewUrl}
                     alt="Selected dish preview"
@@ -346,7 +294,7 @@ export default function UploadPage() {
                   />
                 </div>
               ) : (
-                <div className="mt-4 rounded-[1.5rem] border border-dashed border-sand bg-white/70 px-4 py-8 text-center text-sm text-ink/55">
+                <div className="mt-4 border border-dashed border-sand bg-white px-4 py-8 text-center text-sm text-ink/55">
                   Your selected image preview appears here before submission.
                 </div>
               )}
@@ -356,7 +304,7 @@ export default function UploadPage() {
                   type="button"
                   onClick={handleIdentifyDish}
                   disabled={isBusy || !selectedImage}
-                  className="rounded-full bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="border border-ink bg-ink px-6 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <span className="flex items-center gap-2">
                     {isIdentifying ? (
@@ -384,7 +332,7 @@ export default function UploadPage() {
               value={recipeText}
               onChange={(event) => setRecipeText(event.target.value)}
               placeholder="Paste recipe text here..."
-              className="mt-3 min-h-[20rem] w-full rounded-[1.5rem] border border-sand bg-white px-5 py-5 text-sm leading-7 text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 lg:min-h-[28rem]"
+              className="mt-3 min-h-[20rem] w-full border border-sand bg-white px-5 py-5 text-sm leading-7 text-ink outline-none transition focus:border-accent lg:min-h-[28rem]"
             />
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -392,7 +340,7 @@ export default function UploadPage() {
                 type="button"
                 onClick={handleParseRecipe}
                 disabled={isBusy}
-                className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:bg-accentDark disabled:cursor-not-allowed disabled:opacity-60"
+                className="border border-ink bg-ink px-6 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="flex items-center gap-2">
                   {isParsing ? (
@@ -405,7 +353,7 @@ export default function UploadPage() {
                 type="button"
                 onClick={() => setRecipeText(starterPrompt)}
                 disabled={isBusy}
-                className="rounded-full border border-ink/10 bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60"
+                className="border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Load Example
               </button>
@@ -422,7 +370,7 @@ export default function UploadPage() {
                       setSaveMessage(null);
                     }}
                 disabled={isBusy}
-                className="rounded-full border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/75 transition hover:border-ink/25 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                className="border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink/75 transition hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Clear
               </button>
@@ -442,7 +390,7 @@ export default function UploadPage() {
           </div>
         </div>
 
-        <article className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/75 shadow-card">
+        <article className="overflow-hidden border border-sand bg-white">
           <div className="border-b border-sand/80 px-6 py-5">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
               Structured preview

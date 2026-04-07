@@ -21,10 +21,7 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-6 pb-16 pt-6">
       <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="recipe-shell rounded-[2rem] border border-white/60 px-8 py-12 shadow-card">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-accentDark">
-            Day 1 foundation
-          </p>
+        <div className="recipe-shell border border-sand px-8 py-12">
           <h1 className="mt-4 max-w-2xl font-display text-5xl leading-tight text-ink">
             A structured home base for RecipeAI&apos;s Next.js experience.
           </h1>
@@ -35,13 +32,13 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/upload"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white"
+              className="border border-ink bg-ink px-6 py-3 text-sm font-semibold text-canvas"
             >
               Start Upload Flow
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-full border border-ink/10 px-6 py-3 text-sm font-semibold text-ink"
+              className="border border-sand px-6 py-3 text-sm font-semibold text-ink"
             >
               View Dashboard
             </Link>
