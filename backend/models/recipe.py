@@ -2,7 +2,17 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+
+def sanitize_text(value: str, max_length: int = 1000) -> str:
+    cleaned = " ".join(value.replace("\x00", " ").split())
+    return cleaned.strip()[:max_length]
+
+
+def sanitize_multiline_text(value: str, max_length: int = 10000) -> str:
+    cleaned = value.replace("\x00", " ").replace("\r\n", "\n").strip()
+    return cleaned[:max_length]
 
 
 class Ingredient(BaseModel):
@@ -10,10 +20,32 @@ class Ingredient(BaseModel):
     unit: Optional[str] = None
     item: str
 
+    @field_validator("quantity")
+    @classmethod
+    def validate_quantity(cls, value: str) -> str:
+        return sanitize_text(value, max_length=80)
+
+    @field_validator("unit")
+    @classmethod
+    def validate_unit(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        return sanitize_text(value, max_length=40) or None
+
+    @field_validator("item")
+    @classmethod
+    def validate_item(cls, value: str) -> str:
+        return sanitize_text(value, max_length=200)
+
 
 class Step(BaseModel):
     order: int
     instruction: str
+
+    @field_validator("instruction")
+    @classmethod
+    def validate_instruction(cls, value: str) -> str:
+        return sanitize_text(value, max_length=500)
 
 
 class Nutrition(BaseModel):
@@ -37,6 +69,23 @@ class ParsedRecipe(BaseModel):
     steps: list[Step]
     servings: int = 4
     tags: list[str] = Field(default_factory=list)
+
+    @field_validator("title")
+    @classmethod
+    def validate_title(cls, value: str) -> str:
+        return sanitize_text(value, max_length=160)
+
+    @field_validator("description")
+    @classmethod
+    def validate_description(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        return sanitize_text(value, max_length=500) or None
+
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, values: list[str]) -> list[str]:
+        return [sanitize_text(value, max_length=40) for value in values if sanitize_text(value, 40)]
 
 
 class Recipe(BaseModel):
@@ -68,6 +117,11 @@ class SaveRecipeResponse(BaseModel):
 class ParseRecipeRequest(BaseModel):
     text: str = Field(..., min_length=1, description="Raw recipe text to parse.")
 
+    @field_validator("text")
+    @classmethod
+    def validate_text(cls, value: str) -> str:
+        return sanitize_multiline_text(value, max_length=10000)
+
 
 class ParseRecipeResponse(BaseModel):
     recipe: ParsedRecipe
@@ -82,6 +136,28 @@ class SaveRecipeRequest(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     servings: int = Field(default=4, ge=1)
     tags: list[str] = Field(default_factory=list)
+
+    @field_validator("title")
+    @classmethod
+    def validate_save_title(cls, value: str) -> str:
+        return sanitize_text(value, max_length=160)
+
+    @field_validator("description")
+    @classmethod
+    def validate_save_description(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return value
+        return sanitize_text(value, max_length=500) or None
+
+    @field_validator("source_text")
+    @classmethod
+    def validate_source_text(cls, value: str) -> str:
+        return sanitize_multiline_text(value, max_length=10000)
+
+    @field_validator("tags")
+    @classmethod
+    def validate_save_tags(cls, values: list[str]) -> list[str]:
+        return [sanitize_text(value, max_length=40) for value in values if sanitize_text(value, 40)]
 
 
 class RecipeLookupResponse(BaseModel):

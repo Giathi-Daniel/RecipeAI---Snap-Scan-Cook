@@ -22,7 +22,7 @@ test("validateImageUpload requires a file", () => {
 test("validateImageUpload rejects non-image files", () => {
   assert.equal(
     validateImageUpload({ type: "text/plain", size: 100 }),
-    "Upload a valid image file.",
+    "Upload a JPG, PNG, WEBP, or GIF image.",
   );
 });
 
@@ -34,5 +34,19 @@ test("validateImageUpload rejects oversized images", () => {
 });
 
 test("validateImageUpload accepts supported image payloads", () => {
-  assert.equal(validateImageUpload({ type: "image/jpeg", size: 1024 }), null);
+  assert.equal(validateImageUpload({ type: "image/jpeg", size: 1024, name: "dish.jpg" }), null);
+});
+
+test("validateImageUpload rejects unsupported filename characters", () => {
+  assert.equal(
+    validateImageUpload({ type: "image/png", size: 1024, name: "dish<bad>.png" }),
+    "Rename the image to remove unsupported filename characters.",
+  );
+});
+
+test("validateRecipeText rejects oversized recipe text", () => {
+  assert.equal(
+    validateRecipeText("a".repeat(10001)),
+    "Keep recipe text under 10,000 characters.",
+  );
 });

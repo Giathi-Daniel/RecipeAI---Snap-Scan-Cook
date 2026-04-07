@@ -319,7 +319,11 @@ class ApiRouteTests(unittest.TestCase):
             raw_response={"title": "Pilau"},
         )
 
-        upload = FakeUploadFile(content_type="image/png", payload=b"fake-image", filename="pilau.png")
+        upload = FakeUploadFile(
+            content_type="image/png",
+            payload=b"\x89PNG\r\n\x1a\nfake-image",
+            filename="pilau.png",
+        )
 
         response = asyncio.run(identify_dish_from_image(upload))
 
@@ -333,4 +337,4 @@ class ApiRouteTests(unittest.TestCase):
             asyncio.run(identify_dish_from_image(upload))
 
         self.assertEqual(context.exception.status_code, 422)
-        self.assertEqual(context.exception.detail, "Upload a valid image file.")
+        self.assertEqual(context.exception.detail, "Upload a JPG, PNG, WEBP, or GIF image.")

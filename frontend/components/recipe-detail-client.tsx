@@ -292,38 +292,34 @@ export function RecipeDetailClient({
 
   return (
     <section className="mx-auto max-w-6xl scroll-smooth px-6 py-12">
-      <div className="recipe-shell overflow-hidden rounded-[2rem] border border-white/60 shadow-card print:overflow-visible print:rounded-none print:border-0 print:bg-white print:shadow-none">
-        <div className="relative border-b border-white/40 print:border-b-0">
+      <div className="recipe-shell overflow-hidden border border-sand print:overflow-visible print:rounded-none print:border-0 print:bg-white print:shadow-none">
+        <div className="relative border-b border-sand print:border-b-0">
           {imageUrl ? (
             <div className="relative h-[20rem] sm:h-[24rem] print:h-auto">
               <img src={imageUrl} alt={displayedRecipe.title} className="h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/25 to-transparent" />
             </div>
           ) : (
-            <div className="h-[20rem] bg-[radial-gradient(circle_at_top_left,_rgba(255,214,153,0.95),_rgba(204,119,34,0.35)_48%,_rgba(34,85,51,0.82))] sm:h-[24rem] print:h-auto" />
+            <div className="h-[20rem] bg-canvas sm:h-[24rem] print:h-auto" />
           )}
 
           <div className="absolute inset-x-0 bottom-0 p-8 print:static print:p-8">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-white/25 bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white backdrop-blur print:border-sand print:bg-canvas print:text-ink print:backdrop-blur-none">
-                Single recipe page
-              </span>
               {localizedRegion ? (
-                <span className="rounded-full border border-herb/20 bg-herb/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white backdrop-blur print:text-herb">
+                <span className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink">
                   Localized for {localizedRegion}
                 </span>
               ) : null}
               {isShared ? (
-                <span className="rounded-full border border-white/25 bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white backdrop-blur print:border-sand print:bg-canvas print:text-ink print:backdrop-blur-none">
+                <span className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink">
                   Public recipe
                 </span>
               ) : null}
             </div>
 
-            <h1 className="mt-4 max-w-4xl font-display text-4xl leading-tight text-white sm:text-6xl print:text-ink">
+            <h1 className="mt-4 max-w-4xl font-display text-4xl leading-tight text-ink sm:text-6xl print:text-ink">
               {displayedRecipe.title}
             </h1>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-white/85 sm:text-lg print:text-ink/70">
+            <p className="mt-4 max-w-3xl text-base leading-7 text-ink/80 sm:text-lg print:text-ink/70">
               {displayedRecipe.description}
             </p>
           </div>
@@ -335,19 +331,19 @@ export function RecipeDetailClient({
               <div className="flex flex-wrap gap-3">
                 <a
                   href="#ingredients"
-                  className="rounded-full border border-sand/80 bg-white/75 px-4 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
                 >
                   Jump to ingredients
                 </a>
                 <a
                   href="#method"
-                  className="rounded-full border border-sand/80 bg-white/75 px-4 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
                 >
                   Jump to method
                 </a>
                 <a
                   href="#nutrition"
-                  className="rounded-full border border-sand/80 bg-white/75 px-4 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
                 >
                   Jump to nutrition
                 </a>
@@ -358,14 +354,14 @@ export function RecipeDetailClient({
                   type="button"
                   onClick={handleCopyLink}
                   disabled={isSharingPending}
-                  className="rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accentDark transition hover:bg-accent/85 disabled:cursor-wait disabled:opacity-60"
+                  className="border border-ink bg-ink px-5 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
                 >
                   {isSharingPending ? "Preparing link..." : "Copy Link"}
                 </button>
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="rounded-full border border-sand/80 bg-white/75 px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+                  className="border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink"
                 >
                   Print Recipe
                 </button>
@@ -392,7 +388,7 @@ export function RecipeDetailClient({
           ) : null}
 
           <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between print:mt-0">
-            <div className="rounded-[1.5rem] border border-sand/70 bg-canvas/70 px-5 py-4 text-sm text-ink/70 print:hidden">
+            <div className="border border-sand bg-canvas px-5 py-4 text-sm text-ink/70 print:hidden">
               Ingredient quantities update live using the FastAPI scaling endpoint, while descriptive
               quantities like “a pinch” stay unchanged.
             </div>
@@ -409,12 +405,9 @@ export function RecipeDetailClient({
             </div>
           </div>
 
-          <div className="mt-6 rounded-[1.75rem] border border-accent/15 bg-white/80 p-5 print:hidden">
+          <div className="mt-6 border border-sand bg-white p-5 print:hidden">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accentDark">
-                  Localization
-                </p>
                 <h2 className="mt-2 font-display text-2xl text-ink">
                   Adapt this recipe for another region
                 </h2>
@@ -429,7 +422,7 @@ export function RecipeDetailClient({
                   <select
                     value={selectedRegion}
                     onChange={(event) => setSelectedRegion(event.target.value)}
-                    className="min-w-[14rem] rounded-full border border-sand/80 bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent/40"
+                    className="min-w-[14rem] border border-sand bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent/40"
                   >
                     {LOCALIZATION_REGIONS.map((region) => (
                       <option key={region} value={region}>
@@ -442,7 +435,7 @@ export function RecipeDetailClient({
                   type="button"
                   onClick={handleLocalizeRecipe}
                   disabled={isLocalizationPending}
-                  className="inline-flex items-center justify-center rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accentDark transition hover:bg-accent/85 disabled:cursor-wait disabled:opacity-60"
+                  className="inline-flex items-center justify-center border border-ink bg-ink px-5 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
                 >
                   {isLocalizationPending ? "Localizing..." : "Localize Recipe"}
                 </button>
@@ -470,7 +463,7 @@ export function RecipeDetailClient({
               </div>
 
               {selectedIngredient ? (
-                <div className="mt-5 rounded-[1.5rem] border border-accent/20 bg-accent/5 p-5 print:hidden">
+                <div className="mt-5 border border-sand bg-white p-5 print:hidden">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accentDark">
@@ -490,7 +483,7 @@ export function RecipeDetailClient({
                         setSubstitutions([]);
                         setSubstitutionError(null);
                       }}
-                      className="rounded-full border border-sand/80 px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink/60 transition hover:border-ink/20 hover:text-ink"
+                      className="border border-sand px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink/60 transition hover:border-ink hover:text-ink"
                     >
                       Close
                     </button>
@@ -507,7 +500,7 @@ export function RecipeDetailClient({
                       {substitutions.map((option) => (
                         <article
                           key={`${selectedIngredient.item}-${option.name}`}
-                          className="rounded-[1.25rem] border border-white/70 bg-white/80 p-4"
+                          className="border border-sand bg-white p-4"
                         >
                           <h4 className="text-sm font-semibold uppercase tracking-[0.14em] text-ink">
                             {option.name}
@@ -531,7 +524,7 @@ export function RecipeDetailClient({
 
               <div id="method" className="scroll-mt-24">
                 <h2 className="mt-8 font-display text-3xl text-ink">Method</h2>
-                <ol className="mt-5 space-y-4 rounded-[1.5rem] border border-sand/80 bg-white/85 p-5">
+                <ol className="mt-5 space-y-4 border border-sand bg-white p-5">
                   {displayedRecipe.steps.map((step) => (
                     <li key={`${step.order}-${step.instruction}`} className="flex gap-3">
                       <span className="w-6 shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-ink/35">
@@ -547,7 +540,7 @@ export function RecipeDetailClient({
             <div id="nutrition" className="scroll-mt-24">
               <h2 className="font-display text-3xl text-ink">Nutrition Snapshot</h2>
               {displayedNutrition ? (
-                <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 p-5">
+                <div className="mt-5 border border-sand bg-white p-5">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <NutritionBadge label="Calories" value={`${displayedNutrition.calories} kcal`} />
                     <NutritionBadge label="Protein" value={`${displayedNutrition.protein_g} g`} />
@@ -564,7 +557,7 @@ export function RecipeDetailClient({
                         {displayedNutrition.dietary_flags.map((flag) => (
                           <span
                             key={flag}
-                            className="rounded-full border border-herb/20 bg-herb/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-herb"
+                          className="border border-sand bg-canvas px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink"
                           >
                             {flag}
                           </span>
@@ -582,7 +575,7 @@ export function RecipeDetailClient({
                         {displayedRecipe.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-full border border-accent/20 bg-accent/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-accentDark"
+                          className="border border-sand bg-canvas px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink"
                           >
                             {tag}
                           </span>
@@ -592,7 +585,7 @@ export function RecipeDetailClient({
                   ) : null}
                 </div>
               ) : (
-                <div className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/80 px-5 py-5 text-sm leading-6 text-ink/70">
+                <div className="mt-5 border border-sand bg-white px-5 py-5 text-sm leading-6 text-ink/70">
                   {localizedRegion
                     ? "Nutrition analysis has not been recalculated for this localized version yet."
                     : "Nutrition analysis is not available for this recipe yet."}

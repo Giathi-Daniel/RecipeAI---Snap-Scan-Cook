@@ -25,7 +25,7 @@ export function HeaderClient({ links, isAuthenticated }: HeaderClientProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/60 bg-canvas/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-sand bg-canvas">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between py-4">
           <Link
@@ -57,7 +57,7 @@ export function HeaderClient({ links, isAuthenticated }: HeaderClientProps) {
                 </Link>
                 <Link
                   href="/signup"
-                  className="rounded-full bg-accent px-4 py-2 text-white hover:bg-accentDark"
+                  className="border border-ink bg-ink px-4 py-2 text-canvas hover:bg-ink/90"
                 >
                   Sign up
                 </Link>
@@ -70,7 +70,7 @@ export function HeaderClient({ links, isAuthenticated }: HeaderClientProps) {
             aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-sand bg-white text-ink shadow-sm transition hover:border-accent hover:text-accent md:hidden"
+            className="inline-flex h-12 w-12 items-center justify-center border border-sand bg-white text-ink shadow-sm transition hover:border-accent hover:text-accent md:hidden"
           >
             <span className="relative block h-4 w-5">
               <span
@@ -102,13 +102,13 @@ export function HeaderClient({ links, isAuthenticated }: HeaderClientProps) {
           )}
         >
           <div className="min-h-0">
-            <div className="rounded-[1.75rem] border border-white/70 bg-white/80 p-4 shadow-card">
+            <div className="border border-sand bg-white p-4">
               <nav className="grid gap-2 text-sm font-medium text-ink/75">
                 {links.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="rounded-2xl px-4 py-3 transition hover:bg-canvas hover:text-accent"
+                    className="border border-transparent px-4 py-3 transition hover:border-sand hover:bg-canvas hover:text-accent"
                     onClick={closeMenu}
                   >
                     {link.label}
@@ -122,14 +122,14 @@ export function HeaderClient({ links, isAuthenticated }: HeaderClientProps) {
                   <div className="grid gap-2 pt-2">
                     <Link
                       href="/login"
-                      className="rounded-2xl px-4 py-3 transition hover:bg-canvas hover:text-accent"
+                      className="border border-transparent px-4 py-3 transition hover:border-sand hover:bg-canvas hover:text-accent"
                       onClick={closeMenu}
                     >
                       Log in
                     </Link>
                     <Link
                       href="/signup"
-                      className="rounded-2xl bg-accent px-4 py-3 text-center text-white transition hover:bg-accentDark"
+                      className="border border-ink bg-ink px-4 py-3 text-center text-canvas transition hover:bg-ink/90"
                       onClick={closeMenu}
                     >
                       Sign up
