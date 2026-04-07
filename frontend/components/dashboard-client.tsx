@@ -90,28 +90,22 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
     <section className="mx-auto max-w-6xl px-6 py-12">
       <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
-            Personal space
-          </p>
           <h1 className="mt-3 font-display text-4xl text-ink">Your recipe dashboard</h1>
           <p className="mt-3 text-sm text-ink/70">
             Signed in as <span className="font-semibold text-ink">{userEmail}</span>
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="rounded-full border border-sand/80 bg-white/70 px-4 py-2 text-sm text-ink/70">
+          <div className="border border-sand bg-white px-4 py-2 text-sm text-ink/70">
             {recipes.length} saved {recipes.length === 1 ? "recipe" : "recipes"}
           </div>
           <LogoutButton />
         </div>
       </div>
 
-      <div className="recipe-shell rounded-[2rem] border border-white/60 p-6 shadow-card">
+      <div className="recipe-shell border border-sand p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accentDark">
-              Search and filter
-            </p>
             <h2 className="mt-2 font-display text-2xl text-ink">Find recipes by title, tag, or ingredient</h2>
           </div>
           <label className="flex w-full max-w-md flex-col gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink/45">
@@ -131,10 +125,10 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
             <button
               type="button"
               onClick={() => setActiveFilter(null)}
-              className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
+              className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
                 activeFilter === null
-                  ? "bg-accent text-accentDark"
-                  : "border border-sand/80 bg-white/70 text-ink/70 hover:border-accent/30 hover:text-ink"
+                  ? "border border-ink bg-ink text-canvas"
+                  : "border border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
               }`}
             >
               All recipes
@@ -144,10 +138,10 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter((current) => (current === filter ? null : filter))}
-                className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
+                className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
                   activeFilter === filter
-                    ? "bg-herb text-white"
-                    : "border border-sand/80 bg-white/70 text-ink/70 hover:border-herb/30 hover:text-ink"
+                    ? "border border-ink bg-ink text-canvas"
+                    : "border border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
                 }`}
               >
                 {filter}
@@ -164,10 +158,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
       ) : null}
 
       {!hasRecipes ? (
-        <div className="recipe-shell mt-8 rounded-[2rem] border border-white/60 px-8 py-12 text-center shadow-card">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accentDark">
-            Nothing saved yet
-          </p>
+        <div className="recipe-shell mt-8 border border-sand px-8 py-12 text-center">
           <h2 className="mt-4 font-display text-4xl text-ink">
             You haven&apos;t saved any recipes yet.
           </h2>
@@ -178,13 +169,13 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/upload"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accentDark transition hover:bg-accent/85"
+              className="border border-ink bg-ink px-6 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90"
             >
               Upload a recipe
             </Link>
             <Link
               href="/recipe/demo"
-              className="rounded-full border border-sand/80 bg-white/75 px-6 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+              className="border border-sand bg-white px-6 py-3 text-sm font-semibold text-ink transition hover:border-ink"
             >
               Explore the demo recipe
             </Link>
@@ -203,14 +194,14 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
               ingredients={recipe.ingredients.slice(0, 4)}
               footer={
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between gap-3 rounded-[1.25rem] border border-sand/70 bg-canvas/70 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink/55">
+                  <div className="flex items-center justify-between gap-3 border border-sand bg-canvas px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink/55">
                     <span>{formatSavedDate(recipe.savedAt)}</span>
                     <span>{recipe.ingredients.length} ingredients</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Link
                       href={`/recipe/${recipe.recipeId}`}
-                      className="inline-flex flex-1 items-center justify-center rounded-full bg-accent px-4 py-3 text-sm font-semibold text-accentDark transition hover:bg-accent/85"
+                      className="inline-flex flex-1 items-center justify-center border border-ink bg-ink px-4 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90"
                     >
                       Open recipe
                     </Link>
@@ -218,7 +209,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                       type="button"
                       onClick={() => handleDelete(recipe.savedRecipeId)}
                       disabled={isPending && deletingId === recipe.savedRecipeId}
-                      className="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100 disabled:cursor-wait disabled:opacity-60"
+                      className="inline-flex items-center justify-center border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100 disabled:cursor-wait disabled:opacity-60"
                     >
                       {isPending && deletingId === recipe.savedRecipeId ? "Removing..." : "Delete"}
                     </button>
@@ -229,10 +220,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
           ))}
         </div>
       ) : (
-        <div className="recipe-shell mt-8 rounded-[2rem] border border-white/60 px-8 py-10 text-center shadow-card">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accentDark">
-            No matches
-          </p>
+        <div className="recipe-shell mt-8 border border-sand px-8 py-10 text-center">
           <h2 className="mt-4 font-display text-3xl text-ink">Nothing matches your current filters.</h2>
           <p className="mt-4 text-sm leading-7 text-ink/70">
             Try a different title, ingredient, or tag search, or clear the active filter chips.
@@ -243,7 +231,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
               setQuery("");
               setActiveFilter(null);
             }}
-            className="mt-6 rounded-full border border-sand/80 bg-white/75 px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent/30"
+            className="mt-6 border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink"
           >
             Clear filters
           </button>

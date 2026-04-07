@@ -55,7 +55,12 @@ async def supabase_auth_middleware(request: Request, call_next):
                 )
             raise
 
-    return await call_next(request)
+    response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    return response
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(recipes.router, prefix="/api/recipes", tags=["recipes"])

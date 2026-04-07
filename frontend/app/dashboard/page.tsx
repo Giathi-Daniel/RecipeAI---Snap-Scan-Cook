@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { DashboardClient } from "@/components/dashboard-client";
@@ -5,6 +6,13 @@ import type { DashboardRecipe } from "@/lib/dashboard";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Browse, filter, and manage your saved RecipeAI recipes from one secure dashboard.",
+  alternates: {
+    canonical: "/dashboard",
+  },
+};
 
 type SavedRecipeRow = {
   id: string;
