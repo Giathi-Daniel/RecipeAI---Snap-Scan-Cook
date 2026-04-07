@@ -119,6 +119,76 @@ async def get_recipe(recipe_id: str, access_token: str) -> Recipe:
     )
 
 
+async def get_public_recipe(recipe_id: str) -> Recipe:
+    supabase_url, anon_key = _get_supabase_env()
+
+    headers = {
+        "apikey": anon_key,
+        "Accept": "application/json",
+    }
+
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        response = await client.get(
+            f"{supabase_url}/rest/v1/recipes",
+            headers=headers,
+            params={
+                "id": f"eq.{recipe_id}",
+                "select": "*",
+                "limit": "1",
+            },
+        )
+
+    if response.is_success:
+        rows = response.json()
+        if not rows:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Recipe not found.",
+            )
+        return Recipe.model_validate(rows[0])
+
+    raise HTTPException(
+        status_code=response.status_code,
+        detail=_extract_supabase_error(response),
+    )
+
+
+async def share_recipe(recipe_id: str, access_token: str) -> Recipe:
+    supabase_url, anon_key = _get_supabase_env()
+
+    headers = {
+        "apikey": anon_key,
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        response = await client.patch(
+            f"{supabase_url}/rest/v1/recipes",
+            headers=headers,
+            params={
+                "id": f"eq.{recipe_id}",
+                "select": "*",
+            },
+            json={"is_public": True},
+        )
+
+    if response.is_success:
+        rows = response.json()
+        if not rows:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Recipe not found.",
+            )
+        return Recipe.model_validate(rows[0])
+
+    raise HTTPException(
+        status_code=response.status_code,
+        detail=_extract_supabase_error(response),
+    )
+
+
 def _extract_supabase_error(response: httpx.Response) -> str:
     try:
         payload = response.json()

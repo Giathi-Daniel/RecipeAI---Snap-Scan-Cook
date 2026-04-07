@@ -24,11 +24,13 @@ from models.recipe import (
 from routers.recipes import (
     get_demo_recipe,
     get_demo_recipe_alias,
+    get_public_recipe_by_id,
     get_recipe_by_id,
     localize_recipe_route,
     parse_recipe_text,
     save_recipe,
     scale_recipe,
+    share_recipe_by_id,
     substitute_ingredient,
 )
 from routers.vision import identify_dish_from_image
@@ -241,6 +243,61 @@ class ApiRouteTests(unittest.TestCase):
 
         self.assertEqual(response.recipe.title, "Pilau")
         self.assertIn("Vegetarian", response.recipe.nutrition.dietary_flags)
+
+    @patch("routers.recipes.get_public_recipe")
+    def test_get_public_recipe_by_id_returns_public_recipe_payload(self, mock_get_public_recipe):
+        mock_get_public_recipe.return_value = Recipe(
+            id="00000000-0000-0000-0000-000000000001",
+            title="Pilau",
+            description="Spiced rice",
+            structured_data=StructuredRecipeData(
+                ingredients=[],
+                steps=[],
+                tags=["rice"],
+            ),
+            servings=4,
+            is_public=True,
+        )
+
+        response = asyncio.run(
+            get_public_recipe_by_id("00000000-0000-0000-0000-000000000001")
+        )
+
+        self.assertTrue(response.recipe.is_public)
+        self.assertEqual(response.recipe.title, "Pilau")
+
+    @patch("routers.recipes.share_recipe")
+    def test_share_recipe_route_marks_recipe_public(self, mock_share_recipe):
+        mock_share_recipe.return_value = Recipe(
+            id="00000000-0000-0000-0000-000000000001",
+            user_id="00000000-0000-0000-0000-000000000002",
+            title="Pilau",
+            description="Spiced rice",
+            structured_data=StructuredRecipeData(
+                ingredients=[],
+                steps=[],
+                tags=["rice"],
+            ),
+            servings=4,
+            is_public=True,
+        )
+
+        class MockState:
+            access_token = "token"
+
+        class MockRequest:
+            state = MockState()
+
+        response = asyncio.run(
+            share_recipe_by_id(
+                recipe_id="00000000-0000-0000-0000-000000000001",
+                request=MockRequest(),
+                current_user={"sub": "00000000-0000-0000-0000-000000000002"},
+            )
+        )
+
+        self.assertTrue(response.recipe.is_public)
+        self.assertEqual(response.public_url, "/recipe/00000000-0000-0000-0000-000000000001")
 
     @patch("routers.vision.generate_recipe_from_dish_labels")
     @patch("routers.vision.identify_dish")

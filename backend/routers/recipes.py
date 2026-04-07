@@ -16,6 +16,7 @@ from models.recipe import (
     ScaleRecipeResponse,
     SaveRecipeRequest,
     SaveRecipeResponse,
+    ShareRecipeResponse,
     Step,
     StructuredRecipeData,
     SubstituteIngredientRequest,
@@ -29,7 +30,13 @@ from services.gemini_service import (
     suggest_substitutions,
 )
 from services.scaling_service import scale_ingredients
-from services.supabase_service import get_recipe, insert_recipe, insert_saved_recipe
+from services.supabase_service import (
+    get_public_recipe,
+    get_recipe,
+    insert_recipe,
+    insert_saved_recipe,
+    share_recipe,
+)
 
 router = APIRouter()
 
@@ -114,6 +121,7 @@ async def save_recipe(
             },
             "nutrition": nutrition.model_dump(),
             "servings": payload.servings,
+            "is_public": False,
         },
         access_token=access_token,
     )
@@ -149,6 +157,12 @@ async def get_recipe_by_id(
     return RecipeLookupResponse(recipe=recipe)
 
 
+@router.get("/public/{recipe_id}", response_model=RecipeLookupResponse)
+async def get_public_recipe_by_id(recipe_id: UUID):
+    recipe = await get_public_recipe(str(recipe_id))
+    return RecipeLookupResponse(recipe=recipe)
+
+
 @router.post("/scale", response_model=ScaleRecipeResponse)
 def scale_recipe(payload: ScaleRecipeRequest):
     return scale_ingredients(
@@ -171,3 +185,26 @@ def substitute_ingredient(payload: SubstituteIngredientRequest):
 @router.post("/localize", response_model=LocalizedRecipeResponse)
 def localize_recipe_route(payload: LocalizeRecipeRequest):
     return localize_recipe(recipe=payload.recipe, region=payload.region)
+
+
+@router.post("/{recipe_id}/share", response_model=ShareRecipeResponse)
+async def share_recipe_by_id(
+    recipe_id: UUID,
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+):
+    del current_user
+
+    access_token = getattr(request.state, "access_token", None)
+
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="A valid Supabase access token is required to share recipes.",
+        )
+
+    recipe = await share_recipe(str(recipe_id), access_token=access_token)
+    return ShareRecipeResponse(
+        recipe=recipe,
+        public_url=f"/recipe/{recipe_id}",
+    )
