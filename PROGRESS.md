@@ -20,3 +20,15 @@
 
 - Day 8 completed live serving scaling from the single recipe view through the FastAPI scaling endpoint.
 - Day 9 completed nutrition estimation and presentation: Gemini now estimates per-serving calories and macros during save, Supabase persists the nutrition payload, and the recipe detail page renders live nutrition badges plus dietary flags.
+- Day 10 completed AI-powered ingredient substitutions and regional localization directly from the recipe page.
+- Day 11 completed the saved recipe dashboard with live Supabase data, search/filter controls, delete actions, and empty-state handling.
+- Day 12 completed the polished single recipe page with public sharing, print-friendly output, and public recipe access support through Supabase policy updates.
+
+## Security, Scalability, and SEO Pass
+
+- Added stricter frontend and backend sanitization for recipe text, names, email input, tags, ingredient fields, and recipe step content.
+- Hardened auth flow behavior by normalizing redirect targets, enforcing stronger signup password rules, and trimming/sanitizing auth input before Supabase requests.
+- Tightened image upload validation on both frontend and backend with file-size checks, allowed MIME type checks, filename checks, and lightweight content signature checks.
+- Added browser-facing security headers in Next.js and API response security headers in FastAPI.
+- Added SEO metadata for auth, dashboard, upload, recipe, and home routes so each page now has clearer titles, descriptions, and canonical URLs.
+- Flattened the UI toward a sharper, more consistent system by removing decorative gradients/glass backgrounds, aligning field styles, and styling scrollbars to match the app shell.

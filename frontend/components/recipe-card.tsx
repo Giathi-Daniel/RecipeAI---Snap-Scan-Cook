@@ -27,8 +27,8 @@ export function RecipeCard({
   footer,
 }: RecipeCardProps) {
   return (
-    <article className="recipe-shell rounded-[2rem] border border-white/60 p-6 shadow-card">
-      <div className="mb-5 overflow-hidden rounded-[1.5rem] border border-sand/70">
+    <article className="recipe-shell border border-sand p-6">
+      <div className="mb-5 overflow-hidden border border-sand">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -36,12 +36,12 @@ export function RecipeCard({
             className="h-44 w-full object-cover"
           />
         ) : (
-          <div className="flex h-44 items-end bg-[radial-gradient(circle_at_top_left,_rgba(255,214,153,0.95),_rgba(204,119,34,0.35)_48%,_rgba(34,85,51,0.82))] p-5">
-            <div className="rounded-[1.25rem] border border-white/30 bg-white/15 px-4 py-3 backdrop-blur">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
+          <div className="flex h-44 items-end bg-canvas p-5">
+            <div className="border border-sand bg-white px-4 py-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/55">
                 Saved recipe
               </p>
-              <p className="mt-2 max-w-[12rem] font-display text-2xl leading-tight text-white">
+              <p className="mt-2 max-w-[12rem] font-display text-2xl leading-tight text-ink">
                 {title}
               </p>
             </div>
@@ -63,7 +63,7 @@ export function RecipeCard({
       <p className="mt-3 text-sm leading-6 text-ink/70">{description}</p>
 
       {ingredients.length ? (
-        <section className="mt-6 rounded-[1.5rem] border border-sand/80 bg-canvas/75 p-5">
+        <section className="mt-6 border border-sand bg-canvas p-5">
           <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/55">
             Ingredients
           </h4>
@@ -84,7 +84,7 @@ export function RecipeCard({
       ) : null}
 
       {steps.length ? (
-        <section className="mt-5 rounded-[1.5rem] border border-sand/80 bg-white/85 p-5">
+        <section className="mt-5 border border-sand bg-white p-5">
           <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/55">Method</h4>
           <ol className="mt-4 space-y-4">
             {steps.map((step) => (
