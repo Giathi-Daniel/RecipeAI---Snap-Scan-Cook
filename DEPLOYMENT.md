@@ -27,14 +27,6 @@ CORS_ORIGINS=https://your-domain.vercel.app
 4. Deploy and verify build
 5. Test production URL
 
-### 2. Backend → Render
-1. Push backend code to GitHub
-2. Create new Web Service on render.com
-3. **Python version**: Automatically detected from `backend/runtime.txt` (Python 3.11.9)
-4. Build command: `pip install -r requirements.txt`
-5. Start command: `uvicorn main:app --host 0.0.0.0 --port 10000`
-6. Add environment variables in Render dashboard
-7. Deploy and verify API docs at `/docs`
 
 ## Post-Deployment Verification
 
@@ -50,50 +42,3 @@ CORS_ORIGINS=https://your-domain.vercel.app
 - [ ] Mobile responsive on all pages
 - [ ] Print view works for recipes
 - [ ] Public recipe sharing works
-
-## Screenshots to Capture
-
-1. **Landing Page** - Desktop view showing hero section and features grid
-2. **Landing Page Mobile** - Mobile responsive view
-3. **Upload Flow** - Text paste interface
-4. **Upload Flow** - Image upload interface
-5. **Recipe View** - Full recipe with ingredients and steps
-6. **Recipe Features** - Nutrition badges, scaling controls, substitution panel
-7. **Dashboard** - Saved recipes grid with search/filter
-8. **Mobile Navigation** - Hamburger menu expanded
-9. **Auth Pages** - Login and signup forms
-
-## LinkedIn Announcement
-
-**Post Title:** "Built RecipeAI: AI-Powered Recipe Assistant with Next.js & FastAPI"
-
-**Post Content:**
-```
-🍽️ Just completed RecipeAI — a full-stack AI-powered cooking assistant!
-
-What it does:
-• Upload food photos → AI identifies dishes and generates recipes
-• Paste messy recipe text → AI structures it automatically
-• Scale servings, substitute ingredients, localize recipes
-• Get nutritional analysis with dietary flags
-
-Tech Stack:
-• Frontend: Next.js 15 (App Router, TypeScript, Tailwind CSS)
-• Backend: FastAPI (Python)
-• AI: Google Gemini API + Cloud Vision API
-• Auth & DB: Supabase (PostgreSQL)
-• Deployed: Vercel + Render
-
-Built in 14 days following a structured roadmap from concept to production.
-
-Key learnings:
-✓ Integrating multiple AI APIs for different use cases
-✓ Designing clean, professional UI without over-styling
-✓ Implementing secure auth flows with Supabase
-✓ Building scalable FastAPI backends with proper testing
-✓ SEO optimization and security hardening
-
-Live demo and code on GitHub (link in comments)
-
-#WebDevelopment #AI #NextJS #FastAPI #FullStack #SoftwareEngineering
-```
