@@ -19,8 +19,8 @@ from models.recipe import (
 
 logger = logging.getLogger(__name__)
 
-MODEL_NAME = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
-DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+MODEL_NAME = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 SYSTEM_PROMPT = """
 You are a recipe parsing engine.
@@ -161,10 +161,10 @@ Rules:
 
 def parser_status():
     return {
-        "provider": "DeepSeek",
-        "ready": bool(os.getenv("DEEPSEEK_API_KEY")),
+        "provider": "Groq",
+        "ready": bool(os.getenv("GROQ_API_KEY")),
         "model": MODEL_NAME,
-        "message": "Recipe parsing is available when DEEPSEEK_API_KEY is configured.",
+        "message": "Recipe parsing is available when GROQ_API_KEY is configured.",
     }
 
 
@@ -179,8 +179,8 @@ def parse_recipe(text: str) -> ParseRecipeResponse:
     return _generate_recipe_response(
         prompt=cleaned_text,
         system_prompt=SYSTEM_PROMPT,
-        log_context=f"Parsing recipe text with DeepSeek. chars={len(cleaned_text)}",
-        failure_detail=f"DeepSeek failed to parse the recipe text with model '{MODEL_NAME}'.",
+        log_context=f"Parsing recipe text with Groq. chars={len(cleaned_text)}",
+        failure_detail=f"Groq failed to parse the recipe text with model '{MODEL_NAME}'.",
     )
 
 
@@ -198,8 +198,8 @@ def generate_recipe_from_name(dish_name: str) -> ParseRecipeResponse:
     return _generate_recipe_response(
         prompt=prompt,
         system_prompt=GENERATE_RECIPE_SYSTEM_PROMPT,
-        log_context=f"Generating recipe from dish name with DeepSeek. dish={cleaned_name!r}",
-        failure_detail=f"DeepSeek failed to generate recipe for '{cleaned_name}' with model '{MODEL_NAME}'.",
+        log_context=f"Generating recipe from dish name with Groq. dish={cleaned_name!r}",
+        failure_detail=f"Groq failed to generate recipe for '{cleaned_name}' with model '{MODEL_NAME}'.",
     )
 
 
@@ -229,11 +229,11 @@ def generate_recipe_from_dish_labels(labels: list[str], dish_name: str) -> Parse
         prompt=prompt,
         system_prompt=VISION_RECIPE_SYSTEM_PROMPT,
         log_context=(
-            "Generating recipe from image labels with DeepSeek. "
+            "Generating recipe from image labels with Groq. "
             f"dish={cleaned_dish} labels={cleaned_labels}"
         ),
         failure_detail=(
-            f"DeepSeek failed to generate a recipe from image labels with model '{MODEL_NAME}'."
+            f"Groq failed to generate a recipe from image labels with model '{MODEL_NAME}'."
         ),
     )
 
@@ -245,22 +245,22 @@ def estimate_nutrition(recipe: ParsedRecipe) -> Nutrition:
         prompt=prompt,
         system_prompt=NUTRITION_SYSTEM_PROMPT,
         log_context=(
-            "Estimating recipe nutrition with DeepSeek. "
+            "Estimating recipe nutrition with Groq. "
             f"title={recipe.title!r} servings={recipe.servings}"
         ),
         failure_detail=(
-            f"DeepSeek failed to estimate recipe nutrition with model '{MODEL_NAME}'."
+            f"Groq failed to estimate recipe nutrition with model '{MODEL_NAME}'."
         ),
-        malformed_detail="DeepSeek returned malformed nutrition JSON.",
+        malformed_detail="Groq returned malformed nutrition JSON.",
     )
 
     try:
         return Nutrition.model_validate(payload)
     except ValidationError as exc:
-        logger.exception("DeepSeek returned invalid nutrition payload.")
+        logger.exception("Groq returned invalid nutrition payload.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="DeepSeek returned malformed nutrition JSON.",
+            detail="Groq returned malformed nutrition JSON.",
         ) from exc
 
 
@@ -288,20 +288,20 @@ def suggest_substitutions(
         prompt=prompt,
         system_prompt=SUBSTITUTION_SYSTEM_PROMPT,
         log_context=(
-            "Suggesting ingredient substitutions with DeepSeek. "
+            "Suggesting ingredient substitutions with Groq. "
             f"recipe_title={cleaned_title!r} ingredient={ingredient.item!r}"
         ),
         failure_detail=(
-            f"DeepSeek failed to suggest substitutions with model '{MODEL_NAME}'."
+            f"Groq failed to suggest substitutions with model '{MODEL_NAME}'."
         ),
-        malformed_detail="DeepSeek returned malformed substitution JSON.",
+        malformed_detail="Groq returned malformed substitution JSON.",
     )
 
     raw_substitutions = payload.get("substitutions", [])
     if not isinstance(raw_substitutions, list):
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="DeepSeek returned malformed substitution JSON.",
+            detail="Groq returned malformed substitution JSON.",
         )
 
     try:
@@ -310,10 +310,10 @@ def suggest_substitutions(
             for option in raw_substitutions
         ]
     except ValidationError as exc:
-        logger.exception("DeepSeek returned invalid substitution payload.")
+        logger.exception("Groq returned invalid substitution payload.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="DeepSeek returned malformed substitution JSON.",
+            detail="Groq returned malformed substitution JSON.",
         ) from exc
 
     return SubstituteIngredientResponse(
@@ -335,11 +335,11 @@ def localize_recipe(recipe: ParsedRecipe, region: str) -> LocalizedRecipeRespons
         prompt=prompt,
         system_prompt=LOCALIZATION_SYSTEM_PROMPT,
         log_context=(
-            "Localizing recipe with DeepSeek. "
+            "Localizing recipe with Groq. "
             f"title={recipe.title!r} region={cleaned_region!r}"
         ),
         failure_detail=(
-            f"DeepSeek failed to localize the recipe with model '{MODEL_NAME}'."
+            f"Groq failed to localize the recipe with model '{MODEL_NAME}'."
         ),
     )
 
@@ -357,16 +357,16 @@ def _generate_recipe_response(
         system_prompt=system_prompt,
         log_context=log_context,
         failure_detail=failure_detail,
-        malformed_detail="DeepSeek returned malformed recipe JSON.",
+        malformed_detail="Groq returned malformed recipe JSON.",
     )
 
     try:
         recipe = ParsedRecipe.model_validate(payload)
     except ValidationError as exc:
-        logger.exception("DeepSeek returned invalid recipe payload.")
+        logger.exception("Groq returned invalid recipe payload.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="DeepSeek returned malformed recipe JSON.",
+            detail="Groq returned malformed recipe JSON.",
         ) from exc
 
     normalized_payload = recipe.model_dump()
@@ -380,11 +380,11 @@ def _generate_json_payload(
     failure_detail: str,
     malformed_detail: str,
 ) -> dict[str, Any]:
-    api_key = os.getenv("DEEPSEEK_API_KEY")
+    api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="DEEPSEEK_API_KEY is not configured on the backend.",
+            detail="GROQ_API_KEY is not configured on the backend.",
         )
 
     logger.info(log_context)
@@ -406,12 +406,12 @@ def _generate_json_payload(
 
     try:
         with httpx.Client(timeout=30.0) as client:
-            response = client.post(DEEPSEEK_API_URL, headers=headers, json=payload)
+            response = client.post(GROQ_API_URL, headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
     except httpx.HTTPStatusError as exc:
         logger.exception(
-            "DeepSeek API request failed. status=%s",
+            "Groq API request failed. status=%s",
             exc.response.status_code,
         )
         raise HTTPException(
@@ -419,7 +419,7 @@ def _generate_json_payload(
             detail=failure_detail,
         ) from exc
     except Exception as exc:
-        logger.exception("DeepSeek request failed. model=%s", MODEL_NAME)
+        logger.exception("Groq request failed. model=%s", MODEL_NAME)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=failure_detail,
@@ -427,9 +427,9 @@ def _generate_json_payload(
 
     try:
         raw_text = data["choices"][0]["message"]["content"]
-        logger.info("DeepSeek response preview=%s", raw_text[:500])
+        logger.info("Groq response preview=%s", raw_text[:500])
     except (KeyError, IndexError) as exc:
-        logger.exception("DeepSeek returned unexpected response structure.")
+        logger.exception("Groq returned unexpected response structure.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=malformed_detail,
@@ -438,7 +438,7 @@ def _generate_json_payload(
     try:
         return _load_recipe_json(raw_text)
     except (json.JSONDecodeError, ValueError) as exc:
-        logger.exception("DeepSeek returned malformed JSON.")
+        logger.exception("Groq returned malformed JSON.")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail=malformed_detail,
@@ -528,10 +528,10 @@ def _load_recipe_json(raw_text: str) -> dict[str, Any]:
     start = candidate.find("{")
     end = candidate.rfind("}")
     if start == -1 or end == -1 or end < start:
-        raise ValueError("Could not locate a JSON object in the DeepSeek response.")
+        raise ValueError("Could not locate a JSON object in the Groq response.")
 
     parsed = json.loads(candidate[start : end + 1])
     if not isinstance(parsed, dict):
-        raise ValueError("DeepSeek response JSON root must be an object.")
+        raise ValueError("Groq response JSON root must be an object.")
 
     return parsed
