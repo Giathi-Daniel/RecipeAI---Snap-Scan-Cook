@@ -247,14 +247,14 @@
 ### Day 14 — Polish, README & Portfolio Prep
 **Goal:** App looks portfolio-ready. You can demo it confidently in interviews.
 
-- [ ] Add a proper landing page (`/app/page.tsx`) with hero, features section, and CTA
-- [ ] Take screenshots of all key pages — add to `README.md`
-- [ ] Record a short Loom/screen demo video (2–3 min walkthrough)
-- [ ] Final README pass: ensure all sections are accurate and complete
-- [ ] Add the project to your LinkedIn with the live URL and demo video
-- [ ] Add to your portfolio/CV under "Projects"
-- [ ] Open a few GitHub Issues for future features (shows active development mindset)
-- [ ] Share on LinkedIn with a post about what you built and learned
+- [x] Add a proper landing page (`/app/page.tsx`) with hero, features section, and CTA
+- [x] Take screenshots of all key pages — add to `README.md`
+- [x] Record a short Loom/screen demo video (2–3 min walkthrough)
+- [x] Final README pass: ensure all sections are accurate and complete
+- [x] Add the project to your LinkedIn with the live URL and demo video
+- [x] Add to your portfolio/CV under "Projects"
+- [x] Open a few GitHub Issues for future features (shows active development mindset)
+- [x] Share on LinkedIn with a post about what you built and learned
 
 **Deliverable:** Polished, deployed, documented project ready for job applications.
 
