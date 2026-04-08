@@ -15,6 +15,8 @@ export type DashboardRecipe = {
   dietaryFlags: string[];
   ingredients: DashboardIngredient[];
   savedAt: string | null;
+  rating: number | null;
+  notes: string | null;
 };
 
 function normalize(value: string) {

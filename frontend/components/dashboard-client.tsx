@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { CollectionModal } from "@/components/collection-modal";
 import { LogoutButton } from "@/components/logout-button";
 import { RecipeCard } from "@/components/recipe-card";
+import { StarRating } from "@/components/star-rating";
 import { apiPost, apiPatch, apiDelete } from "@/lib/api";
 import {
   collectDashboardFilters,
@@ -398,6 +399,14 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
               ingredients={recipe.ingredients.slice(0, 4)}
               footer={
                 <div className="flex flex-col gap-4">
+                  {recipe.rating && (
+                    <div className="flex items-center gap-2 border border-sand bg-white px-4 py-3">
+                      <StarRating rating={recipe.rating} onRatingChange={() => {}} readonly size="sm" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-ink/55">
+                        Your Rating
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between gap-3 border border-sand bg-canvas px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink/55">
                     <span>{formatSavedDate(recipe.savedAt)}</span>
                     <span>{recipe.ingredients.length} ingredients</span>
