@@ -214,3 +214,23 @@ class LocalizeRecipeRequest(BaseModel):
 class LocalizedRecipeResponse(BaseModel):
     region: str
     recipe: ParsedRecipe
+
+
+class ImportRecipeFromUrlRequest(BaseModel):
+    url: str = Field(..., min_length=1, description="URL of the recipe to import.")
+
+    @field_validator("url")
+    @classmethod
+    def validate_url(cls, value: str) -> str:
+        value = value.strip()
+        if not value.startswith(("http://", "https://")):
+            raise ValueError("URL must start with http:// or https://")
+        if len(value) > 2000:
+            raise ValueError("URL is too long")
+        return value
+
+
+class ImportRecipeFromUrlResponse(BaseModel):
+    recipe: ParsedRecipe
+    source_url: str
+    extraction_method: str
