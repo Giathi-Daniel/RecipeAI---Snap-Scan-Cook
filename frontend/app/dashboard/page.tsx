@@ -18,6 +18,8 @@ type SavedRecipeRow = {
   id: string;
   created_at: string | null;
   recipe_id: string;
+  rating: number | null;
+  notes: string | null;
   recipe: Array<{
     id: string;
     title: string;
@@ -56,6 +58,8 @@ function mapSavedRecipe(row: SavedRecipeRow): DashboardRecipe | null {
     dietaryFlags: recipe.nutrition?.dietary_flags ?? [],
     ingredients: recipe.structured_data?.ingredients ?? [],
     savedAt: row.created_at,
+    rating: row.rating,
+    notes: row.notes,
   };
 }
 
@@ -77,7 +81,7 @@ export default async function DashboardPage() {
   const { data, error } = await supabase
     .from("saved_recipes")
     .select(
-      "id, created_at, recipe_id, recipe:recipes(id, title, description, image_url, servings, structured_data, nutrition)",
+      "id, created_at, recipe_id, rating, notes, recipe:recipes(id, title, description, image_url, servings, structured_data, nutrition)",
     )
     .order("created_at", { ascending: false });
 
