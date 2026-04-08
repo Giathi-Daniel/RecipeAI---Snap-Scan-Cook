@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   poweredByHeader: false,
+  webpack: (config) => {
+    config.cache = {
+      type: 'filesystem',
+      compression: 'gzip',
+    };
+    return config;
+  },
   async headers() {
     return [
       {

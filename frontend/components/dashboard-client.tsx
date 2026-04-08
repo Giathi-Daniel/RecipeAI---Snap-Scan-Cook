@@ -78,20 +78,23 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
       } = await supabase.auth.getSession();
 
       const accessToken = session?.access_token;
-      if (!accessToken) return;
+      if (!accessToken) {
+        setIsLoadingCollections(false);
+        return;
+      }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/api/collections/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${backendUrl}/api/collections/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
 
       if (response.ok) {
         const data = (await response.json()) as CollectionsResponse;
         setCollections(data.collections);
+      } else {
+        console.error("Collections API returned:", response.status, response.statusText);
       }
     } catch (err) {
       console.error("Failed to load collections:", err);
