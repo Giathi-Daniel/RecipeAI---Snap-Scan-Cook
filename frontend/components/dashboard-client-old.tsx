@@ -1,31 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition, useEffect } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { CollectionModal } from "@/components/collection-modal";
 import { LogoutButton } from "@/components/logout-button";
 import { RecipeCard } from "@/components/recipe-card";
-import { apiPost, apiPatch, apiDelete } from "@/lib/api";
 import {
   collectDashboardFilters,
   filterDashboardRecipes,
   type DashboardRecipe,
 } from "@/lib/dashboard";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
-
-type Collection = {
-  id: string;
-  name: string;
-  description: string | null;
-  recipe_count: number;
-};
-
-type CollectionsResponse = {
-  collections: Collection[];
-  total: number;
-};
 
 type DashboardClientProps = {
   userEmail: string;
@@ -52,130 +38,11 @@ function formatSavedDate(savedAt: string | null) {
 export function DashboardClient({ userEmail, initialRecipes }: DashboardClientProps) {
   const router = useRouter();
   const [recipes, setRecipes] = useState(initialRecipes);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
-  const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
-  const [isLoadingCollections, setIsLoadingCollections] = useState(false);
-
-  useEffect(() => {
-    loadCollections();
-  }, []);
-
-  async function loadCollections() {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    setIsLoadingCollections(true);
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const accessToken = session?.access_token;
-      if (!accessToken) return;
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/api/collections/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      if (response.ok) {
-        const data = (await response.json()) as CollectionsResponse;
-        setCollections(data.collections);
-      }
-    } catch (err) {
-      console.error("Failed to load collections:", err);
-    } finally {
-      setIsLoadingCollections(false);
-    }
-  }
-
-  async function handleCreateCollection(name: string, description: string) {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiPost(
-      "/api/collections/",
-      { name, description },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    await loadCollections();
-  }
-
-  async function handleUpdateCollection(name: string, description: string) {
-    if (!editingCollection) return;
-
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiPatch(
-      `/api/collections/${editingCollection.id}`,
-      { name, description },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    await loadCollections();
-    setEditingCollection(null);
-  }
-
-  async function handleDeleteCollection(collectionId: string) {
-    if (!confirm("Delete this collection? Recipes will not be deleted.")) return;
-
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiDelete(`/api/collections/${collectionId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (selectedCollection === collectionId) {
-      setSelectedCollection(null);
-    }
-
-    await loadCollections();
-  }
 
   const availableFilters = useMemo(() => collectDashboardFilters(recipes), [recipes]);
   const matchingRecipes = useMemo(() => {
@@ -236,74 +103,6 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
         </div>
       </div>
 
-      <div className="mb-6 border border-sand bg-white p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl text-ink">Collections</h2>
-          <button
-            type="button"
-            onClick={() => {
-              setEditingCollection(null);
-              setIsCollectionModalOpen(true);
-            }}
-            className="rounded-sm border border-ink bg-ink px-4 py-2 text-sm font-semibold text-canvas transition hover:bg-ink/90"
-          >
-            + New Collection
-          </button>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedCollection(null)}
-            className={`border px-4 py-2 text-sm font-semibold uppercase tracking-wider transition ${
-              selectedCollection === null
-                ? "border-ink bg-ink text-canvas"
-                : "border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
-            }`}
-          >
-            All Recipes ({recipes.length})
-          </button>
-          {collections.map((collection) => (
-            <div key={collection.id} className="group relative">
-              <button
-                type="button"
-                onClick={() =>
-                  setSelectedCollection((current) =>
-                    current === collection.id ? null : collection.id,
-                  )
-                }
-                className={`border px-4 py-2 text-sm font-semibold uppercase tracking-wider transition ${
-                  selectedCollection === collection.id
-                    ? "border-ink bg-ink text-canvas"
-                    : "border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
-                }`}
-              >
-                {collection.name} ({collection.recipe_count})
-              </button>
-              <div className="absolute right-0 top-full z-10 mt-1 hidden border border-sand bg-white group-hover:block">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingCollection(collection);
-                    setIsCollectionModalOpen(true);
-                  }}
-                  className="block w-full px-4 py-2 text-left text-sm text-ink hover:bg-canvas"
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteCollection(collection.id)}
-                  className="block w-full px-4 py-2 text-left text-sm text-rose-700 hover:bg-rose-50"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="recipe-shell border border-sand p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -316,7 +115,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Try pilau, coconut, vegetarian..."
-              className="w-full border border-sand bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent"
+              className="w-full rounded-full border border-sand/80 bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent/40"
             />
           </label>
         </div>
@@ -353,7 +152,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
       </div>
 
       {deleteError ? (
-        <div className="mt-6 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div className="mt-6 rounded-[1.25rem] border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
           {deleteError}
         </div>
       ) : null}
@@ -438,16 +237,6 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
           </button>
         </div>
       )}
-
-      <CollectionModal
-        isOpen={isCollectionModalOpen}
-        onClose={() => {
-          setIsCollectionModalOpen(false);
-          setEditingCollection(null);
-        }}
-        onSave={editingCollection ? handleUpdateCollection : handleCreateCollection}
-        editingCollection={editingCollection}
-      />
     </section>
   );
 }
