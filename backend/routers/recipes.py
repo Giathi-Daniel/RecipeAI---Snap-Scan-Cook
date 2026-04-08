@@ -25,6 +25,7 @@ from models.recipe import (
     SubstituteIngredientResponse,
 )
 from services.auth_service import get_current_user
+from services.collection_service import add_recipe_to_collection
 from services.gemini_service import (
     estimate_nutrition,
     localize_recipe,
@@ -160,6 +161,20 @@ async def save_recipe(
         },
         access_token=access_token,
     )
+
+    # Add recipe to collections if specified
+    if payload.collection_ids:
+        for collection_id in payload.collection_ids:
+            try:
+                await add_recipe_to_collection(
+                    collection_id=str(collection_id),
+                    recipe_id=str(recipe.id),
+                    user_id=user_id,
+                    access_token=access_token,
+                )
+            except HTTPException:
+                # Continue if collection doesn't exist or recipe already in collection
+                pass
 
     return SaveRecipeResponse(recipe=recipe, saved_recipe=saved_recipe)
 

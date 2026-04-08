@@ -88,3 +88,63 @@ export async function apiPostFormData<T>(
 
   return response.json() as Promise<T>;
 }
+
+export async function apiPatch<T>(
+  path: string,
+  body: unknown,
+  options: ApiRequestOptions = {},
+): Promise<T> {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    let detail = `API request failed: ${response.status}`;
+
+    try {
+      const errorBody = (await response.json()) as { detail?: string };
+      if (errorBody.detail) {
+        detail = errorBody.detail;
+      }
+    } catch {
+      // Keep the fallback error message when the response body is not JSON.
+    }
+
+    throw new Error(detail);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function apiDelete(
+  path: string,
+  options: ApiRequestOptions = {},
+): Promise<void> {
+  const response = await fetch(`${BACKEND_URL}${path}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    let detail = `API request failed: ${response.status}`;
+
+    try {
+      const errorBody = (await response.json()) as { detail?: string };
+      if (errorBody.detail) {
+        detail = errorBody.detail;
+      }
+    } catch {
+      // Keep the fallback error message when the response body is not JSON.
+    }
+
+    throw new Error(detail);
+  }
+}
