@@ -398,7 +398,7 @@ def _generate_json_payload(
         "model": MODEL_NAME,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": f"{prompt}\n\nReturn your response as valid JSON."},
         ],
         "temperature": 0.2,
         "response_format": {"type": "json_object"},
