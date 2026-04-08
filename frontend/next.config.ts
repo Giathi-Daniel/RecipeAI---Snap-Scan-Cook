@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   poweredByHeader: false,
-  swcMinify: true,
   compress: true,
   productionBrowserSourceMaps: false,
   webpack: (config) => {
