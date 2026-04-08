@@ -1,5 +1,13 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
+import nextPlugin from '@next/eslint-plugin-next';
 
-const config = [...nextVitals];
-
-export default config;
+export default [
+  {
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
+  },
+];
