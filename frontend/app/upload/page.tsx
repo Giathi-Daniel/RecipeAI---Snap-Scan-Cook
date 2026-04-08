@@ -80,17 +80,19 @@ Method
 
 export default function UploadPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"text" | "image" | "url">("text");
+  const [activeTab, setActiveTab] = useState<"text" | "image" | "url" | "generate">("text");
   const [recipeText, setRecipeText] = useState("");
   const [recipeUrl, setRecipeUrl] = useState("");
+  const [dishName, setDishName] = useState("");
   const [isParsing, setIsParsing] = useState(false);
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [visionLabels, setVisionLabels] = useState<string[]>([]);
-  const [dishName, setDishName] = useState<string | null>(null);
+  const [identifiedDishName, setIdentifiedDishName] = useState<string | null>(null);
   const [extractionMethod, setExtractionMethod] = useState<string | null>(null);
   const [recipeSourceText, setRecipeSourceText] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -212,7 +214,7 @@ export default function UploadPage() {
       setRecipeSourceText(`Imported from: ${response.source_url}`);
       setExtractionMethod(response.extraction_method);
       setVisionLabels([]);
-      setDishName(null);
+      setIdentifiedDishName(null);
     } catch (err) {
       setParsedRecipe(null);
       setError(err instanceof Error ? err.message : "URL import failed.");
@@ -242,13 +244,43 @@ export default function UploadPage() {
       setParsedRecipe(response.recipe);
       setRecipeSourceText(trimmedText);
       setVisionLabels([]);
-      setDishName(null);
+      setIdentifiedDishName(null);
       setExtractionMethod(null);
     } catch (err) {
       setParsedRecipe(null);
       setError(err instanceof Error ? err.message : "Recipe parsing failed.");
     } finally {
       setIsParsing(false);
+    }
+  }
+
+  async function handleGenerateRecipe() {
+    const trimmedName = dishName.trim();
+
+    if (!trimmedName) {
+      setError("Please enter a dish name.");
+      setSaveMessage(null);
+      return;
+    }
+
+    setIsGenerating(true);
+    setError(null);
+    setSaveMessage(null);
+
+    try {
+      const response = await apiPost<ParseRecipeResponse>("/api/recipes/generate", {
+        text: trimmedName,
+      });
+      setParsedRecipe(response.recipe);
+      setRecipeSourceText(`Generated from dish name: ${trimmedName}`);
+      setVisionLabels([]);
+      setIdentifiedDishName(null);
+      setExtractionMethod(null);
+    } catch (err) {
+      setParsedRecipe(null);
+      setError(err instanceof Error ? err.message : "Recipe generation failed.");
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -344,7 +376,7 @@ export default function UploadPage() {
 
       setParsedRecipe(response.recipe);
       setVisionLabels(response.labels);
-      setDishName(response.dish_name);
+      setIdentifiedDishName(response.dish_name);
       setExtractionMethod(null);
       setRecipeSourceText(
         `Generated from uploaded image.\nDish: ${response.dish_name}\nVision labels: ${response.labels.join(", ")}`,
@@ -352,7 +384,7 @@ export default function UploadPage() {
     } catch (err) {
       setParsedRecipe(null);
       setVisionLabels([]);
-      setDishName(null);
+      setIdentifiedDishName(null);
       setError(err instanceof Error ? err.message : "Dish identification failed.");
     } finally {
       setIsIdentifying(false);
@@ -362,17 +394,18 @@ export default function UploadPage() {
   function handleClear() {
     setRecipeText("");
     setRecipeUrl("");
+    setDishName("");
     setParsedRecipe(null);
     setSelectedImage(null);
     setVisionLabels([]);
-    setDishName(null);
+    setIdentifiedDishName(null);
     setExtractionMethod(null);
     setRecipeSourceText("");
     setError(null);
     setSaveMessage(null);
   }
 
-  const isBusy = isParsing || isIdentifying || isSaving || isImporting;
+  const isBusy = isParsing || isIdentifying || isSaving || isImporting || isGenerating;
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
@@ -416,16 +449,100 @@ export default function UploadPage() {
               >
                 URL
               </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("generate")}
+                className={cn(
+                  "border-b-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition",
+                  activeTab === "generate"
+                    ? "border-ink text-ink"
+                    : "border-transparent text-ink/50 hover:text-ink/75",
+                )}
+              >
+                Generate
+              </button>
             </div>
             <h1 className="mt-4 max-w-xl font-display text-4xl leading-tight text-ink">
               Turn recipes into clean, structured cooking data.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-ink/75">
-              Paste recipe text, upload a dish photo, or import from a URL. AI structures it automatically.
+              Paste recipe text, upload a dish photo, import from a URL, or generate from a dish name. AI structures it automatically.
             </p>
           </div>
 
           <div className="p-5 sm:p-8 lg:max-h-[calc(100vh-13rem)] lg:overflow-y-auto">
+            {activeTab === "generate" && (
+              <section className="border border-sand bg-canvas p-5">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
+                    Generate from dish name
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-ink/70">
+                    Type any dish name from any cuisine, and AI will generate a complete authentic recipe.
+                  </p>
+                </div>
+
+                <label
+                  htmlFor="dish-name"
+                  className="mt-5 block text-sm font-semibold uppercase tracking-[0.2em] text-ink/55"
+                >
+                  Dish name
+                </label>
+                <input
+                  id="dish-name"
+                  type="text"
+                  value={dishName}
+                  onChange={(event) => setDishName(event.target.value)}
+                  placeholder="e.g., githeri, pizza, biryani, pad thai..."
+                  disabled={isBusy}
+                  className="mt-3 block w-full border border-sand bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-accent"
+                />
+
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleGenerateRecipe}
+                    disabled={isBusy || !dishName.trim()}
+                    className="rounded-sm border border-ink bg-ink px-6 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <span className="flex items-center gap-2">
+                      {isGenerating ? (
+                        <span className="h-4 w-4 animate-spin border-2 border-white/40 border-t-white" />
+                      ) : null}
+                      <span>{isGenerating ? "Generating recipe..." : "Generate Recipe"}</span>
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    disabled={isBusy}
+                    className="border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink/75 transition hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                <div className="mt-5 border border-sand bg-white p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/55">
+                    Examples
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {["Githeri", "Ugali", "Pilau", "Chapati", "Nyama Choma"].map((example) => (
+                      <button
+                        key={example}
+                        type="button"
+                        onClick={() => setDishName(example)}
+                        disabled={isBusy}
+                        className="border border-sand bg-canvas px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {example}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
             {activeTab === "url" && (
               <section className="border border-sand bg-canvas p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -508,9 +625,9 @@ export default function UploadPage() {
                       Upload a food photo to identify the dish and generate a structured recipe.
                     </p>
                   </div>
-                  {dishName ? (
+                  {identifiedDishName ? (
                     <div className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink">
-                      {dishName}
+                      {identifiedDishName}
                     </div>
                   ) : null}
                 </div>
@@ -644,14 +761,14 @@ export default function UploadPage() {
         <article className="overflow-hidden border border-sand bg-white">
           <div className="border-b border-sand/80 px-6 py-5">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
-              Structured preview
+              Recipe Preview
             </p>
             <h2 className="mt-2 font-display text-3xl text-ink">
-              {parsedRecipe ? parsedRecipe.title : "Recipe output appears here"}
+              {parsedRecipe ? parsedRecipe.title : "Your recipe will appear here"}
             </h2>
             <p className="mt-3 text-sm leading-6 text-ink/70">
               {parsedRecipe?.description ??
-                "Once parsing succeeds, this panel will show the cleaned recipe title, ingredients, steps, servings, and tags."}
+                "Upload an image, paste recipe text, import from a URL, or type a dish name to get started. Your structured recipe will display here."}
             </p>
           </div>
 
@@ -680,7 +797,7 @@ export default function UploadPage() {
                       Vision reading
                     </p>
                     <h3 className="mt-3 font-display text-2xl text-ink">
-                      {dishName ?? "Dish identified from photo"}
+                      {identifiedDishName ?? "Dish identified from photo"}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-ink/70">
                       Google Cloud Vision extracted these cues before Gemini generated the recipe.
@@ -756,26 +873,33 @@ export default function UploadPage() {
               </div>
             ) : (
               <div className="grid gap-4">
-                {["Title normalization", "Ingredient extraction", "Step ordering"].map(
-                  (item, index) => (
-                    <div
-                      key={item}
-                      className={cn(
-                        "border border-sand/80 p-5",
-                        index === 1 ? "bg-canvas/80" : "bg-white/80",
-                      )}
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
-                        Preview block {index + 1}
-                      </p>
-                      <h3 className="mt-2 font-display text-2xl text-ink">{item}</h3>
-                      <p className="mt-3 text-sm leading-6 text-ink/70">
-                        This area is ready to display structured parser output as soon as the
-                        backend returns JSON.
-                      </p>
-                    </div>
-                  ),
-                )}
+                <div className="border border-sand/80 bg-white/80 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                    Ready to process
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl text-ink">Ingredients & Quantities</h3>
+                  <p className="mt-3 text-sm leading-6 text-ink/70">
+                    AI will extract all ingredients with precise measurements and convert them into a clean, structured format.
+                  </p>
+                </div>
+                <div className="border border-sand/80 bg-canvas/80 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                    Ready to process
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl text-ink">Cooking Instructions</h3>
+                  <p className="mt-3 text-sm leading-6 text-ink/70">
+                    Step-by-step cooking instructions will be organized in the correct order with clear, easy-to-follow directions.
+                  </p>
+                </div>
+                <div className="border border-sand/80 bg-white/80 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
+                    Ready to process
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl text-ink">Recipe Details</h3>
+                  <p className="mt-3 text-sm leading-6 text-ink/70">
+                    Servings, cooking time, dietary tags, and other helpful information will be automatically identified and displayed.
+                  </p>
+                </div>
               </div>
             )}
           </div>
