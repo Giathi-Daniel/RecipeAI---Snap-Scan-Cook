@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { CollectionModal } from "@/components/collection-modal";
 import { LogoutButton } from "@/components/logout-button";
 import { RecipeCard } from "@/components/recipe-card";
+import { ShoppingListModal } from "@/components/shopping-list-modal";
 import { StarRating } from "@/components/star-rating";
 import { apiPost, apiPatch, apiDelete } from "@/lib/api";
 import {
@@ -63,6 +64,8 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
   const [isLoadingCollections, setIsLoadingCollections] = useState(false);
+  const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(new Set());
+  const [isShoppingListModalOpen, setIsShoppingListModalOpen] = useState(false);
 
   useEffect(() => {
     loadCollections();
@@ -221,7 +224,23 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
     });
   }
 
+  function toggleRecipeSelection(recipeId: string) {
+    const newSelection = new Set(selectedRecipeIds);
+    if (newSelection.has(recipeId)) {
+      newSelection.delete(recipeId);
+    } else {
+      newSelection.add(recipeId);
+    }
+    setSelectedRecipeIds(newSelection);
+  }
+
+  function handleGenerateShoppingList() {
+    if (selectedRecipeIds.size === 0) return;
+    setIsShoppingListModalOpen(true);
+  }
+
   const hasRecipes = recipes.length > 0;
+  const selectedRecipes = recipes.filter((r) => selectedRecipeIds.has(r.recipeId));
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-12">
@@ -236,6 +255,15 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
           <div className="border border-sand bg-white px-4 py-2 text-sm text-ink/70">
             {recipes.length} saved {recipes.length === 1 ? "recipe" : "recipes"}
           </div>
+          {selectedRecipeIds.size > 0 && (
+            <button
+              type="button"
+              onClick={handleGenerateShoppingList}
+              className="rounded-sm border border-herb bg-herb px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              Generate Shopping List ({selectedRecipeIds.size})
+            </button>
+          )}
           <LogoutButton />
         </div>
       </div>
@@ -388,8 +416,19 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
         </div>
       ) : matchingRecipes.length ? (
         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {matchingRecipes.map((recipe) => (
-            <RecipeCard
+          {matchingRecipes.map((recipe) => {
+            const isSelected = selectedRecipeIds.has(recipe.recipeId);
+            return (
+              <div key={recipe.savedRecipeId} className="relative">
+                <label className="absolute left-4 top-4 z-10 flex h-6 w-6 cursor-pointer items-center justify-center border-2 border-ink bg-white transition hover:bg-canvas">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleRecipeSelection(recipe.recipeId)}
+                    className="h-4 w-4"
+                  />
+                </label>
+                <RecipeCard
               key={recipe.savedRecipeId}
               title={recipe.title}
               description={recipe.description}
@@ -430,7 +469,9 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                 </div>
               }
             />
-          ))}
+          </div>
+        );
+      })}
         </div>
       ) : (
         <div className="recipe-shell mt-8 border border-sand px-8 py-10 text-center">
@@ -459,6 +500,12 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
         }}
         onSave={editingCollection ? handleUpdateCollection : handleCreateCollection}
         editingCollection={editingCollection}
+      />
+
+      <ShoppingListModal
+        isOpen={isShoppingListModalOpen}
+        onClose={() => setIsShoppingListModalOpen(false)}
+        selectedRecipes={selectedRecipes}
       />
     </section>
   );
