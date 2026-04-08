@@ -10,11 +10,12 @@ NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 
 ### Backend (Render)
 ```
-SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_JWT_SECRET=your_jwt_secret
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 GEMINI_API_KEY=your_gemini_api_key
 GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
-FRONTEND_URL=https://your-domain.vercel.app
+CORS_ORIGINS=https://your-domain.vercel.app
 ```
 
 ## Deployment Steps
@@ -29,10 +30,11 @@ FRONTEND_URL=https://your-domain.vercel.app
 ### 2. Backend → Render
 1. Push backend code to GitHub
 2. Create new Web Service on render.com
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `uvicorn main:app --host 0.0.0.0 --port 10000`
-5. Add environment variables in Render dashboard
-6. Deploy and verify API docs at `/docs`
+3. **Python version**: Automatically detected from `backend/runtime.txt` (Python 3.11.9)
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `uvicorn main:app --host 0.0.0.0 --port 10000`
+6. Add environment variables in Render dashboard
+7. Deploy and verify API docs at `/docs`
 
 ## Post-Deployment Verification
 
