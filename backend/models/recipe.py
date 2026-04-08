@@ -136,6 +136,7 @@ class SaveRecipeRequest(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     servings: int = Field(default=4, ge=1)
     tags: list[str] = Field(default_factory=list)
+    collection_ids: list[UUID] = Field(default_factory=list)
 
     @field_validator("title")
     @classmethod
