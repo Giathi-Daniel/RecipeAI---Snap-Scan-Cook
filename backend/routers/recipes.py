@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from models.recipe import (
     Ingredient,
+    ImportRecipeFromUrlRequest,
+    ImportRecipeFromUrlResponse,
     LocalizeRecipeRequest,
     LocalizedRecipeResponse,
     Nutrition,
@@ -37,6 +39,7 @@ from services.supabase_service import (
     insert_saved_recipe,
     share_recipe,
 )
+from services.url_import_service import fetch_recipe_from_url
 
 router = APIRouter()
 
@@ -69,6 +72,30 @@ def get_demo_recipe():
 @router.get("/demo-recipe", response_model=Recipe)
 def get_demo_recipe_alias():
     return demo_recipe
+
+
+@router.post("/import-url", response_model=ImportRecipeFromUrlResponse)
+async def import_recipe_from_url(payload: ImportRecipeFromUrlRequest):
+    try:
+        recipe = await fetch_recipe_from_url(payload.url)
+        
+        # Determine extraction method based on recipe data
+        extraction_method = "json-ld"
+        if not recipe.description:
+            extraction_method = "microdata"
+        if len(recipe.tags) == 1 and recipe.tags[0] == "imported":
+            extraction_method = "gemini-fallback"
+        
+        return ImportRecipeFromUrlResponse(
+            recipe=recipe,
+            source_url=payload.url,
+            extraction_method=extraction_method,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Failed to import recipe from URL: {str(e)}",
+        )
 
 
 @router.post("/parse", response_model=ParseRecipeResponse)
