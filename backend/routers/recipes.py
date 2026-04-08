@@ -28,6 +28,7 @@ from services.auth_service import get_current_user
 from services.collection_service import add_recipe_to_collection
 from services.gemini_service import (
     estimate_nutrition,
+    generate_recipe_from_name,
     localize_recipe,
     parse_recipe,
     suggest_substitutions,
@@ -102,6 +103,12 @@ async def import_recipe_from_url(payload: ImportRecipeFromUrlRequest):
 @router.post("/parse", response_model=ParseRecipeResponse)
 def parse_recipe_text(payload: ParseRecipeRequest):
     return parse_recipe(payload.text)
+
+
+@router.post("/generate", response_model=ParseRecipeResponse)
+def generate_recipe_from_dish_name(payload: ParseRecipeRequest):
+    """Generate a complete recipe from just a dish name (e.g., 'githeri', 'pizza', 'biryani')."""
+    return generate_recipe_from_name(payload.text)
 
 
 @router.post("/save", response_model=SaveRecipeResponse)
