@@ -1,16 +1,3 @@
-# Deployment Checklist
-
-## Pre-Deployment
-
-- [x] Professional landing page redesigned
-- [x] All rounded corners removed for sharp, professional aesthetic
-- [x] Color scheme minimized to natural palette
-- [x] Mobile responsive design verified
-- [x] SEO metadata complete for all routes
-- [x] Security headers implemented
-- [x] Input sanitization hardened
-- [x] Build process tested locally
-
 ## Environment Variables
 
 ### Frontend (Vercel)
@@ -47,12 +34,6 @@ FRONTEND_URL=https://your-domain.vercel.app
 5. Add environment variables in Render dashboard
 6. Deploy and verify API docs at `/docs`
 
-### 3. Database → Supabase
-1. Verify all migrations applied
-2. Check RLS policies active
-3. Test auth flow in production
-4. Verify recipe CRUD operations
-
 ## Post-Deployment Verification
 
 - [ ] Landing page loads correctly
@@ -79,23 +60,6 @@ FRONTEND_URL=https://your-domain.vercel.app
 7. **Dashboard** - Saved recipes grid with search/filter
 8. **Mobile Navigation** - Hamburger menu expanded
 9. **Auth Pages** - Login and signup forms
-
-## GitHub Repository
-
-- [x] README.md complete with setup instructions
-- [x] PROGRESS.md documenting 14-day journey
-- [x] .env.example with all required variables
-- [x] Clear project structure documented
-- [x] License file included (MIT)
-- [x] .gitignore properly configured
-
-## Portfolio Integration
-
-- [ ] Add RecipeAI to portfolio projects section
-- [ ] Include 2-3 key screenshots
-- [ ] Highlight technical stack: Next.js 15, FastAPI, Supabase, Google AI APIs
-- [ ] Link to live demo and GitHub repository
-- [ ] Emphasize AI integration and full-stack capabilities
 
 ## LinkedIn Announcement
 
@@ -131,103 +95,3 @@ Live demo and code on GitHub (link in comments)
 
 #WebDevelopment #AI #NextJS #FastAPI #FullStack #SoftwareEngineering
 ```
-
-## GitHub Issues to Create
-
-### Issue 1: Enable Google Cloud Vision API Billing
-**Title:** Enable Google Cloud Vision API for Image Recognition
-
-**Description:**
-Currently, the image upload flow stops at Vision API label extraction because billing is disabled on the Google Cloud project.
-
-**Steps to resolve:**
-1. Go to Google Cloud Console
-2. Enable billing for the project
-3. Verify Vision API is enabled
-4. Test image upload flow end-to-end
-5. Verify recipe generation from uploaded images
-
-**Labels:** enhancement, deployment, api-integration
-
----
-
-### Issue 2: Add Recipe Import from URL
-**Title:** Add ability to import recipes from external URLs
-
-**Description:**
-Enhance the upload flow to accept recipe URLs from popular cooking websites. Parse the HTML and extract recipe data automatically.
-
-**Technical approach:**
-- Add URL input field to upload page
-- Create backend endpoint to fetch and parse HTML
-- Use BeautifulSoup or similar to extract recipe schema
-- Support common recipe markup formats (JSON-LD, Microdata)
-- Fall back to Gemini parsing if structured data unavailable
-
-**Labels:** enhancement, feature
-
----
-
-### Issue 3: Add Recipe Collections/Folders
-**Title:** Implement recipe collections for better organization
-
-**Description:**
-Allow users to organize saved recipes into custom collections or folders (e.g., "Weeknight Dinners", "Desserts", "Meal Prep").
-
-**Database changes needed:**
-- Create `collections` table
-- Create `recipe_collections` junction table
-- Add RLS policies for user-owned collections
-
-**UI changes needed:**
-- Add collection management in dashboard
-- Add collection selector when saving recipes
-- Filter dashboard by collection
-
-**Labels:** enhancement, feature, database
-
----
-
-### Issue 4: Add Recipe Rating and Notes
-**Title:** Allow users to rate recipes and add personal notes
-
-**Description:**
-Add ability for users to rate their saved recipes (1-5 stars) and add personal cooking notes or modifications.
-
-**Database changes:**
-- Add `rating` column to `saved_recipes` table
-- Add `notes` text column to `saved_recipes` table
-
-**UI changes:**
-- Add star rating component to recipe view
-- Add notes textarea that saves automatically
-- Show rating in dashboard recipe cards
-
-**Labels:** enhancement, feature
-
----
-
-### Issue 5: Add Shopping List Generation
-**Title:** Generate shopping list from multiple recipes
-
-**Description:**
-Allow users to select multiple recipes and generate a combined shopping list with quantities aggregated by ingredient.
-
-**Features:**
-- Multi-select recipes in dashboard
-- Combine ingredients intelligently (e.g., "2 cups flour" + "1 cup flour" = "3 cups flour")
-- Group by category (produce, dairy, pantry, etc.)
-- Export as PDF or send via email
-- Check off items as purchased
-
-**Labels:** enhancement, feature
-
----
-
-## Monitoring & Maintenance
-
-- [ ] Set up error tracking (Sentry or similar)
-- [ ] Monitor API usage and costs (Gemini, Vision)
-- [ ] Set up uptime monitoring
-- [ ] Configure backup strategy for Supabase
-- [ ] Document API rate limits and quotas
