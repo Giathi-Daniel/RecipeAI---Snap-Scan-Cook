@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { getSiteUrl, getSiteUrlObject } from "@/lib/site-url";
@@ -84,6 +85,7 @@ export default function RootLayout({
       <body className="min-h-screen">
         <Header />
         <main className="min-h-[calc(100vh-89px)]">{children}</main>
+        <Analytics />
       </body>
     </html>
   );
