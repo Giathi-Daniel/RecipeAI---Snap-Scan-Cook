@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
-from routers import ai, auth, recipes, vision
+from routers import ai, auth, collections, recipes, vision
 from services.auth_service import decode_supabase_jwt
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -231,6 +231,7 @@ def _log_security_event(
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(recipes.router, prefix="/api/recipes", tags=["recipes"])
+app.include_router(collections.router, prefix="/api/collections", tags=["collections"])
 app.include_router(vision.router, prefix="/api/vision", tags=["vision"])
 app.include_router(ai.router, prefix="/api/ai", tags=["ai"])
 

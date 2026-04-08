@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { CollectionModal } from "@/components/collection-modal";
+import { CollectionSelector } from "@/components/collection-selector";
 import { RecipeCard } from "@/components/recipe-card";
 import { apiPost, apiPostFormData } from "@/lib/api";
 import { sanitizeMultilineText } from "@/lib/security";
@@ -51,6 +53,18 @@ type ImportUrlResponse = {
   extraction_method: string;
 };
 
+type Collection = {
+  id: string;
+  name: string;
+  description: string | null;
+  recipe_count: number;
+};
+
+type CollectionsResponse = {
+  collections: Collection[];
+  total: number;
+};
+
 const starterPrompt = `Meatball Pizza Buns Recipe
 
 Ingredients
@@ -82,6 +96,10 @@ export default function UploadPage() {
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [parsedRecipe, setParsedRecipe] = useState<ParsedRecipe | null>(null);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
+  const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
+  const [isLoadingCollections, setIsLoadingCollections] = useState(false);
 
   useEffect(() => {
     if (!selectedImage) {
@@ -94,6 +112,78 @@ export default function UploadPage() {
 
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedImage]);
+
+  useEffect(() => {
+    loadCollections();
+  }, []);
+
+  async function loadCollections() {
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return;
+
+    setIsLoadingCollections(true);
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const accessToken = session?.access_token;
+      if (!accessToken) return;
+
+      const response = await apiPost<CollectionsResponse>(
+        "/api/collections/",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      // Use GET instead
+      const getResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/api/collections/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (getResponse.ok) {
+        const data = (await getResponse.json()) as CollectionsResponse;
+        setCollections(data.collections);
+      }
+    } catch (err) {
+      console.error("Failed to load collections:", err);
+    } finally {
+      setIsLoadingCollections(false);
+    }
+  }
+
+  async function handleCreateCollection(name: string, description: string) {
+    const supabase = createBrowserSupabaseClient();
+    if (!supabase) return;
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const accessToken = session?.access_token;
+    if (!accessToken) return;
+
+    await apiPost(
+      "/api/collections/",
+      { name, description },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+
+    await loadCollections();
+  }
 
   async function handleImportFromUrl() {
     const trimmedUrl = recipeUrl.trim();
@@ -203,6 +293,7 @@ export default function UploadPage() {
           steps: parsedRecipe.steps,
           servings: parsedRecipe.servings,
           tags: parsedRecipe.tags,
+          collection_ids: selectedCollectionIds,
         },
         {
           headers: {
@@ -618,23 +709,37 @@ export default function UploadPage() {
                   ingredients={parsedRecipe.ingredients}
                   steps={parsedRecipe.steps}
                   footer={
-                    <div className="flex flex-wrap gap-3">
-                      <button
-                        type="button"
-                        onClick={handleSaveRecipe}
-                        disabled={isBusy}
-                        className="rounded-sm bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {isSaving ? "Saving recipe..." : "Save Recipe"}
-                      </button>
-                      <Link
-                        href="/dashboard"
-                        className="border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/80 transition hover:border-accent hover:text-accent"
-                      >
-                        View Dashboard
-                      </Link>
+                    <div className="space-y-4">
+                      <CollectionSelector
+                        selectedCollectionIds={selectedCollectionIds}
+                        onSelectionChange={setSelectedCollectionIds}
+                        collections={collections}
+                        onCreateNew={() => setIsCollectionModalOpen(true)}
+                      />
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={handleSaveRecipe}
+                          disabled={isBusy}
+                          className="rounded-sm bg-herb px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {isSaving ? "Saving recipe..." : "Save Recipe"}
+                        </button>
+                        <Link
+                          href="/dashboard"
+                          className="border border-ink/10 px-5 py-3 text-sm font-semibold text-ink/80 transition hover:border-accent hover:text-accent"
+                        >
+                          View Dashboard
+                        </Link>
+                      </div>
                     </div>
                   }
+                />
+
+                <CollectionModal
+                  isOpen={isCollectionModalOpen}
+                  onClose={() => setIsCollectionModalOpen(false)}
+                  onSave={handleCreateCollection}
                 />
 
                 <section className="border border-dashed border-sand bg-white/60 p-5">
