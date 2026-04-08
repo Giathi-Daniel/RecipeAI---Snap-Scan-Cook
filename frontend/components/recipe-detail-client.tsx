@@ -184,14 +184,26 @@ export function RecipeDetailClient({
       setSubstitutions([]);
 
       try {
-        const response = await apiPost<SubstituteResponse>("/api/recipes/substitute", {
-          ingredient,
-          recipe_title: displayedRecipe.title,
-          recipe_description: displayedRecipe.description,
-          tags: displayedRecipe.tags,
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/recipes/substitute`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ingredient,
+            recipe_title: displayedRecipe.title,
+            recipe_description: displayedRecipe.description,
+            tags: displayedRecipe.tags,
+          }),
         });
 
-        setSubstitutions(response.substitutions);
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = (await response.json()) as SubstituteResponse;
+        setSubstitutions(data.substitutions);
       } catch (requestError) {
         setSubstitutionError(
           requestError instanceof Error
@@ -207,13 +219,25 @@ export function RecipeDetailClient({
       setLocalizationError(null);
 
       try {
-        const response = await apiPost<LocalizeRecipeResponse>("/api/recipes/localize", {
-          region: selectedRegion,
-          recipe: displayedRecipe,
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/recipes/localize`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            region: selectedRegion,
+            recipe: displayedRecipe,
+          }),
         });
 
-        setDisplayedRecipe(response.recipe);
-        setLocalizedRegion(response.region);
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = (await response.json()) as LocalizeRecipeResponse;
+        setDisplayedRecipe(data.recipe);
+        setLocalizedRegion(data.region);
         setSelectedIngredientIndex(null);
         setSubstitutions([]);
       } catch (requestError) {

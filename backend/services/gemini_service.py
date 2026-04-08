@@ -69,6 +69,32 @@ Rules:
 - Do not include markdown fences, prose, comments, or extra keys.
 """.strip()
 
+GENERATE_RECIPE_SYSTEM_PROMPT = """
+You are a recipe generation engine.
+Generate a complete, authentic recipe from just a dish name.
+
+Return an object with exactly these keys:
+- title: string
+- description: string or null
+- ingredients: array of objects with keys quantity, unit, item
+- steps: array of objects with keys order, instruction
+- servings: integer
+- tags: array of strings
+
+Rules:
+- Generate an authentic, traditional recipe for the dish name provided.
+- Include all necessary ingredients with accurate quantities.
+- Provide clear, step-by-step cooking instructions.
+- Keep descriptions short and factual.
+- quantity must always be a string, even for fractions like "1/2".
+- unit must be null when absent.
+- item should contain the ingredient name and any clarifying prep note.
+- steps must be ordered starting at 1.
+- servings must be a positive integer. Default to 4 if unknown.
+- tags should be short lowercase labels when obvious, otherwise [].
+- Do not include markdown fences, prose, comments, or extra keys.
+""".strip()
+
 NUTRITION_SYSTEM_PROMPT = """
 You are a recipe nutrition estimation engine.
 Estimate nutrition per serving and dietary flags from the provided recipe.
@@ -152,6 +178,25 @@ def parse_recipe(text: str) -> ParseRecipeResponse:
         system_prompt=SYSTEM_PROMPT,
         log_context=f"Parsing recipe text with Gemini. chars={len(cleaned_text)}",
         failure_detail=f"Gemini failed to parse the recipe text with model '{MODEL_NAME}'.",
+    )
+
+
+def generate_recipe_from_name(dish_name: str) -> ParseRecipeResponse:
+    """Generate a complete recipe from just a dish name (e.g., 'githeri', 'pizza', 'biryani')."""
+    cleaned_name = dish_name.strip()
+    if not cleaned_name:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Dish name is required.",
+        )
+
+    prompt = f"Generate a complete, authentic recipe for: {cleaned_name}"
+
+    return _generate_recipe_response(
+        prompt=prompt,
+        system_prompt=GENERATE_RECIPE_SYSTEM_PROMPT,
+        log_context=f"Generating recipe from dish name with Gemini. dish={cleaned_name!r}",
+        failure_detail=f"Gemini failed to generate recipe for '{cleaned_name}' with model '{MODEL_NAME}'.",
     )
 
 
