@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 
 from models.recipe import VisionIdentifyResponse
-from services.gemini_service import generate_recipe_from_dish_labels
+from services.deepseek_service import generate_recipe_from_dish_labels
 from services.vision_service import identify_dish
 
 router = APIRouter()

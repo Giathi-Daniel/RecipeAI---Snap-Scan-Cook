@@ -26,7 +26,7 @@ from models.recipe import (
 )
 from services.auth_service import get_current_user
 from services.collection_service import add_recipe_to_collection
-from services.gemini_service import (
+from services.deepseek_service import (
     estimate_nutrition,
     generate_recipe_from_name,
     localize_recipe,
