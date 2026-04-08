@@ -20,6 +20,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+PROGRESS.md
 ROADMAP.md
 
 # OS / editor
