@@ -698,11 +698,11 @@ export default function UploadPage() {
         </div>
 
         <article className="overflow-hidden border border-sand bg-white">
-          <div className="border-b border-sand/80 px-6 py-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-herb">
+          <div className="border-b border-sand/80 px-4 py-4 sm:px-6 sm:py-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-herb sm:text-sm">
               Recipe Preview
             </p>
-            <h2 className="mt-2 font-display text-3xl text-ink">
+            <h2 className="mt-2 font-display text-xl text-ink sm:text-2xl lg:text-3xl">
               {parsedRecipe ? parsedRecipe.title : "Your recipe will appear here"}
             </h2>
             <p className="mt-3 text-sm leading-6 text-ink/70">
@@ -813,28 +813,19 @@ export default function UploadPage() {
             ) : (
               <div className="grid gap-4">
                 <div className="border border-sand/80 bg-white/80 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
-                    Ready to process
-                  </p>
-                  <h3 className="mt-2 font-display text-2xl text-ink">Ingredients & Quantities</h3>
+                  <h3 className="mt-2 font-display text-lg text-ink sm:text-xl">Ingredients & Quantities</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/70">
                     AI will extract all ingredients with precise measurements and convert them into a clean, structured format.
                   </p>
                 </div>
                 <div className="border border-sand/80 bg-canvas/80 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
-                    Ready to process
-                  </p>
-                  <h3 className="mt-2 font-display text-2xl text-ink">Cooking Instructions</h3>
+                  <h3 className="mt-2 font-display text-lg text-ink sm:text-xl">Cooking Instructions</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/70">
                     Step-by-step cooking instructions will be organized in the correct order with clear, easy-to-follow directions.
                   </p>
                 </div>
                 <div className="border border-sand/80 bg-white/80 p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink/45">
-                    Ready to process
-                  </p>
-                  <h3 className="mt-2 font-display text-2xl text-ink">Recipe Details</h3>
+                  <h3 className="mt-2 font-display text-lg text-ink sm:text-xl">Recipe Details</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/70">
                     Servings, cooking time, dietary tags, and other helpful information will be automatically identified and displayed.
                   </p>

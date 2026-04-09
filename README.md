@@ -249,30 +249,41 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ## Screenshots
 
+<details>
+<summary>📝 Text Parser - Upload Recipe Text</summary>
+
 ![Text-Parser](./frontend/public/upload-text.png)
+
+</details>
+
+<details>
+<summary>✨ Parsed Recipe Preview</summary>
+
 ![Parsed-Text](./frontend/public/recipe-preview.png)
+
+</details>
+
+<details>
+<summary>🍳 Complete Recipe View</summary>
+
 ![Recipe-Review](./frontend/public/complete-recipe.png)
+
+</details>
+
+<details>
+<summary>🏠 Landing Page (Desktop)</summary>
+
 ![Landing-Page-Main](./frontend/public/landing-page-desktop.png)
+
+</details>
+
+<details>
+<summary>📱 Mobile View</summary>
+
 ![Mobile-View](./frontend/public/mobile-view.png)
 
----
+</details>
 
-<!--## Roadmap
-
-See [ROADMAP.md](./ROADMAP.md) for the full 2-week day-by-day build plan.
-
-
-### High-level milestones:
-- [x] Project setup & auth
-- [ ] Recipe text parser (AI)
-- [ ] Image recognition flow
-- [ ] Serving scaler
-- [ ] Nutritional analysis
-- [ ] Ingredient substitution
-- [ ] Recipe localization
-- [ ] Dashboard & saved recipes
-- [ ] Full deployment
--->
 ---
 
 ## Contributing
