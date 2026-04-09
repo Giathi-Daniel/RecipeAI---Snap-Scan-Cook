@@ -427,7 +427,7 @@ export function RecipeDetailClient({
             </div>
             <div className="hidden print:block">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-ink/45">Servings</p>
-              <p className="mt-1 font-display text-3xl text-ink">{displayedRecipe.servings}</p>
+              <p className="mt-1 font-display text-2xl lg:text-3xl text-ink">{displayedRecipe.servings}</p>
             </div>
           </div>
 
