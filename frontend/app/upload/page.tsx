@@ -348,61 +348,63 @@ export default function UploadPage() {
     <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="grid gap-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-start">
         <div className="overflow-hidden border border-sand bg-white lg:sticky lg:top-28">
-          <div className="border-b border-sand px-8 py-8">
-            <div className="mb-6 flex gap-2 border-b border-sand">
-              <button
-                type="button"
-                onClick={() => setActiveTab("text")}
-                className={cn(
-                  "border-b-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition",
-                  activeTab === "text"
-                    ? "border-ink text-ink"
-                    : "border-transparent text-ink/50 hover:text-ink/75",
-                )}
-              >
-                Text
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("image")}
-                className={cn(
-                  "border-b-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition",
-                  activeTab === "image"
-                    ? "border-ink text-ink"
-                    : "border-transparent text-ink/50 hover:text-ink/75",
-                )}
-              >
-                Image
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("url")}
-                className={cn(
-                  "border-b-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition",
-                  activeTab === "url"
-                    ? "border-ink text-ink"
-                    : "border-transparent text-ink/50 hover:text-ink/75",
-                )}
-              >
-                URL
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("generate")}
-                className={cn(
-                  "border-b-2 px-4 py-3 text-sm font-semibold uppercase tracking-wider transition",
-                  activeTab === "generate"
-                    ? "border-ink text-ink"
-                    : "border-transparent text-ink/50 hover:text-ink/75",
-                )}
-              >
-                Generate
-              </button>
+          <div className="border-b border-sand px-4 py-6 sm:px-8 sm:py-8">
+            <div className="mb-6 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+              <div className="flex gap-2 border-b border-sand min-w-max">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("text")}
+                  className={cn(
+                    "border-b-2 px-3 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition whitespace-nowrap",
+                    activeTab === "text"
+                      ? "border-ink text-ink"
+                      : "border-transparent text-ink/50 hover:text-ink/75",
+                  )}
+                >
+                  Text
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("image")}
+                  className={cn(
+                    "border-b-2 px-3 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition whitespace-nowrap",
+                    activeTab === "image"
+                      ? "border-ink text-ink"
+                      : "border-transparent text-ink/50 hover:text-ink/75",
+                  )}
+                >
+                  Image
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("url")}
+                  className={cn(
+                    "border-b-2 px-3 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition whitespace-nowrap",
+                    activeTab === "url"
+                      ? "border-ink text-ink"
+                      : "border-transparent text-ink/50 hover:text-ink/75",
+                  )}
+                >
+                  URL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("generate")}
+                  className={cn(
+                    "border-b-2 px-3 py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition whitespace-nowrap",
+                    activeTab === "generate"
+                      ? "border-ink text-ink"
+                      : "border-transparent text-ink/50 hover:text-ink/75",
+                  )}
+                >
+                  Generate
+                </button>
+              </div>
             </div>
-            <h1 className="mt-4 max-w-xl font-display text-4xl leading-tight text-ink">
+            <h1 className="mt-4 max-w-xl font-display text-2xl sm:text-3xl lg:text-4xl leading-tight text-ink">
               Turn recipes into clean, structured cooking data.
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-ink/75">
+            <p className="mt-4 max-w-2xl text-sm sm:text-base leading-6 sm:leading-7 text-ink/75">
               Paste recipe text, upload a dish photo, import from a URL, or generate from a dish name. AI structures it automatically.
             </p>
           </div>
