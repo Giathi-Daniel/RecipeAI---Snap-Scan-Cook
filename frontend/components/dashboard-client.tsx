@@ -9,7 +9,8 @@ import { LogoutButton } from "@/components/logout-button";
 import { RecipeCard } from "@/components/recipe-card";
 import { ShoppingListModal } from "@/components/shopping-list-modal";
 import { StarRating } from "@/components/star-rating";
-import { apiPost, apiPatch, apiDelete } from "@/lib/api";
+import { apiDelete } from "@/lib/api";
+import { authFetch } from "@/lib/auth-fetch";
 import {
   collectDashboardFilters,
   filterDashboardRecipes,
@@ -72,34 +73,10 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
   }, []);
 
   async function loadCollections() {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
     setIsLoadingCollections(true);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const accessToken = session?.access_token;
-      if (!accessToken) {
-        setIsLoadingCollections(false);
-        return;
-      }
-
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-      const response = await fetch(`${backendUrl}/api/collections/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = (await response.json()) as CollectionsResponse;
-        setCollections(data.collections);
-      } else {
-        console.error("Collections API returned:", response.status, response.statusText);
-      }
+      const data = await authFetch<CollectionsResponse>("/api/collections/");
+      setCollections(data.collections);
     } catch (err) {
       console.error("Failed to load collections:", err);
     } finally {
@@ -108,80 +85,48 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
   }
 
   async function handleCreateCollection(name: string, description: string) {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiPost(
-      "/api/collections/",
-      { name, description },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    await loadCollections();
+    try {
+      await authFetch("/api/collections/", {
+        method: "POST",
+        body: { name, description },
+      });
+      await loadCollections();
+    } catch (err) {
+      console.error("Failed to create collection:", err);
+    }
   }
 
   async function handleUpdateCollection(name: string, description: string) {
     if (!editingCollection) return;
 
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiPatch(
-      `/api/collections/${editingCollection.id}`,
-      { name, description },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    await loadCollections();
-    setEditingCollection(null);
+    try {
+      await authFetch(`/api/collections/${editingCollection.id}`, {
+        method: "PATCH",
+        body: { name, description },
+      });
+      await loadCollections();
+      setEditingCollection(null);
+    } catch (err) {
+      console.error("Failed to update collection:", err);
+    }
   }
 
   async function handleDeleteCollection(collectionId: string) {
     if (!confirm("Delete this collection? Recipes will not be deleted.")) return;
 
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
+    try {
+      await authFetch(`/api/collections/${collectionId}`, {
+        method: "DELETE",
+      });
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      if (selectedCollection === collectionId) {
+        setSelectedCollection(null);
+      }
 
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiDelete(`/api/collections/${collectionId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (selectedCollection === collectionId) {
-      setSelectedCollection(null);
+      await loadCollections();
+    } catch (err) {
+      console.error("Failed to delete collection:", err);
     }
-
-    await loadCollections();
   }
 
   const availableFilters = useMemo(() => collectDashboardFilters(recipes), [recipes]);
