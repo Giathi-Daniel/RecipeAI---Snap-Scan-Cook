@@ -188,41 +188,41 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
   const selectedRecipes = recipes.filter((r) => selectedRecipeIds.has(r.recipeId));
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-12">
-      <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="mt-3 font-display text-4xl text-ink">Your recipe dashboard</h1>
-          <p className="mt-3 text-sm text-ink/70">
+          <h1 className="mt-3 font-display text-2xl sm:text-4xl text-ink">Your recipe dashboard</h1>
+          <p className="mt-2 text-xs sm:text-sm text-ink/70">
             Signed in as <span className="font-semibold text-ink">{userEmail}</span>
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="border border-sand bg-white px-4 py-2 text-sm text-ink/70">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="border border-sand bg-white px-3 py-2 text-xs sm:text-sm text-ink/70">
             {recipes.length} saved {recipes.length === 1 ? "recipe" : "recipes"}
           </div>
           {selectedRecipeIds.size > 0 && (
             <button
               type="button"
               onClick={handleGenerateShoppingList}
-              className="rounded-sm border border-herb bg-herb px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+              className="rounded-sm border border-herb bg-herb px-3 py-2 text-xs sm:text-sm font-semibold text-white transition hover:opacity-90"
             >
-              Generate Shopping List ({selectedRecipeIds.size})
+              Shopping List ({selectedRecipeIds.size})
             </button>
           )}
           <LogoutButton />
         </div>
       </div>
 
-      <div className="mb-6 border border-sand bg-white p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl text-ink">Collections</h2>
+      <div className="mb-6 border border-sand bg-white p-4 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="font-display text-xl sm:text-2xl text-ink">Collections</h2>
           <button
             type="button"
             onClick={() => {
               setEditingCollection(null);
               setIsCollectionModalOpen(true);
             }}
-            className="rounded-sm border border-ink bg-ink px-4 py-2 text-sm font-semibold text-canvas transition hover:bg-ink/90"
+            className="w-full rounded-sm border border-ink bg-ink px-4 py-2 text-sm font-semibold text-canvas transition hover:bg-ink/90 sm:w-auto"
           >
             + New Collection
           </button>
@@ -232,7 +232,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
           <button
             type="button"
             onClick={() => setSelectedCollection(null)}
-            className={`border px-4 py-2 text-sm font-semibold uppercase tracking-wider transition ${
+            className={`border px-3 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition ${
               selectedCollection === null
                 ? "border-ink bg-ink text-canvas"
                 : "border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
@@ -249,7 +249,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                     current === collection.id ? null : collection.id,
                   )
                 }
-                className={`border px-4 py-2 text-sm font-semibold uppercase tracking-wider transition ${
+                className={`border px-3 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition ${
                   selectedCollection === collection.id
                     ? "border-ink bg-ink text-canvas"
                     : "border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
@@ -264,14 +264,14 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                     setEditingCollection(collection);
                     setIsCollectionModalOpen(true);
                   }}
-                  className="block w-full px-4 py-2 text-left text-sm text-ink hover:bg-canvas"
+                  className="block w-full whitespace-nowrap px-4 py-2 text-left text-sm text-ink hover:bg-canvas"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDeleteCollection(collection.id)}
-                  className="block w-full px-4 py-2 text-left text-sm text-rose-700 hover:bg-rose-50"
+                  className="block w-full whitespace-nowrap px-4 py-2 text-left text-sm text-rose-700 hover:bg-rose-50"
                 >
                   Delete
                 </button>
@@ -281,10 +281,10 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
         </div>
       </div>
 
-      <div className="recipe-shell border border-sand p-6">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div className="recipe-shell border border-sand p-4 sm:p-6">
+        <div className="flex flex-col gap-4 sm:gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h2 className="mt-2 font-display text-2xl text-ink">Find recipes by title, tag, or ingredient</h2>
+            <h2 className="mt-2 font-display text-lg sm:text-2xl text-ink">Find recipes by title, tag, or ingredient</h2>
           </div>
           <label className="flex w-full max-w-md flex-col gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink/45">
             Search saved recipes
@@ -293,17 +293,17 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Try pilau, coconut, vegetarian..."
-              className="w-full border border-sand bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent"
+              className="w-full border border-sand bg-canvas px-3 py-2 sm:px-4 sm:py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent"
             />
           </label>
         </div>
 
         {availableFilters.length ? (
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-4 sm:mt-5 flex flex-wrap gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setActiveFilter(null)}
-              className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
+              className={`border px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
                 activeFilter === null
                   ? "border border-ink bg-ink text-canvas"
                   : "border border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
@@ -316,7 +316,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter((current) => (current === filter ? null : filter))}
-                className={`border px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
+                className={`border px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition ${
                   activeFilter === filter
                     ? "border border-ink bg-ink text-canvas"
                     : "border border-sand bg-white text-ink/70 hover:border-ink hover:text-ink"
