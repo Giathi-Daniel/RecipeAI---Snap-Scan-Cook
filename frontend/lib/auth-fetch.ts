@@ -11,31 +11,18 @@ type AuthFetchOptions = {
   headers?: HeadersInit;
 };
 
-export async function authFetch<T>(
+async function fetchWithToken<T>(
+  token: string,
   path: string,
-  options: AuthFetchOptions = {},
+  options: AuthFetchOptions,
 ): Promise<T> {
-  const supabase = createBrowserSupabaseClient();
-  if (!supabase) {
-    throw new Error("Supabase client not available");
-  }
-
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
-  if (error || !session?.access_token) {
-    throw new Error("Authentication required. Please sign in.");
-  }
-
   const { method = "GET", body, headers = {} } = options;
 
   const fetchOptions: RequestInit = {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${token}`,
       ...headers,
     },
   };
@@ -60,4 +47,29 @@ export async function authFetch<T>(
   }
 
   return response.json() as Promise<T>;
+}
+
+export async function authFetch<T>(
+  path: string,
+  options: AuthFetchOptions = {},
+): Promise<T> {
+  const supabase = createBrowserSupabaseClient();
+  if (!supabase) {
+    throw new Error("Supabase client not available");
+  }
+
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (!error && session?.access_token) {
+    return fetchWithToken<T>(session.access_token, path, options);
+  }
+
+  // Session missing — try a refresh before giving up
+  const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+
+  if (refreshError || !refreshed.session?.access_token) {
+    throw new Error("Authentication required. Please sign in.");
+  }
+
+  return fetchWithToken<T>(refreshed.session.access_token, path, options);
 }

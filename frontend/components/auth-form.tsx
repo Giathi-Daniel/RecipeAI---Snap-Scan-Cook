@@ -70,6 +70,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           throw signInError;
         }
 
+        // Wait for session to be fully established
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          throw new Error("Session could not be established. Please try again.");
+        }
+
         router.replace(nextPath);
         router.refresh();
         return;
