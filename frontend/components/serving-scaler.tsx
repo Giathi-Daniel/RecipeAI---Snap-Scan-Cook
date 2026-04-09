@@ -12,26 +12,26 @@ export function ServingScaler({
   onChange,
 }: ServingScalerProps) {
   return (
-    <div className="flex items-center gap-3 rounded-[1.5rem] border border-sand bg-white/80 px-4 py-3">
+    <div className="flex items-center gap-2 border border-sand bg-white/80 px-3 py-2 sm:gap-3 sm:rounded-[1.5rem] sm:px-4 sm:py-3">
       <button
         type="button"
         onClick={() => onChange(Math.max(minServings, servings - 1))}
         disabled={isPending || servings <= minServings}
-        className="grid h-9 w-9 place-items-center rounded-xl border border-sand bg-canvas text-lg text-ink"
+        className="grid h-8 w-8 place-items-center border border-sand bg-canvas text-base text-ink sm:h-9 sm:w-9 sm:rounded-xl sm:text-lg"
       >
         -
       </button>
       <div>
-        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/45">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/45 sm:text-[11px]">
           Portions
         </div>
-        <div className="mt-1 font-display text-2xl leading-none text-ink">{servings}</div>
+        <div className="mt-1 font-display text-xl leading-none text-ink sm:text-2xl">{servings}</div>
       </div>
       <button
         type="button"
         onClick={() => onChange(servings + 1)}
         disabled={isPending}
-        className="grid h-9 w-9 place-items-center rounded-xl bg-accent text-lg text-white"
+        className="grid h-8 w-8 place-items-center bg-accent text-base text-white sm:h-9 sm:w-9 sm:rounded-xl sm:text-lg"
       >
         +
       </button>
