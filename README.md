@@ -249,7 +249,11 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 
 ## Screenshots
 
-![Day-4-preview](./frontend/public/day_4_preview.png)
+![Text-Parser](./frontend/public/upload-text.png)
+![Parsed-Text](./frontend/public/recipe-preview.png)
+![Recipe-Review](./frontend/public/complete-recipe.png)
+![Landing-Page-Main](./frontend/public/landing-page-desktop.png)
+![Mobile-View](./frontend/public/mobile-view.png)
 
 ---
 

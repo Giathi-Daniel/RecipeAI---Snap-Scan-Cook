@@ -61,6 +61,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [loadingRecipeId, setLoadingRecipeId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
@@ -398,9 +399,17 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
                   <div className="flex items-center gap-3">
                     <Link
                       href={`/recipe/${recipe.recipeId}`}
+                      onClick={() => setLoadingRecipeId(recipe.recipeId)}
                       className="inline-flex flex-1 items-center justify-center border border-ink bg-ink px-4 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90"
                     >
-                      Open recipe
+                      {loadingRecipeId === recipe.recipeId ? (
+                        <span className="flex items-center gap-2">
+                          <span className="h-4 w-4 animate-spin border-2 border-white/40 border-t-white" />
+                          <span>Opening...</span>
+                        </span>
+                      ) : (
+                        "Open recipe"
+                      )}
                     </Link>
                     <button
                       type="button"

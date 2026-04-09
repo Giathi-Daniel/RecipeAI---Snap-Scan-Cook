@@ -37,20 +37,11 @@ DEFAULT_RATE_LIMIT=120
 ```
 
 ## Google Cloud Credentials
-
-Since Render doesn't support file uploads in environment variables, you have two options:
-
-### Option 1: Use Secret Files (Recommended)
 1. Go to your Render service dashboard
 2. Navigate to "Secret Files"
 3. Add a new secret file:
    - **Filename**: `recipe-ai-text-parser-626cd20db194.json`
    - **Contents**: Paste your Google Cloud service account JSON
-
-### Option 2: Use Environment Variable
-1. Convert your JSON credentials to a single-line string
-2. Add as environment variable: `GOOGLE_CREDENTIALS_JSON`
-3. Update `backend/services/vision_service.py` to read from env var instead of file
 
 ## Deployment Checklist
 
