@@ -216,7 +216,7 @@ export function DashboardClient({ userEmail, initialRecipes }: DashboardClientPr
 
       <div className="mb-6 border border-sand bg-white p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="font-display text-xl sm:text-2xl text-ink">Collections</h2>
+          <h2 className="font-display text-xl text-ink sm:text-2xl">Collections</h2>
           <button
             type="button"
             onClick={() => {

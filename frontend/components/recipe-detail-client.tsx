@@ -315,7 +315,7 @@ export function RecipeDetailClient({
   const displayedNutrition = localizedRegion ? null : nutrition;
 
   return (
-    <section className="mx-auto max-w-6xl scroll-smooth px-6 py-12">
+    <section className="mx-auto max-w-6xl scroll-smooth px-4 py-8 sm:px-6 sm:py-12">
       <div className="recipe-shell overflow-hidden border border-sand print:overflow-visible print:rounded-none print:border-0 print:bg-white print:shadow-none">
         <div className="relative border-b border-sand print:border-b-0">
           {imageUrl ? (
@@ -326,66 +326,68 @@ export function RecipeDetailClient({
             <div className="h-[20rem] bg-canvas sm:h-[24rem] print:h-auto" />
           )}
 
-          <div className="absolute inset-x-0 bottom-0 p-8 print:static print:p-8">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-8 print:static print:p-8">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {localizedRegion ? (
-                <span className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink">
+                <span className="border border-sand bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-ink sm:px-4 sm:py-2">
                   Localized for {localizedRegion}
                 </span>
               ) : null}
               {isShared ? (
-                <span className="border border-sand bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink">
+                <span className="border border-sand bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-ink sm:px-4 sm:py-2">
                   Public recipe
                 </span>
               ) : null}
             </div>
 
-            <h1 className="mt-4 max-w-4xl font-display text-4xl leading-tight text-ink sm:text-6xl print:text-ink">
+            <h1 className="mt-4 max-w-4xl font-display text-2xl leading-tight text-ink sm:text-4xl lg:text-5xl xl:text-6xl print:text-ink">
               {displayedRecipe.title}
             </h1>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-ink/80 sm:text-lg print:text-ink/70">
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-ink/80 sm:mt-4 sm:text-base sm:leading-7 lg:text-lg print:text-ink/70">
               {displayedRecipe.description}
             </p>
           </div>
         </div>
 
-        <div className="p-8 print:px-0 print:py-6">
+        <div className="p-4 sm:p-6 lg:p-8 print:px-0 print:py-6">
           <div className="print:hidden">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="#ingredients"
-                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
-                >
-                  Jump to ingredients
-                </a>
-                <a
-                  href="#method"
-                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
-                >
-                  Jump to method
-                </a>
-                <a
-                  href="#nutrition"
-                  className="border border-sand bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-ink"
-                >
-                  Jump to nutrition
-                </a>
+              <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+                <div className="flex gap-2 sm:gap-3 min-w-max">
+                  <a
+                    href="#ingredients"
+                    className="whitespace-nowrap border border-sand bg-white px-3 py-2 text-xs font-semibold text-ink transition hover:border-ink sm:px-4 sm:py-3 sm:text-sm"
+                  >
+                    Jump to ingredients
+                  </a>
+                  <a
+                    href="#method"
+                    className="whitespace-nowrap border border-sand bg-white px-3 py-2 text-xs font-semibold text-ink transition hover:border-ink sm:px-4 sm:py-3 sm:text-sm"
+                  >
+                    Jump to method
+                  </a>
+                  <a
+                    href="#nutrition"
+                    className="whitespace-nowrap border border-sand bg-white px-3 py-2 text-xs font-semibold text-ink transition hover:border-ink sm:px-4 sm:py-3 sm:text-sm"
+                  >
+                    Jump to nutrition
+                  </a>
+                </div>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={handleCopyLink}
                   disabled={isSharingPending}
-                  className="border border-ink bg-ink px-5 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
+                  className="border border-ink bg-ink px-4 py-2 text-xs font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60 sm:px-5 sm:py-3 sm:text-sm"
                 >
                   {isSharingPending ? "Preparing link..." : "Copy Link"}
                 </button>
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="border border-sand bg-white px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink"
+                  className="border border-sand bg-white px-4 py-2 text-xs font-semibold text-ink transition hover:border-ink sm:px-5 sm:py-3 sm:text-sm"
                 >
                   Print Recipe
                 </button>
@@ -429,10 +431,10 @@ export function RecipeDetailClient({
             </div>
           </div>
 
-          <div className="mt-6 border border-sand bg-white p-5 print:hidden">
+          <div className="mt-6 border border-sand bg-white p-4 sm:p-5 print:hidden">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <h2 className="mt-2 font-display text-2xl text-ink">
+                <h2 className="mt-2 font-display text-lg text-ink sm:text-xl lg:text-2xl">
                   Adapt this recipe for another region
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/70">
@@ -446,7 +448,7 @@ export function RecipeDetailClient({
                   <select
                     value={selectedRegion}
                     onChange={(event) => setSelectedRegion(event.target.value)}
-                    className="min-w-[14rem] border border-sand bg-canvas px-4 py-3 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent/40"
+                    className="w-full border border-sand bg-canvas px-3 py-2 text-sm font-medium normal-case tracking-normal text-ink outline-none transition focus:border-accent/40 sm:min-w-[14rem] sm:px-4 sm:py-3"
                   >
                     {LOCALIZATION_REGIONS.map((region) => (
                       <option key={region} value={region}>
@@ -459,7 +461,7 @@ export function RecipeDetailClient({
                   type="button"
                   onClick={handleLocalizeRecipe}
                   disabled={isLocalizationPending}
-                  className="inline-flex items-center justify-center border border-ink bg-ink px-5 py-3 text-sm font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60"
+                  className="inline-flex items-center justify-center border border-ink bg-ink px-4 py-2 text-xs font-semibold text-canvas transition hover:bg-ink/90 disabled:cursor-wait disabled:opacity-60 sm:px-5 sm:py-3 sm:text-sm"
                 >
                   {isLocalizationPending ? "Localizing..." : "Localize Recipe"}
                 </button>
@@ -476,7 +478,7 @@ export function RecipeDetailClient({
           <div className="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] print:grid-cols-1">
             <div>
               <div id="ingredients" className="scroll-mt-24">
-                <h2 className="font-display text-3xl text-ink">Ingredients</h2>
+                <h2 className="font-display text-xl text-ink sm:text-2xl lg:text-3xl">Ingredients</h2>
                 <div className="mt-5">
                   <IngredientList
                     ingredients={displayedRecipe.ingredients}
@@ -547,8 +549,8 @@ export function RecipeDetailClient({
               ) : null}
 
               <div id="method" className="scroll-mt-24">
-                <h2 className="mt-8 font-display text-3xl text-ink">Method</h2>
-                <ol className="mt-5 space-y-4 border border-sand bg-white p-5">
+                <h2 className="mt-8 font-display text-xl text-ink sm:text-2xl lg:text-3xl">Method</h2>
+                <ol className="mt-5 space-y-4 border border-sand bg-white p-4 sm:p-5">
                   {displayedRecipe.steps.map((step) => (
                     <li key={`${step.order}-${step.instruction}`} className="flex gap-3">
                       <span className="w-6 shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-ink/35">
@@ -562,10 +564,10 @@ export function RecipeDetailClient({
             </div>
 
             <div id="nutrition" className="scroll-mt-24">
-              <h2 className="font-display text-3xl text-ink">Nutrition Snapshot</h2>
+              <h2 className="font-display text-xl text-ink sm:text-2xl lg:text-3xl">Nutrition Snapshot</h2>
               {displayedNutrition ? (
-                <div className="mt-5 border border-sand bg-white p-5">
-                  <div className="grid gap-4 sm:grid-cols-2">
+                <div className="mt-5 border border-sand bg-white p-4 sm:p-5">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <NutritionBadge label="Calories" value={`${displayedNutrition.calories} kcal`} />
                     <NutritionBadge label="Protein" value={`${displayedNutrition.protein_g} g`} />
                     <NutritionBadge label="Carbs" value={`${displayedNutrition.carbs_g} g`} />
