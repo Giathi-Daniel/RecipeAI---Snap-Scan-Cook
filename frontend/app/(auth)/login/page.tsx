@@ -26,9 +26,9 @@ export default async function LoginPage() {
   }
 
   return (
-    <section className="mx-auto max-w-xl px-6 py-12">
-      <div className="recipe-shell border border-sand p-8">
-        <h1 className="mt-4 font-display text-4xl text-ink">Log in to RecipeAI</h1>
+    <section className="mx-auto max-w-xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="recipe-shell border border-sand p-5 sm:p-8">
+        <h1 className="mt-4 font-display text-2xl text-ink sm:text-3xl lg:text-4xl">Log in to RecipeAI</h1>
         <p className="mt-4 text-sm leading-6 text-ink/70">
           Sign in with your email and password to get back to saved recipes, uploads, and your dashboard.
         </p>
