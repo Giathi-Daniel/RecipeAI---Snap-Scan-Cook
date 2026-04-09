@@ -8,6 +8,7 @@ import { CollectionModal } from "@/components/collection-modal";
 import { CollectionSelector } from "@/components/collection-selector";
 import { RecipeCard } from "@/components/recipe-card";
 import { apiPost, apiPostFormData } from "@/lib/api";
+import { authFetch } from "@/lib/auth-fetch";
 import { sanitizeMultilineText } from "@/lib/security";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 import { validateImageUpload, validateRecipeText } from "@/lib/upload-validation";
@@ -120,42 +121,10 @@ export default function UploadPage() {
   }, []);
 
   async function loadCollections() {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
     setIsLoadingCollections(true);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const accessToken = session?.access_token;
-      if (!accessToken) return;
-
-      const response = await apiPost<CollectionsResponse>(
-        "/api/collections/",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      // Use GET instead
-      const getResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/api/collections/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      if (getResponse.ok) {
-        const data = (await getResponse.json()) as CollectionsResponse;
-        setCollections(data.collections);
-      }
+      const data = await authFetch<CollectionsResponse>("/api/collections/");
+      setCollections(data.collections);
     } catch (err) {
       console.error("Failed to load collections:", err);
     } finally {
@@ -164,27 +133,16 @@ export default function UploadPage() {
   }
 
   async function handleCreateCollection(name: string, description: string) {
-    const supabase = createBrowserSupabaseClient();
-    if (!supabase) return;
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const accessToken = session?.access_token;
-    if (!accessToken) return;
-
-    await apiPost(
-      "/api/collections/",
-      { name, description },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    await loadCollections();
+    try {
+      await authFetch("/api/collections/", {
+        method: "POST",
+        body: { name, description },
+      });
+      await loadCollections();
+    } catch (err) {
+      console.error("Failed to create collection:", err);
+      setError(err instanceof Error ? err.message : "Failed to create collection");
+    }
   }
 
   async function handleImportFromUrl() {
@@ -291,33 +249,14 @@ export default function UploadPage() {
       return;
     }
 
-    const supabase = createBrowserSupabaseClient();
-
-    if (!supabase) {
-      setError("Supabase is not configured in the frontend environment.");
-      setSaveMessage(null);
-      return;
-    }
-
     setIsSaving(true);
     setError(null);
     setSaveMessage(null);
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const accessToken = session?.access_token;
-
-      if (!accessToken) {
-        router.push("/login");
-        throw new Error("Sign in to save recipes to your dashboard.");
-      }
-
-      const response = await apiPost<SaveRecipeResponse>(
-        "/api/recipes/save",
-        {
+      const response = await authFetch<SaveRecipeResponse>("/api/recipes/save", {
+        method: "POST",
+        body: {
           title: parsedRecipe.title,
           description: parsedRecipe.description,
           source_text: recipeSourceText,
@@ -327,16 +266,14 @@ export default function UploadPage() {
           tags: parsedRecipe.tags,
           collection_ids: selectedCollectionIds,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      });
 
       setSaveMessage("Recipe saved. Opening the full recipe view.");
       router.push(`/recipe/${response.recipe.id}`);
     } catch (err) {
+      if (err instanceof Error && err.message.includes("Authentication required")) {
+        router.push("/login");
+      }
       setError(err instanceof Error ? err.message : "Saving this recipe failed.");
     } finally {
       setIsSaving(false);
