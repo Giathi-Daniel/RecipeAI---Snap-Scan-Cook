@@ -250,35 +250,35 @@ Sends full recipe + target region → returns adapted recipe with locally availa
 ## Screenshots
 
 <details>
-<summary>📝 Text Parser - Upload Recipe Text</summary>
+<summary>Text Parser - Upload Recipe Text</summary>
 
 ![Text-Parser](./frontend/public/upload-text.png)
 
 </details>
 
 <details>
-<summary>✨ Parsed Recipe Preview</summary>
+<summary>Parsed Recipe Preview</summary>
 
 ![Parsed-Text](./frontend/public/recipe-preview.png)
 
 </details>
 
 <details>
-<summary>🍳 Complete Recipe View</summary>
+<summary>Complete Recipe View</summary>
 
 ![Recipe-Review](./frontend/public/complete-recipe.png)
 
 </details>
 
 <details>
-<summary>🏠 Landing Page (Desktop)</summary>
+<summary>Landing Page (Desktop)</summary>
 
 ![Landing-Page-Main](./frontend/public/landing-page-desktop.png)
 
 </details>
 
 <details>
-<summary>📱 Mobile View</summary>
+<summary>Mobile View</summary>
 
 ![Mobile-View](./frontend/public/mobile-view.png)
 
