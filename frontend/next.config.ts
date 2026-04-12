@@ -6,13 +6,15 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   productionBrowserSourceMaps: false,
-  webpack: (config) => {
-    config.cache = {
-      type: 'filesystem',
-      compression: 'gzip',
-    };
-    return config;
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
+  experimental: {
+    optimizeCss: true,
+  },
+  turbopack: {},
   async headers() {
     const backendUrl = process.env.NODE_ENV === 'production' 
       ? 'https://recipeai-backend.onrender.com' 
