@@ -46,6 +46,7 @@ type RecipeLookupResponse = {
 };
 
 export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour for recipe pages
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
   const { id } = await params;
