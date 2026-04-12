@@ -6,6 +6,7 @@ import type { DashboardRecipe } from "@/lib/dashboard";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 300; // Revalidate every 5 minutes
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Browse, filter, and manage your saved RecipeAI recipes from one secure dashboard.",

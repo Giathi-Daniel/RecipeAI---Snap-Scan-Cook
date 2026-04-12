@@ -3,6 +3,8 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { NavigationLoader } from "@/components/navigation-loader";
+import { PerformanceMonitor } from "@/components/performance-monitor";
+import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 import { getSiteUrl, getSiteUrlObject } from "@/lib/site-url";
 
 const siteUrl = getSiteUrl();
@@ -84,6 +86,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
+        <PerformanceMonitor />
+        <ServiceWorkerRegistration />
         <NavigationLoader />
         <Header />
         <main className="min-h-[calc(100vh-89px)]">{children}</main>

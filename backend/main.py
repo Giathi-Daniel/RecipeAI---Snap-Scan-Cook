@@ -8,11 +8,15 @@ from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 
 from routers import ai, auth, collections, recipes, vision
 from services.auth_service import decode_supabase_jwt
+
+from cachetools import TTLCache
+ai_cache = TTLCache(maxsize=1000, ttl=3600)  # 1 hour cache
 
 BASE_DIR = Path(__file__).resolve().parent
 logger = logging.getLogger("recipeai.api")
@@ -75,6 +79,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add GZip compression for API responses
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.middleware("http")
