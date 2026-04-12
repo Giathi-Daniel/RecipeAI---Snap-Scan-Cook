@@ -14,13 +14,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  webpack: (config) => {
-    config.cache = {
-      type: 'filesystem',
-      compression: 'gzip',
-    };
-    return config;
-  },
+  turbopack: {},
   async headers() {
     const backendUrl = process.env.NODE_ENV === 'production' 
       ? 'https://recipeai-backend.onrender.com' 
